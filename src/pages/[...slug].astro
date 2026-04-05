@@ -1,0 +1,78 @@
+---
+import { getCollection, render } from "astro:content";
+import { SITE } from "@/config";
+import NoteLayout from "@/layouts/note-layout.astro";
+import NoteContent from "@/features/notes/components/note-content.astro";
+import NoteHeader from "@/features/notes/components/note-header.astro";
+import BacklinksPanel from "@/features/backlinks/components/backlinks-panel.astro";
+import { TableOfContents } from "@/features/notes/components/table-of-contents";
+import { buildBacklinksMap } from "@/features/backlinks/lib/backlink-resolver";
+import { GraphView } from "@/features/graph/components/graph-view";
+import { buildLocalGraphData } from "@/features/graph/lib/graph-data-builder";
+import { getNoteTitle } from "@/lib/notes";
+import { loadSiteShellData } from "@/lib/site-shell";
+import { createCollectionContentResolver, getPublishedNotes } from "@/lib/content-resolver";
+
+export async function getStaticPaths() {
+  const notes = getPublishedNotes(await getCollection("notes"));
+  const backlinksMap = SITE.showBacklinks ? buildBacklinksMap(notes) : new Map();
+  const resolver = createCollectionContentResolver(notes);
+
+  return notes.map((note) => {
+    const resolvedNote = resolver.resolve(note.id);
+
+    return {
+      params: {
+        slug: resolvedNote.status === "resolved" ? resolvedNote.entry.publicPath : note.id,
+      },
+      props: {
+        note,
+        backlinks: backlinksMap.get(note.id) ?? [],
+        graphData: SITE.showGraph ? buildLocalGraphData(notes, note.id) : { nodes: [], edges: [] },
+      },
+    };
+  });
+}
+
+const { note, backlinks, graphData } = Astro.props;
+const { Content, headings } = await render(note);
+const title = getNoteTitle(note);
+const { notes, searchIndex } = await loadSiteShellData();
+const resolver = createCollectionContentResolver(notes);
+const resolvedNote = resolver.resolve(note.id);
+const currentSlug = resolvedNote.status === "resolved" ? resolvedNote.entry.publicPath : note.id;
+const canonicalPath = `/${currentSlug}`;
+const description = note.data.description ?? note.data.summary ?? undefined;
+const ogImage = typeof note.data.cover === "string"
+  ? note.data.cover
+  : typeof note.data.artwork === "string"
+    ? note.data.artwork
+    : undefined;
+---
+
+<NoteLayout
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  ogImage={ogImage}
+  currentSlug={currentSlug}
+  wide
+  notes={notes}
+  searchIndex={searchIndex}
+>
+  <NoteHeader note={note} notes={notes} />
+  <NoteContent Content={Content} cssclasses={note.data.cssclasses} />
+
+  <Fragment slot="aside">
+    {SITE.showGraph && (
+      <GraphView
+        data={graphData}
+        currentSlug={note.id}
+        title="Linked Notes"
+        client:visible
+      />
+    )}
+    {SITE.showTableOfContents && <TableOfContents headings={headings} client:load />}
+    {SITE.showBacklinks && <BacklinksPanel backlinks={backlinks} variant="rail" />}
+  </Fragment>
+</NoteLayout>

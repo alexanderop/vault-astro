@@ -1,0 +1,74 @@
+---
+import "@/styles/globals.css";
+import { SITE } from "@/config";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  includeMath?: boolean;
+  includeMermaid?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogImage,
+  includeMath = false,
+  includeMermaid = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
+const pageDescription = description ?? SITE.description;
+const canonicalUrl = SITE.website && canonicalPath
+  ? new URL(canonicalPath.replace(/^\//, ""), `${SITE.website.replace(/\/$/, "")}/`).toString()
+  : undefined;
+const resolvedOgImage = ogImage ?? SITE.ogImage;
+---
+
+<!doctype html>
+<html lang={SITE.lang} dir={SITE.dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    {SITE.author && <meta name="author" content={SITE.author} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <meta property="og:title" content={pageTitle} />
+    {pageDescription && <meta property="og:description" content={pageDescription} />}
+    <meta property="og:type" content="article" />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
+    <meta name="twitter:card" content={resolvedOgImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={pageTitle} />
+    {pageDescription && <meta name="twitter:description" content={pageDescription} />}
+    {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    {includeMath && (
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" />
+    )}
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    {SITE.lightAndDarkMode && (
+      <script is:inline define:vars={{ storageKey: SITE.themeStorageKey }}>
+        const theme = localStorage.getItem(storageKey) ??
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        if (theme === "dark") document.documentElement.classList.add("dark");
+      </script>
+    )}
+    <slot />
+    {includeMermaid && (
+      <script is:inline type="module">
+        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: document.documentElement.classList.contains("dark") ? "dark" : "default",
+        });
+      </script>
+    )}
+  </body>
+</html>

@@ -1,11 +1,32 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { SITE } from "@/config";
+import NoteLayout from "@/layouts/note-layout.astro";
+import { getNoteHref, getNoteSummary, getNoteTitle, sortNotesByDateDesc } from "@/lib/notes";
+import { loadSiteShellData } from "@/lib/site-shell";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const { notes, searchIndex } = await loadSiteShellData();
+const sortedNotes = sortNotesByDateDesc(notes);
+const displayedNotes = SITE.notesPerIndex > 0
+  ? sortedNotes.slice(0, SITE.notesPerIndex)
+  : sortedNotes;
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<NoteLayout title="Home" description={SITE.description} canonicalPath="/" notes={notes} searchIndex={searchIndex}>
+  <h1 class="mb-6 text-2xl font-semibold tracking-tight">Vault</h1>
+  <ul class="space-y-px">
+    {displayedNotes.map((note) => (
+      <li>
+        <a
+          href={getNoteHref(note, notes)}
+          class="block rounded-sm px-3 py-2.5 transition-colors hover:bg-surface-hover"
+        >
+          <span class="text-sm font-medium text-foreground/90">{getNoteTitle(note)}</span>
+          <p class="mt-0.5 text-xs text-muted-foreground/50">{note.id}</p>
+          {getNoteSummary(note) && (
+            <p class="mt-0.5 text-xs text-muted-foreground/60 line-clamp-1">{getNoteSummary(note)}</p>
+          )}
+        </a>
+      </li>
+    ))}
+  </ul>
+</NoteLayout>

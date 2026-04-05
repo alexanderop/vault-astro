@@ -1,0 +1,5 @@
+---
+title: Circular Note
+---
+
+![[circular]]

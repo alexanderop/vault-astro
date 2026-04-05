@@ -1,0 +1,15 @@
+---
+import type { RenderResult } from "astro:content";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  Content: RenderResult["Content"];
+  cssclasses?: string[];
+}
+
+const { Content, cssclasses = [] } = Astro.props;
+---
+
+<article class={cn("prose prose-zinc dark:prose-invert max-w-none", ...cssclasses)}>
+  <Content />
+</article>

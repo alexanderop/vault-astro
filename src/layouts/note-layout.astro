@@ -1,0 +1,78 @@
+---
+import DocumentShell from "@/components/document-shell.astro";
+import { SITE } from "@/config";
+import type { CollectionEntry } from "astro:content";
+import Sidebar from "@/features/navigation/components/sidebar.astro";
+import { ThemeToggle } from "@/features/theme/components/theme-toggle";
+import { SearchDialog } from "@/features/search/components/search-dialog";
+import { ShortcutsProvider } from "@/features/shortcuts/components/shortcuts-provider";
+import type { SearchEntry } from "@/features/search/lib/search-index";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  currentSlug?: string;
+  wide?: boolean;
+  notes: CollectionEntry<"notes">[];
+  searchIndex: SearchEntry[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogImage,
+  currentSlug,
+  wide = false,
+  notes,
+  searchIndex,
+} = Astro.props;
+
+const hasAside = Astro.slots.has("aside");
+---
+
+<DocumentShell
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  ogImage={ogImage}
+  includeMath={SITE.enableMath}
+  includeMermaid={SITE.enableMermaid}
+>
+  <div class="flex min-h-screen">
+    <aside class="sticky top-0 h-screen shrink-0 border-r border-border">
+      <Sidebar notes={notes} currentSlug={currentSlug} />
+    </aside>
+    <div class="flex flex-1 flex-col">
+      <header class="sticky top-0 z-header flex items-center justify-end gap-2 bg-background/80 px-6 py-2 backdrop-blur-sm">
+        {SITE.showSearch && <SearchDialog entries={searchIndex} client:load />}
+        {SITE.lightAndDarkMode && <ThemeToggle client:load />}
+        <ShortcutsProvider client:load />
+      </header>
+      <div
+        class:list={[
+          "flex-1 px-6 py-6",
+          hasAside && "grid xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-10",
+        ]}
+      >
+        <main class:list={["mx-auto min-w-0 w-full", wide ? "max-w-screen-2xl" : "max-w-3xl"]}>
+          <slot />
+        </main>
+        {hasAside && (
+          <aside class="hidden self-start xl:block">
+            <div class="sticky top-14 space-y-6">
+              <slot name="aside" />
+            </div>
+          </aside>
+        )}
+      </div>
+      {SITE.footer && (
+        <footer class="px-6 py-4 text-center text-sm text-muted-foreground/60">
+          {SITE.footer}
+        </footer>
+      )}
+    </div>
+  </div>
+</DocumentShell>

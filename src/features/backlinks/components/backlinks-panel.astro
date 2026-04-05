@@ -1,0 +1,38 @@
+---
+import type { Backlink } from "@/features/backlinks/lib/backlink-resolver";
+
+interface Props {
+  backlinks: Backlink[];
+  variant?: "default" | "rail";
+}
+
+const { backlinks, variant = "default" } = Astro.props;
+---
+
+{backlinks.length > 0 && (
+  <nav class:list={[
+    variant === "rail"
+      ? "px-1"
+      : "mt-10 pt-6",
+  ]}>
+    <h2 class="mb-2 flex items-center gap-1.5 text-ui-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+      <svg class="size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 17 6-5-6-5"/></svg>
+      Backlinks
+    </h2>
+    <ul class:list={[variant === "rail" ? "space-y-0.5" : "flex flex-wrap gap-1.5"]}>
+      {backlinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              "rounded-sm text-ui text-foreground/55 transition-colors hover:bg-surface-hover hover:text-foreground/80",
+              variant === "rail" ? "block px-2 py-1" : "inline-block px-2 py-0.5",
+            ]}
+          >
+            {link.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

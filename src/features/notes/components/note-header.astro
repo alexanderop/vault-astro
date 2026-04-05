@@ -1,0 +1,134 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { createCollectionContentResolver, getEntryType } from "@/lib/content-resolver";
+import { getNoteDate, getNoteSummary, getNoteTitle } from "@/lib/notes";
+
+interface Props {
+  note: CollectionEntry<"notes">;
+  notes: CollectionEntry<"notes">[];
+}
+
+const { note, notes } = Astro.props;
+const title = getNoteTitle(note);
+const summary = getNoteSummary(note);
+const resolver = createCollectionContentResolver(notes);
+const noteType = getEntryType(note);
+const formattedDate = getNoteDate(note)?.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+const authors = (note.data.authors ?? [])
+  .map((author) => {
+    const resolved = resolver.resolve(author);
+    return {
+      label: author,
+      href: resolved.status === "resolved" ? `/${resolved.entry.publicPath}` : null,
+    };
+  });
+const links = [
+  note.data.website ? { label: "Website", href: note.data.website } : null,
+  note.data.url ? { label: "Source", href: note.data.url } : null,
+  note.data.feed ? { label: "RSS", href: note.data.feed } : null,
+  ...Object.entries(note.data.platforms ?? {}).map(([label, href]) => ({
+    label,
+    href,
+  })),
+].filter((link): link is { label: string; href: string } => Boolean(link));
+---
+
+<header class="mb-8">
+  <div class="flex items-start gap-4">
+    {note.data.artwork && (
+      <img
+        src={note.data.artwork}
+        alt={`Artwork for ${title}`}
+        class="mt-1 h-10 w-10 rounded-lg object-cover"
+        loading="lazy"
+      />
+    )}
+    <div class="min-w-0 flex-1">
+      <h1 class="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
+      {summary && <p class="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground/70">{summary}</p>}
+    </div>
+  </div>
+
+  {/* Properties grid — Linear-style key:value rows with icons */}
+  <div class="mt-5 grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-2 text-ui">
+    {/* Type + Date */}
+    <span class="inline-flex items-center gap-1.5 text-muted-foreground/40">
+      <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      Status
+    </span>
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="inline-flex items-center gap-1.5 text-foreground/80">
+        <span class="inline-block size-2 rounded-full bg-primary/60"></span>
+        <span class="capitalize">{noteType}</span>
+      </span>
+      {formattedDate && (
+        <span class="text-muted-foreground/50">{formattedDate}</span>
+      )}
+    </div>
+
+    {/* Tags */}
+    {(note.data.tags ?? []).length > 0 && (
+      <>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground/40">
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+          Labels
+        </span>
+        <div class="flex flex-wrap gap-1.5">
+          {(note.data.tags ?? []).slice(0, 6).map((tag) => (
+            <span class="text-muted-foreground/60">#{tag}</span>
+          ))}
+        </div>
+      </>
+    )}
+
+    {/* Authors */}
+    {authors.length > 0 && (
+      <>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground/40">
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Authors
+        </span>
+        <div class="flex flex-wrap items-center gap-2">
+          {authors.map((author) =>
+            author.href ? (
+              <a href={author.href} class="text-foreground/70 transition-colors hover:text-foreground">
+                {author.label}
+              </a>
+            ) : (
+              <span class="text-foreground/70">{author.label}</span>
+            ),
+          )}
+        </div>
+      </>
+    )}
+
+    {/* Links */}
+    {links.length > 0 && (
+      <>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground/40">
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Links
+        </span>
+        <div class="flex flex-wrap items-center gap-3">
+          {links.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center gap-1 capitalize text-primary/80 transition-colors hover:text-primary"
+            >
+              <svg class="size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+
+  <div class="mt-6 h-px bg-border"></div>
+</header>
