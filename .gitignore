@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# imported Obsidian workspace metadata
+src/content/notes/.obsidian/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
