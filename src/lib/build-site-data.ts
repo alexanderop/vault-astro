@@ -9,6 +9,7 @@ import {
   type GraphData,
 } from "@/features/graph/lib/graph-data-builder";
 import { buildTagIndex, type TagEntry } from "@/features/tags/lib/tag-index";
+import { buildTypeIndex, type TypeEntry } from "@/features/types/lib/type-index";
 import { buildSearchIndex, type SearchEntry } from "@/features/search/lib/search-index";
 import {
   createCollectionNoteResolver,
@@ -26,6 +27,7 @@ interface BuildSiteData {
   graphByNote?: Map<string, GraphData>;
   globalGraph?: GraphData;
   tagIndex: TagEntry[];
+  typeIndex: TypeEntry[];
 }
 
 let cachedBuildSiteDataPromise: Promise<BuildSiteData> | null = null;
@@ -75,7 +77,7 @@ async function buildSiteData(): Promise<BuildSiteData> {
     SITE.showSearch ? buildSearchIndex(notes, resolver) : [],
   );
   const graphContext = SITE.showGraph ? createGraphBuildContext(notes, linksByNote) : undefined;
-  const [graphByNote, globalGraph, tagIndex] = await Promise.all([
+  const [graphByNote, globalGraph, tagIndex, typeIndex] = await Promise.all([
     withPerfLog("graph precompute", () =>
       graphContext ? precomputeGraphData(graphContext) : undefined,
     ),
@@ -83,6 +85,7 @@ async function buildSiteData(): Promise<BuildSiteData> {
       graphContext ? buildGlobalGraphData(graphContext) : undefined,
     ),
     withPerfLog("tag index build", () => (SITE.showTags ? buildTagIndex(notes) : [])),
+    withPerfLog("type index build", () => buildTypeIndex(notes)),
   ]);
 
   return {
@@ -94,6 +97,7 @@ async function buildSiteData(): Promise<BuildSiteData> {
     graphByNote,
     globalGraph,
     tagIndex,
+    typeIndex,
   };
 }
 

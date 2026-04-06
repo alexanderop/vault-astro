@@ -1,0 +1,41 @@
+---
+import NoteLayout from "@/layouts/note-layout.astro";
+import { sortNotesByDateDesc } from "@/lib/notes";
+import { getBuildSiteData } from "@/lib/build-site-data";
+import { getEntryType } from "@/lib/content-resolver";
+import NoteCard from "@/features/notes/components/note-card.astro";
+
+export async function getStaticPaths() {
+  const { notes, resolver, searchIndex, typeIndex } = await getBuildSiteData();
+
+  return typeIndex.map((entry) => {
+    const typeNotes = sortNotesByDateDesc(
+      notes.filter((note) => getEntryType(note) === entry.type),
+    );
+    return {
+      params: { type: entry.type },
+      props: { typeNotes, typeEntry: entry, notes, resolver, searchIndex },
+    };
+  });
+}
+
+const { typeNotes, typeEntry, notes, resolver, searchIndex } = Astro.props;
+---
+
+<NoteLayout title={typeEntry.type} description={`Notes of type "${typeEntry.type}"`} canonicalPath={`/type/${typeEntry.type}`} notes={notes} searchIndex={searchIndex} wide>
+  <section class="mb-10">
+    <a href="/" class="text-xs text-muted-foreground transition-colors hover:text-foreground">&larr; Back to home</a>
+    <h1 class="mt-3 text-2xl font-semibold capitalize tracking-tight">{typeEntry.type}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">
+      {typeEntry.count} {typeEntry.count === 1 ? "note" : "notes"}
+    </p>
+  </section>
+
+  <section>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {typeNotes.map((note) => (
+        <NoteCard note={note} resolver={resolver} />
+      ))}
+    </div>
+  </section>
+</NoteLayout>

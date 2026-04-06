@@ -9,7 +9,7 @@ import {
 import { Search } from "lucide-react";
 import { getShortcutGroups } from "@/features/shortcuts/lib/shortcuts";
 import type { ShortcutGroup } from "@/features/shortcuts/lib/shortcuts";
-import { getShortcutContext } from "@/features/shortcuts/lib/shortcut-targets";
+import { getShortcutContext } from "@/lib/shortcut-targets";
 
 function Kbd({ children }: { children: string }) {
   return <kbd className="shell-kbd h-5">{children}</kbd>;

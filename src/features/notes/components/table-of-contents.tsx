@@ -66,12 +66,12 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav className="rail-panel" data-shortcut-list>
+    <nav className="rail-panel min-h-0 flex flex-col" data-shortcut-list>
       <h2 className="rail-panel-title">
         <List className="size-3" />
         On This Page
       </h2>
-      <ul className="shell-list max-h-80 overflow-y-auto pr-1">
+      <ul className="shell-list min-h-0 overflow-y-auto pr-1">
         {items.map((heading) => {
           const isActive = heading.slug === activeSlug;
 

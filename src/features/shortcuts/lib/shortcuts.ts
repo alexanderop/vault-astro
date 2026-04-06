@@ -1,4 +1,4 @@
-import type { ShortcutContext } from "@/features/shortcuts/lib/shortcut-targets";
+import type { ShortcutContext } from "@/lib/shortcut-targets";
 
 export interface Shortcut {
   id: string;

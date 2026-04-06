@@ -1,7 +1,7 @@
 import { render } from "vitest-browser-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useKeyboardShortcuts } from "@/features/shortcuts/hooks/use-keyboard-shortcuts";
-import { SHORTCUT_EVENTS, SHORTCUT_TARGETS } from "@/features/shortcuts/lib/shortcut-targets";
+import { SHORTCUT_EVENTS, SHORTCUT_TARGETS } from "@/lib/shortcut-targets";
 
 function Harness() {
   useKeyboardShortcuts();

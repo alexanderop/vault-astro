@@ -1,6 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "jsPlugins": ["./scripts/oxlint-plugin-config-imports.js"],
+  "jsPlugins": [
+    "./scripts/oxlint-plugin-config-imports.js",
+    "./scripts/oxlint-plugin-feature-boundaries.js"
+  ],
   "plugins": [
     "eslint",
     "typescript",
@@ -24,6 +27,7 @@
     "jsx-a11y/no-autofocus": "off",
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-unsafe-type-assertion": "off",
-    "config-imports/no-alias-in-config-files": "error"
+    "config-imports/no-alias-in-config-files": "error",
+    "feature-boundaries/no-cross-feature-imports": "error"
   }
 }

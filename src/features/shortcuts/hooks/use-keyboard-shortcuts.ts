@@ -5,7 +5,7 @@ import {
   jumpToShortcutTarget,
   moveFocusInShortcutList,
   openSearchShortcut,
-} from "@/features/shortcuts/lib/shortcut-targets";
+} from "@/lib/shortcut-targets";
 
 function isInputTarget(e: KeyboardEvent): boolean {
   const target = e.target;

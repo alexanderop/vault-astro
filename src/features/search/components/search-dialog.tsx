@@ -12,13 +12,13 @@ import {
 import { useSearch } from "@/features/search/hooks/use-search";
 import type { SearchEntry } from "@/features/search/lib/search-index";
 import { ExternalLink, FileText, Home, Moon, Search, Sun, Keyboard } from "lucide-react";
-import { useTheme } from "@/features/theme/hooks/use-theme";
+import { useTheme } from "@/hooks/use-theme";
 import {
   SHORTCUT_EVENTS,
   SHORTCUT_TARGETS,
   getShortcutContext,
   jumpToShortcutTarget,
-} from "@/features/shortcuts/lib/shortcut-targets";
+} from "@/lib/shortcut-targets";
 
 interface SearchDialogProps {
   entries: SearchEntry[];

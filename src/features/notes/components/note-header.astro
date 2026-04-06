@@ -61,10 +61,10 @@ const links = [
       Status
     </span>
     <div class="flex flex-wrap items-center gap-2">
-      <span class="inline-flex items-center gap-1.5 text-foreground">
+      <a href={`/type/${noteType}`} class="inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-primary">
         <span class="inline-block size-2 rounded-full bg-primary/60"></span>
         <span class="capitalize">{noteType}</span>
-      </span>
+      </a>
       {formattedDate && (
         <span class="shell-meta">{formattedDate}</span>
       )}

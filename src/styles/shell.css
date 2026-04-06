@@ -67,7 +67,8 @@
 
   .shell-rail-sticky {
     top: calc(var(--shell-header-height) + 1rem);
-    @apply sticky space-y-6;
+    max-height: calc(100vh - var(--shell-header-height) - 2rem);
+    @apply sticky flex flex-col gap-6 overflow-hidden;
   }
 
   .shell-footer {

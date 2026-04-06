@@ -2,7 +2,7 @@ import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SearchDialog } from "@/features/search/components/search-dialog";
-import { SHORTCUT_EVENTS } from "@/features/shortcuts/lib/shortcut-targets";
+import { SHORTCUT_EVENTS } from "@/lib/shortcut-targets";
 import { searchEntriesFactory } from "../../../../test/helpers/factories/search-entry-factory";
 
 const entries = searchEntriesFactory([
