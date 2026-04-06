@@ -8,7 +8,7 @@ import { executeDataviewQuery } from "./dataview-query-executor";
 import { renderDataviewError, renderDataviewResult } from "./dataview-renderer";
 import type { DataviewIndex, FileContext } from "./dataview-types";
 
-export interface RenderDataviewQueryOptions extends CreateDataviewIndexOptions {
+interface RenderDataviewQueryOptions extends CreateDataviewIndexOptions {
   index?: DataviewIndex;
 }
 

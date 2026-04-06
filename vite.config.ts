@@ -37,6 +37,11 @@ export default defineConfig({
         env: ["NODE_ENV"],
         input: cacheableInput,
       },
+      knip: {
+        command: "knip && knip --production --exclude dependencies",
+        env: ["NODE_ENV"],
+        input: cacheableInput,
+      },
       test: {
         command: "vitest run",
         env: ["NODE_ENV"],

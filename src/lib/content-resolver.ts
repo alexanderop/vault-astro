@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 
-export interface ParsedWikilink {
+interface ParsedWikilink {
   isEmbed: boolean;
   target: string;
   heading?: string;

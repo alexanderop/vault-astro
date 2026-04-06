@@ -15,7 +15,7 @@ function replaceValue(value: string, search: string, replacement: string): strin
   return value.replaceAll(search, replacement);
 }
 
-export const DEFAULT_DATAVIEW_FUNCTIONS: Record<string, DataviewFunctionDefinition> = {
+const DEFAULT_DATAVIEW_FUNCTIONS: Record<string, DataviewFunctionDefinition> = {
   choice: {
     arities: [3],
     implementation(condition: unknown, left: unknown, right: unknown) {

@@ -8,7 +8,7 @@ function isDataviewLink(value: unknown): value is DataviewLink {
   );
 }
 
-export function compareDataviewValues(left: unknown, right: unknown): boolean {
+function compareDataviewValues(left: unknown, right: unknown): boolean {
   if (isDataviewLink(left) && isDataviewLink(right)) {
     return left.path === right.path;
   }
@@ -20,7 +20,7 @@ export function compareDataviewValues(left: unknown, right: unknown): boolean {
   return left === right;
 }
 
-export function compareDataviewSortValues(left: unknown, right: unknown): number {
+function compareDataviewSortValues(left: unknown, right: unknown): number {
   if (left instanceof Date && right instanceof Date) {
     return left.getTime() - right.getTime();
   }

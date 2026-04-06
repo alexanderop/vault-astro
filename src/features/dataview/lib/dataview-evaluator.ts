@@ -13,7 +13,7 @@ import type {
   SourceExpression,
 } from "./dataview-types";
 
-export function evaluateField(
+function evaluateField(
   path: string[],
   row: DataviewQueryRow,
   current: DataviewQueryRow | null,
@@ -39,7 +39,7 @@ export function evaluateExpression(
   return new DataviewContext(index, current).evaluate(expression, row);
 }
 
-export function matchesSource(
+function matchesSource(
   source: SourceExpression,
   page: DataviewPage,
   index: DataviewIndex,
@@ -48,7 +48,7 @@ export function matchesSource(
   return matchesSourceInternal(source, page, new DataviewContext(index, current), current);
 }
 
-export function executeDataviewQuery(
+function executeDataviewQuery(
   query: DataviewQuery,
   current: DataviewQueryRow | null,
   index: DataviewIndex,

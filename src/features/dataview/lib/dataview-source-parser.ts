@@ -1,6 +1,6 @@
 import type { SourceExpression, Token } from "./dataview-types";
 
-export function tokenizeSource(source: string): Token[] {
+function tokenizeSource(source: string): Token[] {
   const tokens: Token[] = [];
   let index = 0;
 
@@ -74,7 +74,7 @@ export function tokenizeSource(source: string): Token[] {
   return tokens;
 }
 
-export class SourceParser {
+class SourceParser {
   private readonly tokens: Token[];
   private index = 0;
 
