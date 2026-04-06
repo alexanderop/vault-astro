@@ -49,7 +49,18 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   useEffect(() => {
     if (!activeSlug) return;
-    linkRefs.current[activeSlug]?.scrollIntoView({ block: "nearest" });
+    const link = linkRefs.current[activeSlug];
+    const container = link?.closest(".overflow-y-auto");
+    if (!link || !container) return;
+
+    const linkRect = link.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    if (linkRect.top < containerRect.top) {
+      container.scrollTop += linkRect.top - containerRect.top;
+    } else if (linkRect.bottom > containerRect.bottom) {
+      container.scrollTop += linkRect.bottom - containerRect.bottom;
+    }
   }, [activeSlug]);
 
   if (items.length === 0) return null;
