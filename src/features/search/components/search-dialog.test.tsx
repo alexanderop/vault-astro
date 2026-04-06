@@ -1,8 +1,9 @@
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SearchDialog } from "@/features/search/components/search-dialog";
 import type { SearchEntry } from "@/features/search/lib/search-index";
+import { SHORTCUT_EVENTS } from "@/features/shortcuts/lib/shortcut-targets";
 
 const entries: SearchEntry[] = [
   {
@@ -35,6 +36,10 @@ const entries: SearchEntry[] = [
 ];
 
 describe("SearchDialog", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -76,5 +81,32 @@ describe("SearchDialog", () => {
     await page.getByText("Open source").click();
 
     expect(openSpy).toHaveBeenCalledWith("https://example.com/source.md", "_blank");
+  });
+
+  it("opens when the search shortcut event is dispatched", async () => {
+    await render(<SearchDialog entries={entries} />);
+
+    document.dispatchEvent(new CustomEvent(SHORTCUT_EVENTS.openSearch));
+
+    await expect.element(page.getByPlaceholder("Type a command or search...")).toBeVisible();
+  });
+
+  it("shows contextual navigation commands when matching targets exist", async () => {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div data-shortcut-target="right-rail" tabindex="-1"></div>
+        <nav data-shortcut-target="backlinks" tabindex="-1"></nav>
+      `,
+    );
+
+    const screen = await render(
+      <SearchDialog entries={entries} sourceUrl="https://example.com/source.md" />,
+    );
+    await screen.getByRole("button", { name: /search/i }).click();
+
+    await expect.element(page.getByText("Go to backlinks")).toBeVisible();
+    await expect.element(page.getByText("Go to right rail")).toBeVisible();
+    await expect.element(page.getByText("Open source")).toBeVisible();
   });
 });

@@ -7,7 +7,7 @@ export const SHORTCUT_TARGETS = {
   top: '[data-shortcut-target="top"]',
   rightRail: '[data-shortcut-target="right-rail"]',
   backlinks: '[data-shortcut-target="backlinks"]',
-  source: '[data-source-url]',
+  source: "[data-source-url]",
 } as const;
 
 export interface ShortcutContext {
@@ -74,9 +74,9 @@ export function moveFocusInShortcutList(direction: 1 | -1): boolean {
     return false;
   }
 
-  const items = Array.from(
-    container.querySelectorAll<HTMLElement>("[data-shortcut-item]"),
-  ).filter((item) => !item.hasAttribute("disabled") && item.tabIndex !== -1);
+  const items = Array.from(container.querySelectorAll<HTMLElement>("[data-shortcut-item]")).filter(
+    (item) => !item.hasAttribute("disabled") && item.tabIndex !== -1,
+  );
 
   if (items.length === 0) {
     return false;
@@ -84,9 +84,10 @@ export function moveFocusInShortcutList(direction: 1 | -1): boolean {
 
   const currentIndex = items.findIndex((item) => item === activeElement);
   const fallbackIndex = direction === 1 ? 0 : items.length - 1;
-  const nextIndex = currentIndex === -1
-    ? fallbackIndex
-    : Math.max(0, Math.min(items.length - 1, currentIndex + direction));
+  const nextIndex =
+    currentIndex === -1
+      ? fallbackIndex
+      : Math.max(0, Math.min(items.length - 1, currentIndex + direction));
   const nextItem = items[nextIndex];
 
   if (!nextItem || nextItem === activeElement) {

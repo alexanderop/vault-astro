@@ -53,7 +53,7 @@ export function ShortcutsDialog({ sourceUrl }: ShortcutsDialogProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const allGroups = useMemo(() => getShortcutGroups(getShortcutContext(sourceUrl)), [open, sourceUrl]);
+  const allGroups = useMemo(() => getShortcutGroups(getShortcutContext(sourceUrl)), [sourceUrl]);
   const filteredGroups = useMemo(() => filterGroups(allGroups, query), [allGroups, query]);
 
   useEffect(() => {

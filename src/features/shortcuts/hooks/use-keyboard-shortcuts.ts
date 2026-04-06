@@ -8,7 +8,12 @@ import {
 } from "@/features/shortcuts/lib/shortcut-targets";
 
 function isInputTarget(e: KeyboardEvent): boolean {
-  const target = e.target as HTMLElement;
+  const target = e.target;
+
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
   return (
     target instanceof HTMLInputElement ||
     target instanceof HTMLTextAreaElement ||

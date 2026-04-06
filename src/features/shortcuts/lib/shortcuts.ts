@@ -125,8 +125,10 @@ export function getShortcutGroups(context: ShortcutContext): ShortcutGroup[] {
         },
       ],
     },
-  ].map((group) => ({
-    ...group,
-    shortcuts: group.shortcuts.filter((shortcut) => shortcut.when?.(context) ?? true),
-  })).filter((group) => group.shortcuts.length > 0);
+  ]
+    .map((group) => ({
+      ...group,
+      shortcuts: group.shortcuts.filter((shortcut) => shortcut.when?.(context) ?? true),
+    }))
+    .filter((group) => group.shortcuts.length > 0);
 }
