@@ -15,7 +15,8 @@
     "check": "vp check",
     "lint": "vp lint --import-plugin --type-aware",
     "fmt": "vp fmt",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",
@@ -44,6 +45,7 @@
     "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.59.1",
     "@vitest/browser-playwright": "^4.1.2",
+    "husky": "^9.1.7",
     "vite-plus": "^0.1.15",
     "vitest": "^4.1.2",
     "vitest-browser-react": "^2.2.0"
