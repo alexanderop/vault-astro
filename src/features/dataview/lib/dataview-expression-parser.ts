@@ -8,7 +8,7 @@ import type {
   Token,
 } from "./dataview-types";
 
-export function tokenizeExpression(source: string): Token[] {
+function tokenizeExpression(source: string): Token[] {
   const tokens: Token[] = [];
   let index = 0;
 
@@ -108,7 +108,7 @@ export function tokenizeExpression(source: string): Token[] {
   return tokens;
 }
 
-export class ExpressionParser {
+class ExpressionParser {
   private readonly tokens: Token[];
   private index = 0;
 
@@ -296,7 +296,7 @@ export class ExpressionParser {
   }
 }
 
-export function splitTopLevel(source: string, separator: string): string[] {
+function splitTopLevel(source: string, separator: string): string[] {
   const parts: string[] = [];
   let current = "";
   let depth = 0;
@@ -349,7 +349,7 @@ export function splitTopLevel(source: string, separator: string): string[] {
   return parts;
 }
 
-export function findAliasSeparator(source: string): number {
+function findAliasSeparator(source: string): number {
   const tokens = tokenizeExpression(source);
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
@@ -365,7 +365,7 @@ export function findAliasSeparator(source: string): number {
   return -1;
 }
 
-export function parseTableColumns(source: string): { columns: TableColumn[]; withoutId: boolean } {
+function parseTableColumns(source: string): { columns: TableColumn[]; withoutId: boolean } {
   let remaining = source.trim();
   let withoutId = false;
 

@@ -16,7 +16,7 @@ export interface ShortcutGroup {
 
 const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
-export const MOD_KEY = isMac ? "⌘" : "Ctrl";
+const MOD_KEY = isMac ? "⌘" : "Ctrl";
 
 export function getShortcutGroups(context: ShortcutContext): ShortcutGroup[] {
   return [

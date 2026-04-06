@@ -2,7 +2,7 @@ import type { CollectionEntry } from "astro:content";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-export interface ParsedWikilink {
+interface ParsedWikilink {
   isEmbed: boolean;
   target: string;
   heading?: string;

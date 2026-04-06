@@ -3,7 +3,7 @@ import { SITE } from "@/config";
 import { getPublishedNotes } from "@/lib/content-resolver";
 import { buildSearchIndex, type SearchEntry } from "@/features/search/lib/search-index";
 
-export interface SiteShellData {
+interface SiteShellData {
   notes: CollectionEntry<"notes">[];
   searchIndex: SearchEntry[];
 }

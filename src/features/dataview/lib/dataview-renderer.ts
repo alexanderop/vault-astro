@@ -1,6 +1,6 @@
 import type { DataviewExecutionResult, DataviewLink } from "./dataview-types";
 
-export function escapeHtml(value: string): string {
+function escapeHtml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -15,7 +15,7 @@ function isDataviewLink(value: unknown): value is DataviewLink {
   );
 }
 
-export function renderValue(value: unknown): string {
+function renderValue(value: unknown): string {
   if (value instanceof Date) {
     return escapeHtml(
       value.toLocaleDateString("en-US", {

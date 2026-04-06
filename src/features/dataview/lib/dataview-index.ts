@@ -17,7 +17,7 @@ import type {
   FileContext,
 } from "./dataview-types";
 
-export const DEFAULT_DATAVIEW_CONTENT_ROOT = resolve("./src/content/notes");
+const DEFAULT_DATAVIEW_CONTENT_ROOT = resolve("./src/content/notes");
 
 export interface CreateDataviewIndexOptions {
   contentRoot?: string;
@@ -370,8 +370,4 @@ export function resolveCurrentDataviewPage(
     index.byContentPath.get(normalizeLookupValue(candidatePath.replace(`${contentRoot}/`, ""))) ??
     null
   );
-}
-
-export function clearDataviewIndexCache() {
-  cachedIndex = null;
 }
