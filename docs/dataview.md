@@ -182,7 +182,7 @@ The tests use a small fixture vault under `src/features/dataview/lib/__tests__/f
 Run them with:
 
 ```bash
-pnpm test
+vp run test
 ```
 
 ## Current Limitations

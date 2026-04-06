@@ -7,15 +7,6 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "audit:content": "node --experimental-strip-types scripts/audit-content.mjs",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:unit": "vitest run --project unit",
-    "test:component": "vitest run --project component",
-    "check": "vp check",
-    "lint": "vp lint --import-plugin --type-aware",
-    "fmt": "vp fmt",
-    "test:e2e": "playwright test",
     "prepare": "husky"
   },
   "dependencies": {
@@ -52,5 +43,6 @@
   },
   "engines": {
     "node": ">=22.12.0"
-  }
+  },
+  "packageManager": "pnpm@10.33.0"
 }

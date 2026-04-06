@@ -19,9 +19,14 @@ Vault is a self-hosted Obsidian Publish alternative built with Astro 6. Users dr
 ## Commands
 
 ```
-pnpm dev          # Start dev server (localhost:4321)
-pnpm build        # Production build
-pnpm preview      # Preview production build
+pnpm dev              # Start dev server (localhost:4321)
+pnpm build            # Production build
+pnpm preview          # Preview production build
+vp run check          # Format + lint + type check
+vp run test           # Run all Vitest suites
+vp run test:e2e       # Run Playwright tests
+vp run audit:content  # Audit content issues
+vp run verify         # Fast local verification
 ```
 
 ## Architecture
@@ -277,19 +282,19 @@ const notes = await getCollection('notes');
 
 ## Testing Strategy
 
-- `pnpm build` must pass — this is the primary verification
+- `vp run check` is the primary verification step
 - Manual verification of markdown rendering for each Obsidian feature
 - Future: Playwright tests for interactive components
 
 ## Boundaries
 
-- **Always:** Use `client:load` / `client:visible` for React in Astro; run `pnpm build` after changes
+- **Always:** Use `client:load` / `client:visible` for React in Astro; run `vp run check` after changes
 - **Ask first:** Adding new dependencies, changing content collection schema, modifying the remark pipeline
 - **Never:** Modify user's source markdown files; commit secrets; break existing Astro component rendering
 
 ## Success Criteria (Phase 1)
 
-1. `pnpm build` passes with zero errors
+1. `vp run check` passes with zero errors
 2. React integration works — a shadcn Button renders in an Astro page
 3. Tailwind CSS v4 is applied globally with dark/light theme support
 4. Content collection is defined and can load `.md` files from `src/content/`

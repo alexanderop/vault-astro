@@ -5,20 +5,25 @@ Vault is a self-hosted Obsidian Publish alternative built with Astro.
 ## Commands
 
 ```
-pnpm dev        # Start dev server (localhost:4321)
-pnpm build      # Production build
-pnpm preview    # Preview production build
-vp check        # Format + lint + type check (single pass)
-vp check --fix  # Auto-fix formatting and lint issues
-vp lint         # Lint only (Oxlint, basic — use `pnpm lint` for full check)
-vp fmt          # Format only (Oxfmt)
-vp test         # Run unit tests (Vitest, node environment)
+pnpm dev                 # Start dev server (localhost:4321)
+pnpm build               # Production build
+pnpm preview             # Preview production build
+vp run check             # Format + lint + type check (single pass)
+vp run lint              # Lint only
+vp run fmt               # Format only
+vp run audit:content     # Audit markdown/content issues
+vp run test              # Run all Vitest suites
+vp run test:unit         # Run node/unit Vitest suite
+vp run test:component    # Run browser/component Vitest suite
+vp run test:e2e          # Run Playwright tests
+vp run verify            # Fast local verification
+vp run verify:full       # Full local verification
 ```
 
-Astro owns dev/build/preview — use `pnpm` for those.
-Use `vp` for all quality checks (format, lint, type check) and tests.
-**Never run `pnpm build` just to verify changes.** Use `vp check` instead.
-Run `vp check` after code changes to verify formatting and linting pass.
+Astro owns dev/build/preview — use `pnpm` only for those lifecycle commands.
+Use `vp run <task>` for checks, tests, and project utilities.
+**Never run `pnpm build` just to verify changes.** Use `vp run check` instead.
+Run `vp run check` after code changes to verify formatting, linting, and type checking pass.
 
 ## Stack
 
@@ -27,7 +32,7 @@ Run `vp check` after code changes to verify formatting and linting pass.
 - Tailwind CSS v4 via `@tailwindcss/vite`
 - shadcn/ui (new-york style, zinc base)
 - TypeScript (strict)
-- Vite+ (Oxlint + Oxfmt via `vp check`)
+- Vite+ (task runner, Oxlint, and Oxfmt via `vp run`)
 
 ## Architecture
 

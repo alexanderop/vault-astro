@@ -1,46 +1,36 @@
-# Astro Starter Kit: Basics
+# Vault
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Vault is a self-hosted Obsidian Publish alternative built with Astro. Drop markdown notes into `src/content/notes/` and generate a fast static knowledge site with Obsidian-style features like wiki links, callouts, embeds, backlinks, and search.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+Use `vp run <task>` for project workflows and `pnpm` only for Astro lifecycle commands.
 
-Inside of your Astro project, you'll see the following folders and files:
+| Command                 | Action                                         |
+| :---------------------- | :--------------------------------------------- |
+| `pnpm install`          | Install dependencies                           |
+| `pnpm dev`              | Start the Astro dev server on `localhost:4321` |
+| `pnpm build`            | Build the production site                      |
+| `pnpm preview`          | Preview the production build                   |
+| `vp run check`          | Run format, lint, and type checks              |
+| `vp run lint`           | Run linting only                               |
+| `vp run fmt`            | Run formatting only                            |
+| `vp run audit:content`  | Audit markdown/content issues                  |
+| `vp run test`           | Run all Vitest suites                          |
+| `vp run test:unit`      | Run the unit/node Vitest suite                 |
+| `vp run test:component` | Run the browser/component Vitest suite         |
+| `vp run test:e2e`       | Run the Playwright suite                       |
+| `vp run verify`         | Run the fast local verification flow           |
+| `vp run verify:full`    | Run the full local verification flow           |
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+## Workflow
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Use `vp run check` as the default verification step after code changes.
 
-## 🧞 Commands
+Do not use `pnpm build` just to verify work. Reserve `pnpm build` for cases where you specifically need to validate production output.
 
-All commands are run from the root of the project, from a terminal:
+## Project Docs
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `pnpm install`         | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [Project spec](./docs/spec-obsidian-publish.md)
+- [Astro gotchas](./docs/astro-gotchas.md)
+- [Centralized site config spec](./docs/spec-site-config.md)

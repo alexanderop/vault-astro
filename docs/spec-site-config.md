@@ -156,8 +156,8 @@ src/
 - [ ] Changing `enableMath` to `false` removes the KaTeX `<link>` from HTML output
 - [ ] Changing `showGraph` to `false` hides the graph view
 - [ ] Changing `showBacklinks` to `false` hides the backlinks section
-- [ ] `pnpm build` succeeds with no errors
-- [ ] `vp check` passes
+- [ ] `vp run check` passes
+- [ ] `pnpm build` succeeds when validating production output
 - [ ] No hardcoded "Vault" strings remain in layout files
 
 ## Open Questions
