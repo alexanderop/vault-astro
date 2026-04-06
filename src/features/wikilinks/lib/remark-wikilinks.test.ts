@@ -29,6 +29,12 @@ describe("remarkWikilinks", () => {
           type: "link",
           url: "/beta",
           children: [{ type: "text", value: "beta" }],
+          data: {
+            hProperties: {
+              className: ["wikilink"],
+              "data-href": "/beta",
+            },
+          },
         },
       ],
     });

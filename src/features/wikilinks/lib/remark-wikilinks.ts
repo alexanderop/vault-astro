@@ -84,7 +84,7 @@ export function remarkWikilinks(options?: { resolver?: ContentResolver }) {
               url: href,
               children: [{ type: "text", value: displayText }],
               data: {
-                hProperties: { className: ["wikilink"] },
+                hProperties: { className: ["wikilink"], "data-href": href },
               },
             } as Link);
           } else {

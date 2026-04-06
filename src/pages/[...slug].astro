@@ -7,6 +7,7 @@ import NoteHeader from "@/features/notes/components/note-header.astro";
 import BacklinksPanel from "@/features/backlinks/components/backlinks-panel.astro";
 import { TableOfContents } from "@/features/notes/components/table-of-contents";
 import { GraphView } from "@/features/graph/components/graph-view";
+import { LinkPreviewProvider } from "@/features/link-preview/components/link-preview-provider";
 import { getNoteTitle } from "@/lib/notes";
 import { getBuildSiteData } from "@/lib/build-site-data";
 
@@ -57,6 +58,10 @@ const ogImage = typeof note.data.cover === "string"
 >
   <NoteHeader note={note} notes={notes} />
   <NoteContent Content={Content} cssclasses={note.data.cssclasses} />
+  <LinkPreviewProvider
+    entries={searchIndex.map(({ href, title, preview }) => ({ href, title, preview }))}
+    client:load
+  />
 
   <Fragment slot="aside">
     {SITE.showGraph && (

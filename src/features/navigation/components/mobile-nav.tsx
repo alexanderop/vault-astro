@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -62,10 +62,18 @@ export function MobileNav({ notes, currentSlug }: MobileNavProps) {
 
         <div className="shell-sidebar">
           <div className="shell-sidebar-header">
-            <Menu className="size-4 text-primary/70" />
             <a href="/" className="text-sm font-semibold tracking-tight text-foreground/90">
               Vault
             </a>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="ml-auto"
+              aria-label="Close navigation"
+              onClick={() => setOpen(false)}
+            >
+              <X className="size-4" />
+            </Button>
           </div>
           <div className="shell-sidebar-scroll">
             <SidebarTreeView

@@ -62,7 +62,7 @@
   }
 
   .shell-rail {
-    @apply hidden self-start xl:block;
+    @apply hidden xl:block;
   }
 
   .shell-rail-sticky {
@@ -124,7 +124,7 @@
   }
 
   .mobile-nav-dialog {
-    width: min(20rem, 100vw);
+    width: min(85vw, 24rem);
     @apply h-svh max-w-none gap-0 rounded-none border-r border-border bg-sidebar p-0 shadow-2xl;
     top: 0;
     left: 0;
