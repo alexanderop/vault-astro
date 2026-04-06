@@ -2,37 +2,12 @@
 import NoteLayout from "@/layouts/note-layout.astro";
 import { getBuildSiteData } from "@/lib/build-site-data";
 import { getNoteHref, getNoteTitle } from "@/lib/notes";
+import { findSimilarNotes } from "@/lib/slug-similarity";
 
 const { notes, resolver, searchIndex } = await getBuildSiteData();
 
-function similarity(a: string, b: string): number {
-  const aLower = a.toLowerCase();
-  const bLower = b.toLowerCase();
-  if (aLower === bLower) return 1;
-  if (aLower.includes(bLower) || bLower.includes(aLower)) return 0.8;
-
-  const aTokens = aLower.split(/[\s\-/]+/).filter(Boolean);
-  const bTokens = bLower.split(/[\s\-/]+/).filter(Boolean);
-  const matches = aTokens.filter((t) => bTokens.some((bt) => bt.includes(t) || t.includes(bt)));
-  if (aTokens.length === 0 || bTokens.length === 0) return 0;
-  return matches.length / Math.max(aTokens.length, bTokens.length);
-}
-
 const url = Astro.url.pathname.replace(/^\/|\/$/g, "");
-const suggestions = url
-  ? notes
-      .map((note) => ({
-        note,
-        score: Math.max(
-          similarity(url, note.id),
-          similarity(url, getNoteTitle(note)),
-        ),
-      }))
-      .filter((s) => s.score > 0.2)
-      .toSorted((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map((s) => s.note)
-  : [];
+const suggestions = findSimilarNotes(url, notes);
 ---
 
 <NoteLayout title="Page Not Found" description="The page you're looking for doesn't exist." notes={notes} searchIndex={searchIndex}>
