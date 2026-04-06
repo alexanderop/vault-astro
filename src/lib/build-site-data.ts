@@ -2,11 +2,13 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { SITE } from "@/config";
 import { buildBacklinksMap, type Backlink } from "@/features/backlinks/lib/backlink-resolver";
 import {
+  buildGlobalGraphData,
   buildLocalGraphData,
   createGraphBuildContext,
   type GraphBuildContext,
   type GraphData,
 } from "@/features/graph/lib/graph-data-builder";
+import { buildTagIndex, type TagEntry } from "@/features/tags/lib/tag-index";
 import { buildSearchIndex, type SearchEntry } from "@/features/search/lib/search-index";
 import {
   createCollectionNoteResolver,
@@ -22,6 +24,8 @@ interface BuildSiteData {
   linksByNote: NoteLinksIndex;
   backlinksMap: Map<string, Backlink[]>;
   graphByNote?: Map<string, GraphData>;
+  globalGraph?: GraphData;
+  tagIndex: TagEntry[];
 }
 
 let cachedBuildSiteDataPromise: Promise<BuildSiteData> | null = null;
@@ -70,13 +74,16 @@ async function buildSiteData(): Promise<BuildSiteData> {
   const searchIndex = await withPerfLog("search index build", () =>
     SITE.showSearch ? buildSearchIndex(notes, resolver) : [],
   );
-  const graphByNote = await withPerfLog("graph precompute", () => {
-    if (!SITE.showGraph) {
-      return undefined;
-    }
-
-    return precomputeGraphData(createGraphBuildContext(notes, linksByNote));
-  });
+  const graphContext = SITE.showGraph ? createGraphBuildContext(notes, linksByNote) : undefined;
+  const [graphByNote, globalGraph, tagIndex] = await Promise.all([
+    withPerfLog("graph precompute", () =>
+      graphContext ? precomputeGraphData(graphContext) : undefined,
+    ),
+    withPerfLog("global graph build", () =>
+      graphContext ? buildGlobalGraphData(graphContext) : undefined,
+    ),
+    withPerfLog("tag index build", () => (SITE.showTags ? buildTagIndex(notes) : [])),
+  ]);
 
   return {
     notes,
@@ -85,6 +92,8 @@ async function buildSiteData(): Promise<BuildSiteData> {
     linksByNote,
     backlinksMap,
     graphByNote,
+    globalGraph,
+    tagIndex,
   };
 }
 

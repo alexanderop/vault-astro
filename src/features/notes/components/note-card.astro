@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatNoteDate, getNoteDate, getNoteHref, getNoteSummary, getNoteTitle } from "@/lib/notes";
+import type { NoteResolver } from "@/lib/content-resolver";
+
+interface Props {
+  note: CollectionEntry<"notes">;
+  resolver?: NoteResolver;
+}
+
+const { note, resolver } = Astro.props;
+const title = getNoteTitle(note);
+const summary = getNoteSummary(note);
+const href = getNoteHref(note, undefined, resolver);
+const date = getNoteDate(note);
+const formattedDate = date ? formatNoteDate(date) : undefined;
+const tags = (note.data.tags ?? []).slice(0, 3);
+---
+
+<div class="group relative rounded-lg border border-border bg-card/50 p-4 transition-colors hover:bg-surface-hover">
+  <a href={href} class="absolute inset-0 z-0" aria-label={title}></a>
+  <span class="text-sm font-medium text-foreground/90 group-hover:text-foreground">{title}</span>
+  {summary && (
+    <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{summary}</p>
+  )}
+  <div class="mt-3 flex items-center gap-2">
+    {formattedDate && (
+      <span class="text-[length:var(--font-size-ui-2xs)] text-muted-foreground">{formattedDate}</span>
+    )}
+    {tags.length > 0 && formattedDate && (
+      <span class="text-border">·</span>
+    )}
+    {tags.map((tag) => (
+      <a href={`/tags/${tag}`} class="relative z-10 shell-meta text-[length:var(--font-size-ui-2xs)] transition-colors hover:text-foreground">#{tag}</a>
+    ))}
+  </div>
+</div>

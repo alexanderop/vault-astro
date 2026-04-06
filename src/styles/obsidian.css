@@ -1,0 +1,157 @@
+@layer components {
+  /* Obsidian-style callouts */
+  .callout {
+    border-color: var(--callout-border, var(--color-border));
+    background-color: var(--callout-background, var(--color-muted));
+    box-shadow: inset 0.25rem 0 0 0 var(--callout-rail, var(--color-border));
+    @apply my-4 rounded-lg border p-4;
+  }
+  .callout-title {
+    color: var(--callout-title, var(--color-foreground));
+    @apply flex items-center gap-2 font-semibold;
+  }
+  .callout-icon {
+    @apply text-base;
+  }
+  .callout-content {
+    @apply mt-2 text-sm;
+  }
+  .callout-content > :first-child {
+    @apply mt-0;
+  }
+  details.callout > summary {
+    @apply cursor-pointer list-none;
+  }
+  details.callout > summary::marker,
+  details.callout > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Callout colors */
+  .callout-color-note {
+    --callout-rail: color-mix(in oklab, var(--palette-accent) 78%, var(--palette-base));
+    --callout-border: color-mix(in oklab, var(--palette-accent) 28%, var(--palette-base));
+    --callout-background: color-mix(in oklab, var(--palette-accent) 8%, var(--palette-base));
+    --callout-title: color-mix(in oklab, var(--palette-accent) 88%, var(--palette-text));
+  }
+  .callout-color-success {
+    --callout-rail: color-mix(in oklab, var(--palette-accent) 60%, var(--palette-text));
+    --callout-border: color-mix(in oklab, var(--palette-accent) 24%, var(--palette-surface));
+    --callout-background: color-mix(in oklab, var(--palette-accent) 10%, var(--palette-surface));
+    --callout-title: color-mix(in oklab, var(--palette-accent) 55%, var(--palette-text));
+  }
+  .callout-color-warning {
+    --callout-rail: color-mix(in oklab, var(--palette-danger) 38%, var(--palette-accent));
+    --callout-border: color-mix(
+      in oklab,
+      var(--palette-danger) 20%,
+      var(--palette-accent) 16%,
+      var(--palette-base)
+    );
+    --callout-background: color-mix(
+      in oklab,
+      var(--palette-danger) 7%,
+      var(--palette-accent) 7%,
+      var(--palette-base)
+    );
+    --callout-title: color-mix(
+      in oklab,
+      var(--palette-danger) 42%,
+      var(--palette-accent) 48%,
+      var(--palette-text)
+    );
+  }
+  .callout-color-danger {
+    --callout-rail: color-mix(in oklab, var(--palette-danger) 82%, var(--palette-base));
+    --callout-border: color-mix(in oklab, var(--palette-danger) 32%, var(--palette-base));
+    --callout-background: color-mix(in oklab, var(--palette-danger) 10%, var(--palette-base));
+    --callout-title: color-mix(in oklab, var(--palette-danger) 88%, var(--palette-text));
+  }
+  .callout-color-neutral {
+    --callout-rail: color-mix(in oklab, var(--palette-text) 28%, var(--palette-base));
+    --callout-border: color-mix(in oklab, var(--palette-text) 16%, var(--palette-base));
+    --callout-background: color-mix(in oklab, var(--palette-surface) 78%, var(--palette-base));
+    --callout-title: color-mix(in oklab, var(--palette-text) 80%, var(--palette-base));
+  }
+
+  /* Obsidian-style tags */
+  .obsidian-tag {
+    @apply inline-block rounded-md bg-accent px-1.5 py-0.5 text-xs font-medium text-accent-foreground;
+  }
+
+  /* Wiki links */
+  .wikilink {
+    @apply text-primary underline decoration-primary/30 underline-offset-2 transition-colors hover:decoration-primary;
+  }
+  .obsidian-missing-link {
+    @apply rounded-sm border-b border-dashed border-destructive text-destructive;
+  }
+  .obsidian-ambiguous-link {
+    @apply rounded-sm border-b border-dashed border-amber-500 text-amber-600 dark:text-amber-400;
+  }
+
+  /* Highlights */
+  mark {
+    background-color: color-mix(in oklab, var(--palette-accent) 24%, var(--palette-base));
+    @apply rounded-sm px-0.5 text-foreground;
+  }
+
+  /* Image embeds */
+  .obsidian-image-embed {
+    @apply my-4 rounded-lg;
+  }
+
+  .obsidian-excalidraw-embed {
+    @apply my-6 space-y-3;
+  }
+  .obsidian-excalidraw-embed__image {
+    @apply w-full rounded-xl border border-border bg-card p-3;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+  .dark .obsidian-excalidraw-embed__image {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  .obsidian-excalidraw-embed figcaption {
+    @apply text-center text-sm text-muted-foreground;
+  }
+
+  /* Note embeds */
+  .obsidian-embed {
+    @apply my-4 rounded-lg border border-border bg-muted/30 px-6 py-2;
+  }
+  .obsidian-embed--missing {
+    @apply border-destructive/50 bg-destructive/10 text-destructive;
+  }
+
+  .dataview {
+    @apply my-6 rounded-xl border border-border bg-card/50 p-4;
+  }
+  .dataview ul {
+    @apply my-0;
+  }
+  .dataview table {
+    @apply my-0 w-full border-collapse text-sm;
+  }
+  .dataview th,
+  .dataview td {
+    @apply border-b border-border px-3 py-2 text-left align-top;
+  }
+  .dataview th {
+    @apply font-semibold text-foreground;
+  }
+  .dataview-empty {
+    @apply text-sm text-muted-foreground;
+  }
+  .dataview-error {
+    @apply border-destructive/50 bg-destructive/10 text-destructive;
+  }
+  .dataview-error pre {
+    @apply mt-3 overflow-x-auto rounded-lg bg-background/60 p-3 text-xs text-foreground;
+  }
+
+  /* Mermaid diagrams */
+  .mermaid {
+    @apply my-4 flex justify-center;
+  }
+}

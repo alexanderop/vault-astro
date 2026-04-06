@@ -51,6 +51,24 @@ export function createGraphBuildContext(
   };
 }
 
+function collectEdges(linksByNote: NoteLinksIndex, include: (id: string) => boolean): GraphEdge[] {
+  const seen = new Set<string>();
+  const edges: GraphEdge[] = [];
+
+  for (const [source, targets] of linksByNote) {
+    if (!include(source)) continue;
+    for (const target of targets) {
+      if (!include(target)) continue;
+      const key = [source, target].toSorted().join("→");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      edges.push({ source, target });
+    }
+  }
+
+  return edges;
+}
+
 export function buildLocalGraphData(context: GraphBuildContext, currentSlug: string): GraphData {
   if (!context.noteIds.has(currentSlug)) {
     return { nodes: [], edges: [] };
@@ -73,21 +91,18 @@ export function buildLocalGraphData(context: GraphBuildContext, currentSlug: str
       title: context.noteTitles.get(note.id) ?? getNoteTitle(note),
     }));
 
-  const edgeSet = new Set<string>();
-  const edges: GraphEdge[] = [];
+  const edges = collectEdges(context.linksByNote, (id) => neighborhood.has(id));
 
-  for (const [source, targets] of context.linksByNote) {
-    if (!neighborhood.has(source)) continue;
+  return { nodes, edges };
+}
 
-    for (const target of targets) {
-      if (!neighborhood.has(target)) continue;
+export function buildGlobalGraphData(context: GraphBuildContext): GraphData {
+  const nodes = context.notes.map((note) => ({
+    id: note.id,
+    title: context.noteTitles.get(note.id) ?? getNoteTitle(note),
+  }));
 
-      const key = [source, target].toSorted().join("→");
-      if (edgeSet.has(key)) continue;
-      edgeSet.add(key);
-      edges.push({ source, target });
-    }
-  }
+  const edges = collectEdges(context.linksByNote, (id) => context.noteIds.has(id));
 
   return { nodes, edges };
 }

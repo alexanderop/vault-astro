@@ -79,7 +79,7 @@ const links = [
         </span>
         <div class="flex flex-wrap gap-1.5">
           {(note.data.tags ?? []).slice(0, 6).map((tag) => (
-            <span class="shell-meta">#{tag}</span>
+            <a href={`/tags/${tag}`} class="shell-meta transition-colors hover:text-foreground">#{tag}</a>
           ))}
         </div>
       </>

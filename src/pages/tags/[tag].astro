@@ -1,0 +1,41 @@
+---
+import { SITE } from "@/config";
+import NoteLayout from "@/layouts/note-layout.astro";
+import { sortNotesByDateDesc } from "@/lib/notes";
+import { getBuildSiteData } from "@/lib/build-site-data";
+import NoteCard from "@/features/notes/components/note-card.astro";
+
+export async function getStaticPaths() {
+  const { notes, resolver, searchIndex, tagIndex } = await getBuildSiteData();
+
+  return tagIndex.map((entry) => {
+    const tagNotes = sortNotesByDateDesc(
+      notes.filter((note) => (note.data.tags ?? []).includes(entry.tag)),
+    );
+    return {
+      params: { tag: entry.tag },
+      props: { tagNotes, tagEntry: entry, notes, resolver, searchIndex },
+    };
+  });
+}
+
+const { tagNotes, tagEntry, notes, resolver, searchIndex } = Astro.props;
+---
+
+<NoteLayout title={`#${tagEntry.tag}`} description={`Notes tagged with #${tagEntry.tag}`} canonicalPath={`/tags/${tagEntry.tag}`} notes={notes} searchIndex={searchIndex} wide>
+  <section class="mb-10">
+    <a href="/" class="text-xs text-muted-foreground transition-colors hover:text-foreground">&larr; Back to home</a>
+    <h1 class="mt-3 text-2xl font-semibold tracking-tight">#{tagEntry.tag}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">
+      {tagEntry.count} {tagEntry.count === 1 ? "note" : "notes"}
+    </p>
+  </section>
+
+  <section>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {tagNotes.map((note) => (
+        <NoteCard note={note} resolver={resolver} />
+      ))}
+    </div>
+  </section>
+</NoteLayout>

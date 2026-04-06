@@ -1,0 +1,90 @@
+:root {
+  /* 5-color palette for the entire light theme */
+  --palette-base: oklch(0.98 0.004 95);
+  --palette-surface: oklch(0.94 0.008 95);
+  --palette-text: oklch(0.28 0.02 95);
+  --palette-accent: oklch(0.6 0.14 235);
+  --palette-danger: oklch(0.58 0.2 28);
+
+  /* Theme-adaptive surface overlays */
+  --surface-hover: oklch(0 0 0 / 0.04);
+  --surface-active: oklch(0 0 0 / 0.07);
+
+  /* Shell layout */
+  --shell-sidebar-width: 16rem;
+  --shell-rail-width: 18rem;
+  --shell-header-height: 3.5rem;
+  --shell-gutter: 1rem;
+}
+
+.dark {
+  /* 5-color palette for the entire dark theme — Linear-inspired deep dark */
+  --palette-base: oklch(0.13 0.005 260);
+  --palette-surface: oklch(0.17 0.007 260);
+  --palette-text: oklch(0.9 0.005 260);
+  --palette-accent: oklch(0.72 0.12 280);
+  --palette-danger: oklch(0.68 0.16 28);
+
+  --surface-hover: oklch(1 0 0 / 0.05);
+  --surface-active: oklch(1 0 0 / 0.08);
+}
+
+@theme inline {
+  /* Semantic colors */
+  --color-background: var(--palette-base);
+  --color-foreground: var(--palette-text);
+  --color-card: var(--palette-surface);
+  --color-card-foreground: var(--palette-text);
+  --color-popover: var(--palette-surface);
+  --color-popover-foreground: var(--palette-text);
+  --color-primary: var(--palette-accent);
+  --color-primary-foreground: var(--palette-base);
+  --color-secondary: color-mix(in oklab, var(--palette-surface) 88%, var(--palette-text));
+  --color-secondary-foreground: var(--palette-text);
+  --color-muted: color-mix(in oklab, var(--palette-surface) 92%, var(--palette-base));
+  --color-muted-foreground: color-mix(in oklab, var(--palette-text) 68%, var(--palette-base));
+  --color-accent: color-mix(in oklab, var(--palette-accent) 14%, var(--palette-base));
+  --color-accent-foreground: var(--palette-text);
+  --color-destructive: var(--palette-danger);
+  --color-destructive-foreground: var(--palette-base);
+  --color-border: color-mix(in oklab, var(--palette-text) 8%, var(--palette-base));
+  --color-input: color-mix(in oklab, var(--palette-text) 12%, var(--palette-base));
+  --color-ring: color-mix(in oklab, var(--palette-accent) 72%, var(--palette-base));
+  --color-chart-1: var(--palette-accent);
+  --color-chart-2: color-mix(in oklab, var(--palette-accent) 70%, var(--palette-surface));
+  --color-chart-3: color-mix(in oklab, var(--palette-text) 76%, var(--palette-surface));
+  --color-chart-4: color-mix(in oklab, var(--palette-danger) 72%, var(--palette-base));
+  --color-chart-5: color-mix(in oklab, var(--palette-accent) 40%, var(--palette-danger));
+  --color-sidebar: var(--palette-surface);
+  --color-sidebar-foreground: var(--color-foreground);
+  --color-sidebar-primary: var(--color-primary);
+  --color-sidebar-primary-foreground: var(--color-primary-foreground);
+  --color-sidebar-accent: var(--color-accent);
+  --color-sidebar-accent-foreground: var(--color-accent-foreground);
+  --color-sidebar-border: var(--color-border);
+  --color-sidebar-ring: var(--color-ring);
+
+  /* Surface interaction colors — theme-adaptive overlays */
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+
+  /* UI typography scale */
+  --font-size-ui: 0.8125rem; /* 13px — primary UI text */
+  --font-size-ui--line-height: 1.5;
+  --font-size-ui-sm: 0.75rem; /* 12px — secondary UI text */
+  --font-size-ui-sm--line-height: 1.5;
+  --font-size-ui-xs: 0.6875rem; /* 11px — labels, section headings */
+  --font-size-ui-xs--line-height: 1.45;
+  --font-size-ui-2xs: 0.625rem; /* 10px — kbd hints */
+  --font-size-ui-2xs--line-height: 1.4;
+
+  /* Z-index scale */
+  --z-index-header: 10;
+  --z-index-overlay: 50;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}

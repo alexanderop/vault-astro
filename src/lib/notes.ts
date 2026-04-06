@@ -47,6 +47,15 @@ export function getNoteDate(note: CollectionEntry<"notes">): Date | null {
   return null;
 }
 
+export function formatNoteDate(date: Date, style: "short" | "long" = "short"): string {
+  return date.toLocaleDateString(
+    "en-US",
+    style === "short"
+      ? { month: "short", day: "numeric" }
+      : { year: "numeric", month: "long", day: "numeric" },
+  );
+}
+
 export function sortNotesByDateDesc(notes: CollectionEntry<"notes">[]) {
   return notes.toSorted((a, b) => {
     const dateA = getNoteDate(a)?.getTime() ?? 0;

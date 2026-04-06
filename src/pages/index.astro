@@ -1,33 +1,96 @@
 ---
 import { SITE } from "@/config";
 import NoteLayout from "@/layouts/note-layout.astro";
-import { getNoteHref, getNoteSummary, getNoteTitle, sortNotesByDateDesc } from "@/lib/notes";
+import { formatNoteDate, getNoteDate, getNoteHref, getNoteTitle, sortNotesByDateDesc } from "@/lib/notes";
 import { getBuildSiteData } from "@/lib/build-site-data";
+import { ForceGraphView } from "@/features/graph/components/force-graph";
+import NoteCard from "@/features/notes/components/note-card.astro";
+import TagCloud from "@/features/tags/components/tag-cloud.astro";
 
-const { notes, resolver, searchIndex } = await getBuildSiteData();
+const { notes, resolver, searchIndex, globalGraph, tagIndex } = await getBuildSiteData();
 const sortedNotes = sortNotesByDateDesc(notes);
-const displayedNotes = SITE.notesPerIndex > 0
-  ? sortedNotes.slice(0, SITE.notesPerIndex)
-  : sortedNotes;
+const recentNotes = sortedNotes.slice(0, 6);
+const totalConnections = globalGraph?.edges.length ?? 0;
 ---
 
-<NoteLayout title="Home" description={SITE.description} canonicalPath="/" notes={notes} searchIndex={searchIndex}>
-  <h1 class="mb-6 text-2xl font-semibold tracking-tight">Vault</h1>
-  <ul class="shell-list" data-shortcut-list>
-    {displayedNotes.map((note) => (
-      <li>
-        <a
-          href={getNoteHref(note, undefined, resolver)}
-          data-shortcut-item
-          class="block rounded-sm px-3 py-2.5 transition-colors hover:bg-surface-hover"
-        >
-          <span class="text-sm font-medium text-foreground/90">{getNoteTitle(note)}</span>
-          <p class="mt-0.5 text-xs text-muted-foreground">{note.id}</p>
-          {getNoteSummary(note) && (
-            <p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{getNoteSummary(note)}</p>
-          )}
-        </a>
-      </li>
-    ))}
-  </ul>
+<NoteLayout title="Home" description={SITE.description} canonicalPath="/" notes={notes} searchIndex={searchIndex} wide>
+  {/* Hero */}
+  <section class="mb-10">
+    <h1 class="text-2xl font-semibold tracking-tight">{SITE.title}</h1>
+    {SITE.description && (
+      <p class="mt-1 text-sm text-muted-foreground">{SITE.description}</p>
+    )}
+    <p class="mt-2 text-xs text-muted-foreground/70">
+      {notes.length} notes · {totalConnections} connections
+    </p>
+    <button
+      id="index-search-trigger"
+      class="mt-4 inline-flex w-full max-w-sm items-center gap-2 rounded-md border border-border bg-card/50 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
+    >
+      <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      Search notes…
+      <kbd class="shell-kbd ml-auto hidden sm:inline-flex">⌘K</kbd>
+    </button>
+  </section>
+
+  {/* Graph */}
+  {SITE.showGraph && globalGraph && globalGraph.nodes.length > 0 && (
+    <section class="mb-10">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Graph</h2>
+      <div class="h-[400px] overflow-hidden rounded-lg border border-border bg-card/30 sm:h-[500px]">
+        <ForceGraphView graphData={globalGraph} client:only="react" />
+      </div>
+    </section>
+  )}
+
+  {/* Recently updated */}
+  {recentNotes.length > 0 && (
+    <section class="mb-10">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Recently updated</h2>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {recentNotes.map((note) => (
+          <NoteCard note={note} resolver={resolver} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* Browse by tag */}
+  {SITE.showTags && tagIndex.length > 0 && (
+    <section class="mb-10">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Browse by tag</h2>
+      <TagCloud tags={tagIndex} limit={20} />
+    </section>
+  )}
+
+  {/* All notes */}
+  <section>
+    <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">All notes</h2>
+    <ul class="shell-list" data-shortcut-list>
+      {sortedNotes.map((note) => {
+        const date = getNoteDate(note);
+        const formattedDate = date ? formatNoteDate(date) : undefined;
+        return (
+          <li>
+            <a
+              href={getNoteHref(note, undefined, resolver)}
+              data-shortcut-item
+              class="flex items-baseline justify-between gap-4 rounded-sm px-3 py-2 transition-colors hover:bg-surface-hover"
+            >
+              <span class="truncate text-sm font-medium text-foreground/90">{getNoteTitle(note)}</span>
+              {formattedDate && (
+                <span class="shrink-0 text-[length:var(--font-size-ui-2xs)] text-muted-foreground">{formattedDate}</span>
+              )}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
 </NoteLayout>
+
+<script>
+  document.getElementById("index-search-trigger")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("vault:open-search"));
+  });
+</script>
