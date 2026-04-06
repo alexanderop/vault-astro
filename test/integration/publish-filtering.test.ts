@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { buildBacklinksMap } from "@/features/backlinks/lib/backlink-resolver";
-import { buildLocalGraphData } from "@/features/graph/lib/graph-data-builder";
+import {
+  buildLocalGraphData,
+  createGraphBuildContext,
+} from "@/features/graph/lib/graph-data-builder";
 import { buildSidebarTree } from "@/features/navigation/lib/sidebar-tree";
 import { buildSearchIndex } from "@/features/search/lib/search-index";
 import { createNoteFixture } from "../helpers/note-fixtures";
@@ -32,8 +35,8 @@ describe("publish:false filtering", () => {
     expect(buildBacklinksMap(notes).get("linked")).toEqual([
       { href: "/published", title: "Published Note" },
     ]);
-    expect(buildLocalGraphData(notes, "linked").nodes.map((node) => node.id)).not.toContain(
-      "draft",
-    );
+    expect(
+      buildLocalGraphData(createGraphBuildContext(notes), "linked").nodes.map((node) => node.id),
+    ).not.toContain("draft");
   });
 });

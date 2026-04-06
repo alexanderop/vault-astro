@@ -2,12 +2,12 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import {
-  createFilesystemContentResolver,
   extractWikilinks,
   getEntryHref,
   type ContentResolver,
   type ResolvedContentEntry,
 } from "../../../lib/content-resolver";
+import { createFilesystemContentResolver } from "../../../lib/content-resolver.server";
 import type {
   DataviewIndex,
   DataviewLink,

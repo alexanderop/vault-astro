@@ -6,6 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "build:test": "NODE_ENV=test pnpm build",
+    "start:e2e:dev": "NODE_ENV=test pnpm dev --port 4321",
+    "start:e2e:preview": "NODE_ENV=test pnpm preview --port 4322",
+    "playwright:e2e": "playwright test --config=playwright.config.ts",
+    "playwright:e2e:preview": "pnpm build:test && playwright test --config=playwright.preview.config.ts",
     "astro": "astro",
     "prepare": "husky"
   },

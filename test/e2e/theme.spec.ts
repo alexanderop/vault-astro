@@ -1,19 +1,9 @@
-import { test, expect, type Page } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
-
-async function ensureLightMode(page: Page) {
-  const isDark = await page.locator("html").evaluate((el) => el.classList.contains("dark"));
-
-  if (isDark) {
-    await page.getByRole("button", { name: /Switch to (light|dark) mode/ }).click();
-  }
-
-  await expect(page.locator("html")).not.toHaveClass(/dark/);
-}
+import { ensureLightMode, expect, gotoHome, test, waitForInteractiveUi } from "./test-utils";
 
 test.describe("Theme", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoHome(page);
   });
 
   test("toggle changes theme class on html element", async ({ page }) => {
@@ -35,6 +25,7 @@ test.describe("Theme", () => {
     await ensureLightMode(page);
 
     await page.reload();
+    await waitForInteractiveUi(page);
 
     await expect(page.locator("html")).not.toHaveClass(/dark/);
   });

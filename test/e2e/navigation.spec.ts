@@ -1,20 +1,22 @@
-import { test, expect } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
+import { expect, gotoHome, test } from "./test-utils";
 
 test.describe("Navigation", () => {
-  test("home page loads with notes", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+  test("home page loads with notes", async ({ page, hydrationErrors, runtimeErrors }) => {
+    await gotoHome(page);
 
     await expect(page.getByRole("heading", { name: "Vault", level: 1 }).first()).toBeVisible();
 
-    const noteLinks = page.locator("main a.block");
+    const noteLinks = page.locator("main [data-shortcut-item]");
     await expect(noteLinks.first()).toBeVisible();
+    expect(hydrationErrors).toEqual([]);
+    expect(runtimeErrors).toEqual([]);
   });
 
   test("click note navigates to detail", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await gotoHome(page);
 
-    const firstLink = page.locator("main a.block").first();
+    const firstLink = page.locator("main [data-shortcut-item]").first();
     const href = await firstLink.getAttribute("href");
     await firstLink.click();
 
@@ -24,12 +26,11 @@ test.describe("Navigation", () => {
   });
 
   test("sidebar folder expand/collapse", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
+    await gotoHome(page);
 
-    const folderButton = page.locator("button[aria-expanded]").first();
+    const folderButton = page.locator("aside.shell-desktop-sidebar button[aria-expanded]").first();
     await expect(folderButton).toBeVisible();
 
-    // Wait for React hydration — click and verify toggle works
     await expect(async () => {
       const before = await folderButton.getAttribute("aria-expanded");
       await folderButton.click();
@@ -39,15 +40,21 @@ test.describe("Navigation", () => {
   });
 
   test("sidebar link navigation", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
+    await gotoHome(page);
 
-    // Expand a folder if all are collapsed
-    const closedFolder = page.locator("button[aria-expanded='false']").first();
-    if (await closedFolder.isVisible()) {
-      await closedFolder.click();
-    }
+    const firstNoteLink = page.locator("main [data-shortcut-item]").first();
+    const initialHref = await firstNoteLink.getAttribute("href");
+    await firstNoteLink.click();
+    await page.waitForURL(`**${initialHref}`);
 
-    const sidebarLink = page.locator("nav a[href]").first();
+    const sidebar = page.locator("aside.shell-desktop-sidebar");
+    await expect(async () => {
+      await expect(sidebar.locator("[data-shortcut-item]").first()).toBeVisible();
+    }).toPass({ timeout: 10_000 });
+
+    const sidebarLink = sidebar
+      .locator(`[data-shortcut-item]:not([href="${initialHref}"])`)
+      .first();
     await expect(sidebarLink).toBeVisible();
 
     const href = await sidebarLink.getAttribute("href");
@@ -57,7 +64,7 @@ test.describe("Navigation", () => {
   });
 
   test("accessibility check on home page", async ({ page }) => {
-    await page.goto("/");
+    await gotoHome(page);
 
     const results = await new AxeBuilder({ page })
       .exclude(".katex")

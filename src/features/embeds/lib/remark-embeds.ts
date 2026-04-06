@@ -2,12 +2,8 @@ import type { Root, Text, Html, RootContent } from "mdast";
 import { visit } from "unist-util-visit";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { readFileSync } from "node:fs";
-import {
-  getFilesystemContentResolver,
-  isImageTarget,
-  parseWikilink,
-  type ContentResolver,
-} from "../../../lib/content-resolver";
+import { isImageTarget, parseWikilink, type ContentResolver } from "../../../lib/content-resolver";
+import { getFilesystemContentResolver } from "../../../lib/content-resolver.server";
 
 const EMBED_REGEX = /!\[\[([^\]]+)\]\]/g;
 

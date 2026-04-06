@@ -1,7 +1,6 @@
-import { getCollection, type CollectionEntry } from "astro:content";
-import { SITE } from "@/config";
-import { getPublishedNotes } from "@/lib/content-resolver";
-import { buildSearchIndex, type SearchEntry } from "@/features/search/lib/search-index";
+import type { CollectionEntry } from "astro:content";
+import type { SearchEntry } from "@/features/search/lib/search-index";
+import { getBuildSiteData } from "@/lib/build-site-data";
 
 export interface SiteShellData {
   notes: CollectionEntry<"notes">[];
@@ -9,10 +8,10 @@ export interface SiteShellData {
 }
 
 export async function loadSiteShellData(): Promise<SiteShellData> {
-  const notes = getPublishedNotes(await getCollection("notes"));
+  const { notes, searchIndex } = await getBuildSiteData();
 
   return {
     notes,
-    searchIndex: SITE.showSearch ? buildSearchIndex(notes) : [],
+    searchIndex,
   };
 }

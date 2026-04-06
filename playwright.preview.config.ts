@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = "http://localhost:4321";
+const baseURL = "http://localhost:4322";
 const workers = process.env.CI ? 1 : 3;
 
 export default defineConfig({
@@ -22,7 +22,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm start:e2e:dev",
+    command: "pnpm start:e2e:preview",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

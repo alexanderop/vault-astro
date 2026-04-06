@@ -2,8 +2,8 @@ import { fileURLToPath } from "node:url";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import type { Root } from "mdast";
 import { describe, expect, it } from "vitest";
-import { createFilesystemContentResolver } from "@/lib/content-resolver";
 import { remarkWikilinks } from "@/features/wikilinks/lib/remark-wikilinks";
+import { createFilesystemContentResolver } from "@/lib/content-resolver.server";
 
 const contentRoot = fileURLToPath(new URL("../../../../test/fixtures/content", import.meta.url));
 const attachmentsRoot = fileURLToPath(

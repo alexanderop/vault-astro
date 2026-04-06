@@ -1,13 +1,13 @@
 import type { Root, Text, Link, Html } from "mdast";
 import { visit } from "unist-util-visit";
 import {
-  getFilesystemContentResolver,
   isExcalidrawTarget,
   isImageTarget,
   parseWikilink,
   targetToHref,
   type ContentResolver,
 } from "../../../lib/content-resolver";
+import { getFilesystemContentResolver } from "../../../lib/content-resolver.server";
 
 // Matches [[Page]], [[Page|Alias]], [[Page#Heading]], [[Page#Heading|Alias]]
 // Also matches ![[embeds]]

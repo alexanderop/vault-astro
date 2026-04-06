@@ -2,8 +2,8 @@ import { fileURLToPath } from "node:url";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import type { Parent, Root } from "mdast";
 import { describe, expect, it } from "vitest";
-import { createFilesystemContentResolver } from "@/lib/content-resolver";
 import { remarkEmbeds } from "@/features/embeds/lib/remark-embeds";
+import { createFilesystemContentResolver } from "@/lib/content-resolver.server";
 
 const contentRoot = fileURLToPath(new URL("../../../../test/fixtures/content", import.meta.url));
 const resolver = createFilesystemContentResolver({ contentRoot });

@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { getPublishedNotes } from "@/lib/content-resolver";
+import { createCollectionNoteResolver, getPublishedNotes } from "@/lib/content-resolver";
 import { getNoteHref, getNoteTitle } from "@/lib/notes";
 
 export interface SidebarTreeNode {
@@ -41,6 +41,7 @@ function sortNodes(nodes: MutableSidebarTreeNode[]): SidebarTreeNode[] {
 
 export function buildSidebarTree(entries: CollectionEntry<"notes">[]): SidebarTreeNode[] {
   const publishedEntries = getPublishedNotes(entries);
+  const resolver = createCollectionNoteResolver(publishedEntries);
   const root: MutableSidebarTreeNode = {
     key: "",
     name: "",
@@ -69,7 +70,7 @@ export function buildSidebarTree(entries: CollectionEntry<"notes">[]): SidebarTr
       current = current.children.get(part)!;
 
       if (index === parts.length - 1) {
-        current.slug = getNoteHref(note, publishedEntries).replace(/^\//, "");
+        current.slug = getNoteHref(note, undefined, resolver).replace(/^\//, "");
         current.title = getNoteTitle(note);
       }
     }

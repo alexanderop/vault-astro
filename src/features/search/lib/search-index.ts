@@ -1,5 +1,9 @@
 import type { CollectionEntry } from "astro:content";
-import { createCollectionContentResolver, getPublishedNotes } from "@/lib/content-resolver";
+import {
+  createCollectionNoteResolver,
+  getPublishedNotes,
+  type NoteResolver,
+} from "@/lib/content-resolver";
 import { getNoteSummary, getNoteTitle } from "@/lib/notes";
 
 export interface SearchEntry {
@@ -42,15 +46,18 @@ function stripMarkdown(content: string): string {
   );
 }
 
-export function buildSearchIndex(notes: CollectionEntry<"notes">[]): SearchEntry[] {
-  const publishedNotes = getPublishedNotes(notes);
-  const resolver = createCollectionContentResolver(publishedNotes);
+export function buildSearchIndex(
+  notes: CollectionEntry<"notes">[],
+  resolver?: NoteResolver,
+): SearchEntry[] {
+  const publishedNotes = resolver ? notes : getPublishedNotes(notes);
+  const noteResolver = resolver ?? createCollectionNoteResolver(publishedNotes);
 
   return publishedNotes
     .filter((note) => !note.data.nav_hidden)
     .map((note) => {
       const plain = stripMarkdown(note.body ?? "");
-      const resolved = resolver.resolve(note.id);
+      const resolved = noteResolver.resolve(note.id);
       const href = resolved.status === "resolved" ? `/${resolved.entry.publicPath}` : `/${note.id}`;
 
       return {

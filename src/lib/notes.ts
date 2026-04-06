@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { createCollectionContentResolver } from "@/lib/content-resolver";
+import { createCollectionNoteResolver, type NoteResolver } from "@/lib/content-resolver";
 
 export function getNoteTitle(note: CollectionEntry<"notes">) {
   return note.data.title ?? note.data.name ?? note.id.split("/").at(-1) ?? note.id;
@@ -9,9 +9,15 @@ export function getNoteSummary(note: CollectionEntry<"notes">) {
   return note.data.summary ?? note.data.description ?? "";
 }
 
-export function getNoteHref(note: CollectionEntry<"notes">, notes?: CollectionEntry<"notes">[]) {
-  if (notes) {
-    const resolved = createCollectionContentResolver(notes).resolve(note.id);
+export function getNoteHref(
+  note: CollectionEntry<"notes">,
+  notes?: CollectionEntry<"notes">[],
+  resolver?: NoteResolver,
+) {
+  const noteResolver = resolver ?? (notes ? createCollectionNoteResolver(notes) : undefined);
+
+  if (noteResolver) {
+    const resolved = noteResolver.resolve(note.id);
     if (resolved.status === "resolved") {
       return `/${resolved.entry.publicPath}`;
     }

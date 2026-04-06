@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   createCollectionContentResolver,
-  createFilesystemContentResolver,
+  createCollectionNoteResolver,
   extractWikilinks,
   getEntryHref,
   getPublishedNotes,
@@ -14,6 +14,7 @@ import {
   slugifyWikilinkFragment,
   targetToHref,
 } from "@/lib/content-resolver";
+import { createFilesystemContentResolver } from "@/lib/content-resolver.server";
 import { createNoteFixture } from "../../test/helpers/note-fixtures";
 
 const contentRoot = fileURLToPath(new URL("../../test/fixtures/content", import.meta.url));
@@ -106,6 +107,7 @@ describe("createCollectionContentResolver", () => {
     }),
   ];
   const resolver = createCollectionContentResolver(notes);
+  const noteResolver = createCollectionNoteResolver(notes);
 
   it("resolves by id, alias, slug, and permalink while excluding unpublished notes", () => {
     expect(resolver.resolve("notes/alpha")).toMatchObject({
@@ -127,6 +129,10 @@ describe("createCollectionContentResolver", () => {
     expect(resolver.resolve("draft")).toEqual({
       status: "missing",
       target: "draft",
+    });
+    expect(noteResolver.resolve("Alpha Alias")).toMatchObject({
+      status: "resolved",
+      entry: { id: "notes/alpha" },
     });
   });
 

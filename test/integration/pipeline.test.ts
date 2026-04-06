@@ -7,7 +7,7 @@ import { remarkHighlights } from "@/features/highlights/lib/remark-highlights";
 import { remarkTags } from "@/features/tags/lib/remark-tags";
 import { remarkEmbeds } from "@/features/embeds/lib/remark-embeds";
 import { remarkWikilinks } from "@/features/wikilinks/lib/remark-wikilinks";
-import { createFilesystemContentResolver } from "@/lib/content-resolver";
+import { createFilesystemContentResolver } from "@/lib/content-resolver.server";
 
 const contentRoot = fileURLToPath(new URL("../fixtures/content", import.meta.url));
 const attachmentsRoot = fileURLToPath(new URL("../fixtures/attachments", import.meta.url));

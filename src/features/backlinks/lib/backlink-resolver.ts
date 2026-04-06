@@ -1,6 +1,10 @@
 import type { CollectionEntry } from "astro:content";
-import { createCollectionContentResolver } from "@/lib/content-resolver";
-import { buildNoteLinksIndex } from "@/lib/note-links";
+import {
+  createCollectionNoteResolver,
+  getPublishedNotes,
+  type NoteResolver,
+} from "@/lib/content-resolver";
+import { buildNoteLinksIndex, type NoteLinksIndex } from "@/lib/note-links";
 import { getNoteTitle } from "@/lib/notes";
 
 export interface Backlink {
@@ -11,15 +15,20 @@ export interface Backlink {
 /**
  * Build a map from note slug → backlinks (notes that link to it).
  */
-export function buildBacklinksMap(notes: CollectionEntry<"notes">[]): Map<string, Backlink[]> {
+export function buildBacklinksMap(
+  notes: CollectionEntry<"notes">[],
+  linksByNote?: NoteLinksIndex,
+  resolver?: NoteResolver,
+): Map<string, Backlink[]> {
+  const publishedNotes = getPublishedNotes(notes);
   const backlinks = new Map<string, Backlink[]>();
-  const linksByNote = buildNoteLinksIndex(notes);
-  const resolver = createCollectionContentResolver(notes);
-  const titleBySlug = new Map(notes.map((note) => [note.id, getNoteTitle(note)] as const));
+  const noteResolver = resolver ?? createCollectionNoteResolver(publishedNotes);
+  const resolvedLinksByNote = linksByNote ?? buildNoteLinksIndex(publishedNotes, noteResolver);
+  const titleBySlug = new Map(publishedNotes.map((note) => [note.id, getNoteTitle(note)] as const));
 
-  for (const [sourceSlug, targets] of linksByNote) {
+  for (const [sourceSlug, targets] of resolvedLinksByNote) {
     const sourceTitle = titleBySlug.get(sourceSlug) ?? sourceSlug;
-    const sourceResolved = resolver.resolve(sourceSlug);
+    const sourceResolved = noteResolver.resolve(sourceSlug);
     const href =
       sourceResolved.status === "resolved"
         ? `/${sourceResolved.entry.publicPath}`

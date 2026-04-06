@@ -1,11 +1,11 @@
 import type { CollectionEntry } from "astro:content";
 import {
-  createCollectionContentResolver,
+  createCollectionNoteResolver,
   extractWikilinks,
   getPublishedNotes,
   parseWikilink,
   slugifyWikilinkFragment,
-  type ContentResolver,
+  type NoteResolver,
 } from "@/lib/content-resolver";
 
 export { parseWikilink, slugifyWikilinkFragment };
@@ -22,7 +22,7 @@ export function targetToHref(
   target: string,
   heading?: string,
   blockRef?: string,
-  resolver?: ContentResolver,
+  resolver?: NoteResolver,
 ): string | null {
   if (!resolver) return null;
   const resolved = resolver.resolve(target);
@@ -41,16 +41,19 @@ export function targetToHref(
   return href;
 }
 
-export function buildNoteLinksIndex(notes: CollectionEntry<"notes">[]): NoteLinksIndex {
+export function buildNoteLinksIndex(
+  notes: CollectionEntry<"notes">[],
+  resolver?: NoteResolver,
+): NoteLinksIndex {
   const publishedNotes = getPublishedNotes(notes);
-  const resolver = createCollectionContentResolver(publishedNotes);
+  const noteResolver = resolver ?? createCollectionNoteResolver(publishedNotes);
   const linkedByNote = new Map<string, Set<string>>();
 
   for (const note of publishedNotes) {
     const linkedSlugs = new Set<string>();
 
     for (const target of extractWikilinks(note.body ?? "")) {
-      const resolved = resolver.resolve(target.target);
+      const resolved = noteResolver.resolve(target.target);
       if (resolved.status !== "resolved" || resolved.entry.id === note.id) continue;
       linkedSlugs.add(resolved.entry.id);
     }

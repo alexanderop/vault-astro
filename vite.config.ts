@@ -53,7 +53,11 @@ export default defineConfig({
         input: cacheableInput,
       },
       "test:e2e": {
-        command: "playwright test",
+        command: "playwright test --config=playwright.config.ts",
+        cache: false,
+      },
+      "test:e2e:preview": {
+        command: "pnpm build:test && playwright test --config=playwright.preview.config.ts",
         cache: false,
       },
       verify: {

@@ -1,46 +1,43 @@
-import { test, expect } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
+import { expect, gotoHome, openSearch, SEARCH_INPUT_PLACEHOLDER, test } from "./test-utils";
 
 const modifier = process.platform === "darwin" ? "Meta" : "Control";
 
-async function openSearch(page: import("@playwright/test").Page) {
-  const searchButton = page.getByRole("button", { name: "Search" });
-  await expect(searchButton).toBeVisible();
-  await searchButton.click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-}
-
 test.describe("Search", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
+    await gotoHome(page);
   });
 
-  test("keyboard shortcut opens search dialog", async ({ page }) => {
-    // Ensure React has hydrated by waiting for the search button
-    await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
-
-    await page.keyboard.press(`${modifier}+k`);
-
+  test("keyboard shortcut opens search dialog", async ({
+    page,
+    hydrationErrors,
+    runtimeErrors,
+  }) => {
     const dialog = page.getByRole("dialog");
-    await expect(dialog).toBeVisible();
-    await expect(dialog.getByPlaceholder("Search notes...")).toBeVisible();
+    await expect(async () => {
+      await page.keyboard.press(`${modifier}+k`);
+      await expect(dialog).toBeVisible();
+    }).toPass({ timeout: 10_000 });
+    await expect(dialog.getByPlaceholder(SEARCH_INPUT_PLACEHOLDER)).toBeVisible();
+    expect(hydrationErrors).toEqual([]);
+    expect(runtimeErrors).toEqual([]);
   });
 
   test("typing filters results", async ({ page }) => {
-    await openSearch(page);
+    const dialog = await openSearch(page);
 
-    const dialog = page.getByRole("dialog");
-    const input = dialog.getByPlaceholder("Search notes...");
+    const input = dialog.getByPlaceholder(SEARCH_INPUT_PLACEHOLDER);
 
     await input.fill("zzz_nonexistent_gibberish_query");
     await expect(dialog.getByText("No results found.")).toBeVisible();
   });
 
   test("clicking a result navigates to the note", async ({ page }) => {
-    await openSearch(page);
+    const dialog = await openSearch(page);
+    const input = dialog.getByPlaceholder(SEARCH_INPUT_PLACEHOLDER);
+    await input.fill("alpha");
 
-    const dialog = page.getByRole("dialog");
-    const results = dialog.locator("ul button");
+    const results = dialog.locator("[cmdk-item]");
     await expect(results.first()).toBeVisible();
 
     await results.first().click();

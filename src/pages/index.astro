@@ -2,9 +2,9 @@
 import { SITE } from "@/config";
 import NoteLayout from "@/layouts/note-layout.astro";
 import { getNoteHref, getNoteSummary, getNoteTitle, sortNotesByDateDesc } from "@/lib/notes";
-import { loadSiteShellData } from "@/lib/site-shell";
+import { getBuildSiteData } from "@/lib/build-site-data";
 
-const { notes, searchIndex } = await loadSiteShellData();
+const { notes, resolver, searchIndex } = await getBuildSiteData();
 const sortedNotes = sortNotesByDateDesc(notes);
 const displayedNotes = SITE.notesPerIndex > 0
   ? sortedNotes.slice(0, SITE.notesPerIndex)
@@ -17,7 +17,7 @@ const displayedNotes = SITE.notesPerIndex > 0
     {displayedNotes.map((note) => (
       <li>
         <a
-          href={getNoteHref(note, notes)}
+          href={getNoteHref(note, undefined, resolver)}
           data-shortcut-item
           class="block rounded-sm px-3 py-2.5 transition-colors hover:bg-surface-hover"
         >

@@ -1,22 +1,17 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import { SITE } from "@/config";
 import NoteLayout from "@/layouts/note-layout.astro";
 import NoteContent from "@/features/notes/components/note-content.astro";
 import NoteHeader from "@/features/notes/components/note-header.astro";
 import BacklinksPanel from "@/features/backlinks/components/backlinks-panel.astro";
 import { TableOfContents } from "@/features/notes/components/table-of-contents";
-import { buildBacklinksMap } from "@/features/backlinks/lib/backlink-resolver";
 import { GraphView } from "@/features/graph/components/graph-view";
-import { buildLocalGraphData } from "@/features/graph/lib/graph-data-builder";
 import { getNoteTitle } from "@/lib/notes";
-import { loadSiteShellData } from "@/lib/site-shell";
-import { createCollectionContentResolver, getPublishedNotes } from "@/lib/content-resolver";
+import { getBuildSiteData } from "@/lib/build-site-data";
 
 export async function getStaticPaths() {
-  const notes = getPublishedNotes(await getCollection("notes"));
-  const backlinksMap = SITE.showBacklinks ? buildBacklinksMap(notes) : new Map();
-  const resolver = createCollectionContentResolver(notes);
+  const { backlinksMap, graphByNote, notes, resolver } = await getBuildSiteData();
 
   return notes.map((note) => {
     const resolvedNote = resolver.resolve(note.id);
@@ -28,7 +23,7 @@ export async function getStaticPaths() {
       props: {
         note,
         backlinks: backlinksMap.get(note.id) ?? [],
-        graphData: SITE.showGraph ? buildLocalGraphData(notes, note.id) : { nodes: [], edges: [] },
+        graphData: graphByNote?.get(note.id) ?? { nodes: [], edges: [] },
       },
     };
   });
@@ -37,8 +32,7 @@ export async function getStaticPaths() {
 const { note, backlinks, graphData } = Astro.props;
 const { Content, headings } = await render(note);
 const title = getNoteTitle(note);
-const { notes, searchIndex } = await loadSiteShellData();
-const resolver = createCollectionContentResolver(notes);
+const { notes, resolver, searchIndex } = await getBuildSiteData();
 const resolvedNote = resolver.resolve(note.id);
 const currentSlug = resolvedNote.status === "resolved" ? resolvedNote.entry.publicPath : note.id;
 const canonicalPath = `/${currentSlug}`;

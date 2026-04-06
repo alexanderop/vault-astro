@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildLocalGraphData } from "@/features/graph/lib/graph-data-builder";
+import {
+  buildLocalGraphData,
+  createGraphBuildContext,
+} from "@/features/graph/lib/graph-data-builder";
+import { buildNoteLinksIndex } from "@/lib/note-links";
 import { createNoteFixture } from "../../../../test/helpers/note-fixtures";
 
 describe("buildLocalGraphData", () => {
@@ -14,7 +18,10 @@ describe("buildLocalGraphData", () => {
       }),
     ];
 
-    expect(buildLocalGraphData(notes, "alpha")).toEqual({
+    const linksByNote = buildNoteLinksIndex(notes);
+    const context = createGraphBuildContext(notes, linksByNote);
+
+    expect(buildLocalGraphData(context, "alpha")).toEqual({
       nodes: [
         { id: "alpha", title: "Alpha Note" },
         { id: "beta", title: "Beta Note" },
@@ -33,6 +40,9 @@ describe("buildLocalGraphData", () => {
       createNoteFixture("draft", { data: { publish: false } }),
     ];
 
-    expect(buildLocalGraphData(notes, "draft")).toEqual({ nodes: [], edges: [] });
+    expect(buildLocalGraphData(createGraphBuildContext(notes), "draft")).toEqual({
+      nodes: [],
+      edges: [],
+    });
   });
 });
