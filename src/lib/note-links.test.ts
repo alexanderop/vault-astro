@@ -7,7 +7,7 @@ import {
   targetToHref,
 } from "@/lib/note-links";
 import { createCollectionContentResolver } from "@/lib/content-resolver";
-import { createNoteFixture } from "../../test/helpers/note-fixtures";
+import { draftNote, noteWithLinks, publishedNote } from "../../test/helpers/note-fixtures";
 
 describe("note-links helpers", () => {
   it("re-exports parsing helpers and extracts raw targets", () => {
@@ -25,8 +25,8 @@ describe("note-links helpers", () => {
 
   it("builds note hrefs from a resolver", () => {
     const resolver = createCollectionContentResolver([
-      createNoteFixture("alpha"),
-      createNoteFixture("beta", { data: { permalink: "custom/beta" } }),
+      publishedNote("alpha"),
+      publishedNote("beta", { data: { permalink: "custom/beta" } }),
     ]);
 
     expect(targetToHref("beta", "Section Heading", undefined, resolver)).toBe(
@@ -40,16 +40,9 @@ describe("note-links helpers", () => {
 describe("buildNoteLinksIndex", () => {
   it("indexes only resolved links from published notes and ignores self-links", () => {
     const index = buildNoteLinksIndex([
-      createNoteFixture("alpha", {
-        body: "[[beta]] [[alpha]] [[missing]]",
-      }),
-      createNoteFixture("beta", {
-        body: "[[alpha]]",
-      }),
-      createNoteFixture("draft", {
-        body: "[[alpha]]",
-        data: { publish: false },
-      }),
+      noteWithLinks("alpha", ["beta", "alpha", "missing"]),
+      noteWithLinks("beta", ["alpha"]),
+      draftNote("draft", { body: "[[alpha]]" }),
     ]);
 
     expect([...index.entries()]).toEqual([

@@ -42,6 +42,12 @@ export default defineConfig({
         env: ["NODE_ENV"],
         input: cacheableInput,
       },
+      dupes: {
+        command:
+          "jscpd src --min-lines 8 --min-tokens 60 --ignore '**/content/**,**/*.test.*,**/assets/**'",
+        env: ["NODE_ENV"],
+        input: cacheableInput,
+      },
       test: {
         command: "vitest run",
         env: ["NODE_ENV"],

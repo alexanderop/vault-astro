@@ -6,23 +6,14 @@ import {
 } from "@/features/graph/lib/graph-data-builder";
 import { buildSidebarTree } from "@/features/navigation/lib/sidebar-tree";
 import { buildSearchIndex } from "@/features/search/lib/search-index";
-import { createNoteFixture } from "../helpers/note-fixtures";
+import { draftNote, noteWithLinks, publishedNote } from "../helpers/note-fixtures";
 
 describe("publish:false filtering", () => {
   it("excludes unpublished notes across sidebar, search, backlinks, and graph", () => {
     const notes = [
-      createNoteFixture("published", {
-        body: "[[linked]]",
-        data: { title: "Published Note" },
-      }),
-      createNoteFixture("linked", {
-        body: "",
-        data: { title: "Linked Note" },
-      }),
-      createNoteFixture("draft", {
-        body: "[[linked]]",
-        data: { publish: false, title: "Draft Note" },
-      }),
+      noteWithLinks("published", ["linked"], { title: "Published Note" }),
+      publishedNote("linked", { title: "Linked Note" }),
+      draftNote("draft", { body: "[[linked]]", title: "Draft Note" }),
     ];
 
     expect(

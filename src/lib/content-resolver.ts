@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { normalizeLookupValue, toStringList } from "./content-utils";
 
 interface ParsedWikilink {
   isEmbed: boolean;
@@ -68,15 +69,6 @@ const WIKILINK_REGEX = /!?\[\[([^\]]+)\]\]/g;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico"]);
 const EXCALIDRAW_SOURCE_EXTENSION = ".excalidraw";
 
-export function normalizeLookupValue(value: string): string {
-  return value
-    .replaceAll("\\", "/")
-    .trim()
-    .replace(/^\/+|\/+$/g, "")
-    .replace(/\.md$/i, "")
-    .toLowerCase();
-}
-
 function normalizePublicPath(value: string): string {
   const normalized = normalizeLookupValue(value);
   return normalized.replace(/^notes\//, "");
@@ -84,20 +76,6 @@ function normalizePublicPath(value: string): string {
 
 function getBasename(value: string): string {
   return normalizeLookupValue(value).split("/").at(-1) ?? normalizeLookupValue(value);
-}
-
-function toStringList(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.filter(
-      (item): item is string => typeof item === "string" && item.trim().length > 0,
-    );
-  }
-
-  if (typeof value === "string" && value.trim().length > 0) {
-    return [value.trim()];
-  }
-
-  return [];
 }
 
 function toTitle(entry: CollectionEntry<"notes">): string {

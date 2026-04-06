@@ -15,7 +15,12 @@ import {
   targetToHref,
 } from "@/lib/content-resolver";
 import { createFilesystemContentResolver } from "@/lib/content-resolver.server";
-import { createNoteFixture } from "../../test/helpers/note-fixtures";
+import {
+  authorNote,
+  draftNote,
+  noteFactory,
+  publishedNote,
+} from "../../test/helpers/note-fixtures";
 
 const contentRoot = fileURLToPath(new URL("../../test/fixtures/content", import.meta.url));
 const attachmentsRoot = fileURLToPath(new URL("../../test/fixtures/attachments", import.meta.url));
@@ -81,29 +86,25 @@ describe("content resolver helpers", () => {
 
 describe("createCollectionContentResolver", () => {
   const notes = [
-    createNoteFixture("notes/alpha", {
+    publishedNote("notes/alpha", {
+      title: "Alpha Note",
       data: {
-        title: "Alpha Note",
         aliases: ["Alpha Alias"],
         slug: "alpha-note",
         permalink: "custom/alpha",
       },
     }),
-    createNoteFixture("authors/jane-doe", {
+    authorNote("authors/jane-doe", {
       data: {
         name: "Jane Doe",
       },
     }),
-    createNoteFixture("notes/draft", {
-      data: {
-        title: "Draft Note",
-        publish: false,
-      },
+    draftNote("notes/draft", {
+      title: "Draft Note",
     }),
-    createNoteFixture("Excalidraw/system-design.excalidraw", {
-      data: {
-        title: "System Design Diagram",
-      },
+    noteFactory({
+      id: "Excalidraw/system-design.excalidraw",
+      title: "System Design Diagram",
     }),
   ];
   const resolver = createCollectionContentResolver(notes);

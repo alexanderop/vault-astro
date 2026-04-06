@@ -1,5 +1,5 @@
 import { DataviewContext } from "./dataview-context";
-import { normalizeLookupValue } from "./dataview-index";
+import { normalizeLookupValue } from "../../../lib/content-utils";
 import type {
   DataviewExecutionDiagnostic,
   DataviewExecutionResult,

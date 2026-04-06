@@ -15,7 +15,7 @@ import {
 } from "@/lib/content-resolver";
 import { buildNoteLinksIndex, type NoteLinksIndex } from "@/lib/note-links";
 
-export interface BuildSiteData {
+interface BuildSiteData {
   notes: CollectionEntry<"notes">[];
   resolver: NoteResolver;
   searchIndex: SearchEntry[];

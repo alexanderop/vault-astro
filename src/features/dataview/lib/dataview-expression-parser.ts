@@ -1,5 +1,6 @@
-import { normalizeLookupValue } from "./dataview-index";
+import { parseAliasedField, TokenCursor } from "./dataview-parser-utils";
 import { parseSourceExpression } from "./dataview-source-parser";
+import { normalizeLookupValue } from "../../../lib/content-utils";
 import type {
   DataviewQuery,
   DataviewQueryOperation,
@@ -7,113 +8,43 @@ import type {
   TableColumn,
   Token,
 } from "./dataview-types";
+import { tokenizeDataview } from "./dataview-lexer";
 
 function tokenizeExpression(source: string): Token[] {
-  const tokens: Token[] = [];
-  let index = 0;
-
-  while (index < source.length) {
-    const char = source[index];
-
-    if (/\s/.test(char)) {
-      index += 1;
-      continue;
-    }
-
-    if (source.startsWith("[[", index)) {
-      const end = source.indexOf("]]", index + 2);
-      if (end === -1) {
-        throw new Error("Unclosed link literal");
-      }
-
-      tokens.push({ type: "link", value: source.slice(index + 2, end) });
-      index = end + 2;
-      continue;
-    }
-
-    if (char === '"' || char === "'") {
-      let end = index + 1;
-      let value = "";
-
-      while (end < source.length) {
-        if (source[end] === "\\" && end + 1 < source.length) {
-          value += source[end + 1];
-          end += 2;
-          continue;
+  return tokenizeDataview(source, {
+    customTokenizers: [
+      (lexer) => {
+        if (!/[0-9]/.test(lexer.current())) {
+          return null;
         }
 
-        if (source[end] === char) break;
-        value += source[end];
-        end += 1;
-      }
-
-      if (source[end] !== char) {
-        throw new Error("Unclosed string literal");
-      }
-
-      tokens.push({ type: "string", value });
-      index = end + 1;
-      continue;
-    }
-
-    if (/[0-9]/.test(char)) {
-      let end = index + 1;
-      while (end < source.length && /[0-9.]/.test(source[end])) end += 1;
-      tokens.push({ type: "number", value: source.slice(index, end) });
-      index = end;
-      continue;
-    }
-
-    const twoCharOperator = source.slice(index, index + 2);
-    if (["<=", ">=", "!=", "=="].includes(twoCharOperator)) {
-      tokens.push({ type: "operator", value: twoCharOperator });
-      index += 2;
-      continue;
-    }
-
-    if (["=", "<", ">", "!", ","].includes(char)) {
-      tokens.push({
-        type: char === "," ? "punctuation" : "operator",
-        value: char,
-      });
-      index += 1;
-      continue;
-    }
-
-    if (["(", ")", "."].includes(char)) {
-      tokens.push({ type: "punctuation", value: char });
-      index += 1;
-      continue;
-    }
-
-    if (/[A-Za-z_]/.test(char)) {
-      let end = index + 1;
-      while (end < source.length && /[A-Za-z0-9_-]/.test(source[end])) end += 1;
-      const value = source.slice(index, end);
-      const upper = value.toUpperCase();
-
-      tokens.push({
-        type: ["AND", "OR", "AS", "ASC", "DESC", "TRUE", "FALSE"].includes(upper)
-          ? "keyword"
-          : "identifier",
-        value,
-      });
-      index = end;
-      continue;
-    }
-
-    throw new Error(`Unexpected token "${char}"`);
-  }
-
-  return tokens;
+        return {
+          type: "number",
+          value: lexer.readWhile((char) => /[0-9.]/.test(char)),
+        };
+      },
+    ],
+    identifierPart: (char) => /[A-Za-z0-9_-]/.test(char),
+    identifierStart: (char) => /[A-Za-z_]/.test(char),
+    keywords: ["AND", "OR", "AS", "ASC", "DESC", "TRUE", "FALSE"],
+    parseQuotedString: (lexer) => lexer.readQuotedStringWithEscapes(),
+    singleCharTokenTypes: {
+      "!": "operator",
+      "(": "punctuation",
+      ")": "punctuation",
+      ",": "punctuation",
+      ".": "punctuation",
+      "<": "operator",
+      "=": "operator",
+      ">": "operator",
+    },
+    twoCharOperators: ["<=", ">=", "!=", "=="],
+  });
 }
 
-class ExpressionParser {
-  private readonly tokens: Token[];
-  private index = 0;
-
+class ExpressionParser extends TokenCursor {
   constructor(source: string) {
-    this.tokens = tokenizeExpression(source);
+    super(tokenizeExpression(source));
   }
 
   parse(): Expression {
@@ -246,42 +177,6 @@ class ExpressionParser {
     throw new Error(`Unexpected token "${token.value}"`);
   }
 
-  private matchKeyword(...values: string[]): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "keyword") return false;
-    if (!values.includes(token.value.toUpperCase())) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private matchOperator(...values: string[]): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "operator") return false;
-    if (!values.includes(token.value)) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private matchPunctuation(value: string): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "punctuation" || token.value !== value) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private consume(type: Token["type"], message: string): Token {
-    const token = this.peek();
-    if (!token || token.type !== type) throw new Error(message);
-    this.index += 1;
-    return token;
-  }
-
-  private consumePunctuation(value: string) {
-    if (!this.matchPunctuation(value)) {
-      throw new Error(`Expected "${value}"`);
-    }
-  }
-
   private checkPunctuation(value: string): boolean {
     const token = this.peek();
     return Boolean(token && token.type === "punctuation" && token.value === value);
@@ -289,10 +184,6 @@ class ExpressionParser {
 
   private previous(): Token {
     return this.tokens[this.index - 1];
-  }
-
-  private peek(): Token | undefined {
-    return this.tokens[this.index];
   }
 }
 
@@ -375,18 +266,7 @@ function parseTableColumns(source: string): { columns: TableColumn[]; withoutId:
   }
 
   const columns = splitTopLevel(remaining, ",").map((columnSource) => {
-    const aliasSeparator = findAliasSeparator(columnSource);
-    const expressionSource =
-      aliasSeparator === -1 ? columnSource : columnSource.slice(0, aliasSeparator).trim();
-    const aliasSource =
-      aliasSeparator === -1 ? undefined : columnSource.slice(aliasSeparator + 2).trim();
-    const alias = aliasSource?.replace(/^["']|["']$/g, "");
-
-    return {
-      alias,
-      expression: new ExpressionParser(expressionSource).parse(),
-      source: expressionSource,
-    };
+    return parseAliasedField(columnSource, findAliasSeparator, parseExpression);
   });
 
   return { columns, withoutId };
@@ -536,38 +416,24 @@ export function parseDataviewQuery(source: string): DataviewQuery {
     }
 
     if (upper.startsWith("GROUP BY ")) {
-      const fieldSource = command.slice("GROUP BY ".length).trim();
-      const aliasSeparator = findAliasSeparator(fieldSource);
-      const expressionSource =
-        aliasSeparator === -1 ? fieldSource : fieldSource.slice(0, aliasSeparator).trim();
-      const aliasSource =
-        aliasSeparator === -1 ? undefined : fieldSource.slice(aliasSeparator + 2).trim();
-
       operations.push({
-        field: {
-          alias: aliasSource?.replace(/^["']|["']$/g, ""),
-          expression: parseExpression(expressionSource),
-          source: expressionSource,
-        },
+        field: parseAliasedField(
+          command.slice("GROUP BY ".length).trim(),
+          findAliasSeparator,
+          parseExpression,
+        ),
         type: "group",
       });
       continue;
     }
 
     if (upper.startsWith("FLATTEN ")) {
-      const fieldSource = command.slice("FLATTEN ".length).trim();
-      const aliasSeparator = findAliasSeparator(fieldSource);
-      const expressionSource =
-        aliasSeparator === -1 ? fieldSource : fieldSource.slice(0, aliasSeparator).trim();
-      const aliasSource =
-        aliasSeparator === -1 ? undefined : fieldSource.slice(aliasSeparator + 2).trim();
-
       operations.push({
-        field: {
-          alias: aliasSource?.replace(/^["']|["']$/g, ""),
-          expression: parseExpression(expressionSource),
-          source: expressionSource,
-        },
+        field: parseAliasedField(
+          command.slice("FLATTEN ".length).trim(),
+          findAliasSeparator,
+          parseExpression,
+        ),
         type: "flatten",
       });
       continue;

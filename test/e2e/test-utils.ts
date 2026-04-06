@@ -10,7 +10,7 @@ const HYDRATION_ERROR_PATTERNS = [
 
 export const SEARCH_INPUT_PLACEHOLDER = "Type a command or search...";
 
-export interface E2EFixtures {
+interface E2EFixtures {
   hydrationErrors: string[];
   runtimeErrors: string[];
 }

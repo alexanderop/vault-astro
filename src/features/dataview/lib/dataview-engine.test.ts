@@ -10,6 +10,7 @@ import {
 import { evaluateExpression } from "@/features/dataview/lib/dataview-evaluator";
 import { renderDataviewQuery } from "@/features/dataview/lib/dataview-engine";
 import { remarkDataview } from "@/features/dataview/lib/remark-dataview";
+import { parseSourceExpression } from "@/features/dataview/lib/dataview-source-parser";
 
 const contentRoot = fileURLToPath(new URL("./__tests__/fixtures/content", import.meta.url));
 const authorPath = fileURLToPath(
@@ -30,6 +31,33 @@ SORT file.name ASC
 LIMIT 3`;
 
 describe("Dataview query parsing", () => {
+  it("parses shared lexer constructs for expressions and sources", () => {
+    expect(parseExpression(String.raw`"Alpha \"Note\""`)).toEqual({
+      type: "literal",
+      value: 'Alpha "Note"',
+    });
+    expect(parseExpression("[[Daily Note]]")).toEqual({
+      type: "literal",
+      value: {
+        display: "Daily Note",
+        href: "",
+        path: "daily note",
+      },
+    });
+    expect(parseSourceExpression('!([[beta]] OR "notes")')).toEqual({
+      type: "not",
+      operand: {
+        type: "or",
+        left: {
+          direction: "incoming",
+          target: { path: "beta", type: "path" },
+          type: "link",
+        },
+        right: { path: "notes", type: "folder" },
+      },
+    });
+  });
+
   it("parses table queries with aliases and modifiers", () => {
     const query = parseDataviewQuery(`TABLE WITHOUT ID rating AS "Score", file.name
 FROM "notes"

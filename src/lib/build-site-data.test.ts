@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createNoteFixture } from "../../test/helpers/note-fixtures";
+import { noteWithLinks, publishedNote } from "../../test/helpers/note-fixtures";
 
 const getCollectionMock = vi.fn();
 
@@ -20,8 +20,8 @@ describe("build site data cache", () => {
 
   it("returns stable cached results and avoids duplicate collection loads", async () => {
     getCollectionMock.mockResolvedValue([
-      createNoteFixture("alpha", { body: "[[beta]]", data: { title: "Alpha Note" } }),
-      createNoteFixture("beta", { body: "", data: { title: "Beta Note" } }),
+      noteWithLinks("alpha", ["beta"], { title: "Alpha Note" }),
+      publishedNote("beta", { title: "Beta Note" }),
     ]);
 
     const { clearBuildSiteDataCache, getBuildSiteData } = await import("./build-site-data");
@@ -37,7 +37,7 @@ describe("build site data cache", () => {
   });
 
   it("rebuilds after clearing the cache", async () => {
-    getCollectionMock.mockResolvedValue([createNoteFixture("alpha", { data: { title: "Alpha" } })]);
+    getCollectionMock.mockResolvedValue([publishedNote("alpha", { title: "Alpha" })]);
 
     const { clearBuildSiteDataCache, getBuildSiteData } = await import("./build-site-data");
 

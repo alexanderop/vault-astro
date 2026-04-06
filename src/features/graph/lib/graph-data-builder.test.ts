@@ -4,18 +4,15 @@ import {
   createGraphBuildContext,
 } from "@/features/graph/lib/graph-data-builder";
 import { buildNoteLinksIndex } from "@/lib/note-links";
-import { createNoteFixture } from "../../../../test/helpers/note-fixtures";
+import { draftNote, noteWithLinks, publishedNote } from "../../../../test/helpers/note-fixtures";
 
 describe("buildLocalGraphData", () => {
   it("builds a local graph from published neighbors only", () => {
     const notes = [
-      createNoteFixture("alpha", { body: "[[beta]]", data: { title: "Alpha Note" } }),
-      createNoteFixture("beta", { body: "[[alpha]] [[draft]]", data: { title: "Beta Note" } }),
-      createNoteFixture("gamma", { body: "[[alpha]]", data: { title: "Gamma Note" } }),
-      createNoteFixture("draft", {
-        body: "[[alpha]]",
-        data: { publish: false, title: "Draft Note" },
-      }),
+      noteWithLinks("alpha", ["beta"], { title: "Alpha Note" }),
+      noteWithLinks("beta", ["alpha", "draft"], { title: "Beta Note" }),
+      noteWithLinks("gamma", ["alpha"], { title: "Gamma Note" }),
+      draftNote("draft", { body: "[[alpha]]", title: "Draft Note" }),
     ];
 
     const linksByNote = buildNoteLinksIndex(notes);
@@ -35,10 +32,7 @@ describe("buildLocalGraphData", () => {
   });
 
   it("returns an empty graph when the current note is unpublished", () => {
-    const notes = [
-      createNoteFixture("alpha"),
-      createNoteFixture("draft", { data: { publish: false } }),
-    ];
+    const notes = [publishedNote("alpha"), draftNote("draft")];
 
     expect(buildLocalGraphData(createGraphBuildContext(notes), "draft")).toEqual({
       nodes: [],

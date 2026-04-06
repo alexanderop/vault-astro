@@ -1,85 +1,38 @@
+import { TokenCursor } from "./dataview-parser-utils";
+import { tokenizeDataview } from "./dataview-lexer";
 import type { SourceExpression, Token } from "./dataview-types";
 
 function tokenizeSource(source: string): Token[] {
-  const tokens: Token[] = [];
-  let index = 0;
+  return tokenizeDataview(source, {
+    customTokenizers: [
+      (lexer) => {
+        if (lexer.current() !== "#") {
+          return null;
+        }
 
-  while (index < source.length) {
-    const char = source[index];
+        lexer.advance();
 
-    if (/\s/.test(char)) {
-      index += 1;
-      continue;
-    }
-
-    if (source.startsWith("[[", index)) {
-      const end = source.indexOf("]]", index + 2);
-      if (end === -1) throw new Error("Unclosed link source");
-      tokens.push({ type: "link", value: source.slice(index + 2, end) });
-      index = end + 2;
-      continue;
-    }
-
-    if (char === "#") {
-      let end = index + 1;
-      while (end < source.length && /[A-Za-z0-9/_-]/.test(source[end])) end += 1;
-      tokens.push({ type: "string", value: source.slice(index, end) });
-      index = end;
-      continue;
-    }
-
-    if (char === '"' || char === "'") {
-      let end = index + 1;
-      let value = "";
-
-      while (end < source.length && source[end] !== char) {
-        value += source[end];
-        end += 1;
-      }
-
-      if (source[end] !== char) throw new Error("Unclosed source string");
-      tokens.push({ type: "string", value });
-      index = end + 1;
-      continue;
-    }
-
-    if (["(", ")"].includes(char)) {
-      tokens.push({ type: "punctuation", value: char });
-      index += 1;
-      continue;
-    }
-
-    if (char === "!") {
-      tokens.push({ type: "operator", value: "!" });
-      index += 1;
-      continue;
-    }
-
-    if (/[A-Za-z_]/.test(char)) {
-      let end = index + 1;
-      while (end < source.length && /[A-Za-z_-]/.test(source[end])) end += 1;
-      const value = source.slice(index, end);
-
-      tokens.push({
-        type: ["AND", "OR"].includes(value.toUpperCase()) ? "keyword" : "identifier",
-        value,
-      });
-      index = end;
-      continue;
-    }
-
-    throw new Error(`Unexpected source token "${char}"`);
-  }
-
-  return tokens;
+        return {
+          type: "string",
+          value: `#${lexer.readWhile((char) => /[A-Za-z0-9/_-]/.test(char))}`,
+        };
+      },
+    ],
+    identifierPart: (char) => /[A-Za-z_-]/.test(char),
+    identifierStart: (char) => /[A-Za-z_]/.test(char),
+    keywords: ["AND", "OR"],
+    parseQuotedString: (lexer) => lexer.readQuotedString("Unclosed source string"),
+    singleCharTokenTypes: {
+      "!": "operator",
+      "(": "punctuation",
+      ")": "punctuation",
+    },
+  });
 }
 
-class SourceParser {
-  private readonly tokens: Token[];
-  private index = 0;
-
+class SourceParser extends TokenCursor {
   constructor(source: string) {
-    this.tokens = tokenizeSource(source);
+    super(tokenizeSource(source));
   }
 
   parse(): SourceExpression {
@@ -160,46 +113,6 @@ class SourceParser {
     }
 
     throw new Error(`Unexpected source token "${token.value}"`);
-  }
-
-  private matchKeyword(...values: string[]): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "keyword") return false;
-    if (!values.includes(token.value.toUpperCase())) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private matchOperator(...values: string[]): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "operator") return false;
-    if (!values.includes(token.value)) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private matchPunctuation(value: string): boolean {
-    const token = this.peek();
-    if (!token || token.type !== "punctuation" || token.value !== value) return false;
-    this.index += 1;
-    return true;
-  }
-
-  private consume(type: Token["type"], message: string): Token {
-    const token = this.peek();
-    if (!token || token.type !== type) throw new Error(message);
-    this.index += 1;
-    return token;
-  }
-
-  private consumePunctuation(value: string) {
-    if (!this.matchPunctuation(value)) {
-      throw new Error(`Expected "${value}"`);
-    }
-  }
-
-  private peek(): Token | undefined {
-    return this.tokens[this.index];
   }
 }
 

@@ -2,19 +2,19 @@ import { describe, expect, it } from "vitest";
 import { buildBacklinksMap } from "@/features/backlinks/lib/backlink-resolver";
 import { createCollectionNoteResolver } from "@/lib/content-resolver";
 import { buildNoteLinksIndex } from "@/lib/note-links";
-import { createNoteFixture } from "../../../../test/helpers/note-fixtures";
+import { draftNote, publishedNote } from "../../../../test/helpers/note-fixtures";
 
 describe("buildBacklinksMap", () => {
   it("deduplicates backlinks and excludes unpublished sources", () => {
     const notes = [
-      createNoteFixture("alpha", { data: { title: "Alpha Note" } }),
-      createNoteFixture("beta", {
+      publishedNote("alpha", { title: "Alpha Note" }),
+      publishedNote("beta", {
         body: "[[alpha]]\n\nRepeated [[alpha]] reference.",
-        data: { title: "Beta Note" },
+        title: "Beta Note",
       }),
-      createNoteFixture("draft", {
+      draftNote("draft", {
         body: "[[alpha]]",
-        data: { publish: false, title: "Draft Note" },
+        title: "Draft Note",
       }),
     ];
 

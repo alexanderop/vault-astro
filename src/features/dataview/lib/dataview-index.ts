@@ -1,6 +1,8 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { extractFrontmatter, normalizeLookupValue, toStringList } from "../../../lib/content-utils";
+import { collectFilesRecursive } from "../../../lib/filesystem";
 import {
   extractWikilinks,
   getEntryHref,
@@ -26,44 +28,8 @@ export interface CreateDataviewIndexOptions {
 
 let cachedIndex: DataviewIndex | null = null;
 
-export function normalizeLookupValue(value: string): string {
-  return value
-    .replaceAll("\\", "/")
-    .trim()
-    .replace(/^\/+|\/+$/g, "")
-    .replace(/\.md$/i, "")
-    .toLowerCase();
-}
-
 function collectMarkdownFiles(root: string): string[] {
-  const files: string[] = [];
-
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    const fullPath = `${root}/${entry.name}`;
-    if (entry.isDirectory()) {
-      files.push(...collectMarkdownFiles(fullPath));
-    } else if (entry.isFile() && entry.name.endsWith(".md")) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
-}
-
-function extractFrontmatter(raw: string): { body: string; frontmatter: string } {
-  if (!raw.startsWith("---\n")) {
-    return { body: raw, frontmatter: "" };
-  }
-
-  const end = raw.indexOf("\n---\n", 4);
-  if (end === -1) {
-    return { body: raw, frontmatter: "" };
-  }
-
-  return {
-    body: raw.slice(end + 5),
-    frontmatter: raw.slice(4, end),
-  };
+  return collectFilesRecursive(root, (entry) => entry.name.endsWith(".md"));
 }
 
 function normalizeValue(value: unknown): unknown {
@@ -107,20 +73,6 @@ function getFrontmatterLines(frontmatter: string): string[] {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-}
-
-function toStringList(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.filter(
-      (item): item is string => typeof item === "string" && item.trim().length > 0,
-    );
-  }
-
-  if (typeof value === "string" && value.trim().length > 0) {
-    return [value];
-  }
-
-  return [];
 }
 
 function toTagList(value: unknown): string[] {

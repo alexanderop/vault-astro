@@ -1,9 +1,10 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { extractFrontmatter, normalizeLookupValue } from "./content-utils";
+import { collectFilesRecursive } from "./filesystem";
 import {
   createEntriesContentResolver,
   inferEntryType,
   isPublishedNote,
-  normalizeLookupValue,
   type ContentResolver,
   type NoteResolver,
   type ResolvedContentEntry,
@@ -59,147 +60,79 @@ function parseList(frontmatter: string, key: string): string[] {
     .filter(Boolean);
 }
 
-function extractFrontmatter(raw: string): { frontmatter: string; body: string } {
-  if (!raw.startsWith("---\n")) {
-    return { frontmatter: "", body: raw };
-  }
-
-  const end = raw.indexOf("\n---\n", 4);
-  if (end === -1) {
-    return { frontmatter: "", body: raw };
-  }
-
-  return {
-    frontmatter: raw.slice(4, end),
-    body: raw.slice(end + 5),
-  };
-}
-
 function inferIdFromFilePath(filePath: string, contentRoot = CONTENT_ROOT): string {
   return normalizePublicPath(filePath.slice(contentRoot.length + 1).replace(/\.md$/i, ""));
 }
 
 function collectFiles(root: string): string[] {
-  if (!existsSync(root)) return [];
-
-  const files: string[] = [];
-
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    const fullPath = `${root}/${entry.name}`;
-    if (entry.isDirectory()) {
-      files.push(...collectFiles(fullPath));
-      continue;
-    }
-
-    if (entry.isFile() && entry.name.endsWith(".md")) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
+  return collectFilesRecursive(root, (entry) => entry.name.endsWith(".md"));
 }
 
 function collectAttachmentCandidates(root: string): string[] {
-  if (!existsSync(root)) return [];
-
-  const files: string[] = [];
-
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    const fullPath = `${root}/${entry.name}`;
-    if (entry.isDirectory()) {
-      files.push(...collectAttachmentCandidates(fullPath));
-      continue;
-    }
-
-    if (entry.isFile()) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
+  return collectFilesRecursive(root, () => true);
 }
 
 function collectContentAssets(root: string): string[] {
-  if (!existsSync(root)) return [];
+  return collectFilesRecursive(root, () => true);
+}
 
-  const files: string[] = [];
+function createRelativePathResolver(
+  candidates: string[],
+  toPublicPath: (relativePath: string) => string,
+  normalizeCandidate: (relativePath: string) => string = (relativePath) => relativePath,
+): (target: string) => string | null {
+  const byPath = new Map<string, string[]>();
+  const byBasename = new Map<string, string[]>();
 
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    const fullPath = `${root}/${entry.name}`;
-    if (entry.isDirectory()) {
-      files.push(...collectContentAssets(fullPath));
-      continue;
-    }
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeCandidate(candidate);
+    const normalizedPath = normalizeLookupValue(normalizedCandidate);
+    const basename = getBasename(normalizedCandidate);
 
-    if (entry.isFile()) {
-      files.push(fullPath);
-    }
+    byPath.set(normalizedPath, [...(byPath.get(normalizedPath) ?? []), candidate]);
+    byBasename.set(basename, [...(byBasename.get(basename) ?? []), candidate]);
   }
 
-  return files;
+  return (target: string) => {
+    const normalizedTarget = normalizeLookupValue(target);
+    const pathMatches = byPath.get(normalizedTarget) ?? [];
+    if (pathMatches.length === 1) {
+      return toPublicPath(pathMatches[0]);
+    }
+
+    const basenameMatches = byBasename.get(getBasename(target)) ?? [];
+    if (basenameMatches.length === 1) {
+      return toPublicPath(basenameMatches[0]);
+    }
+
+    return null;
+  };
 }
 
 function createAttachmentResolver(
   attachmentsRoot = ATTACHMENTS_ROOT,
 ): (target: string) => string | null {
   const candidates = collectAttachmentCandidates(attachmentsRoot);
-  const byPath = new Map<string, string[]>();
-  const byBasename = new Map<string, string[]>();
+  const relativeCandidates = candidates.map((file) =>
+    file.slice(attachmentsRoot.length + 1).replaceAll("\\", "/"),
+  );
 
-  for (const file of candidates) {
-    const relPath = file.slice(attachmentsRoot.length + 1).replaceAll("\\", "/");
-    const normalizedPath = normalizeLookupValue(relPath);
-    const basename = getBasename(relPath);
-
-    byPath.set(normalizedPath, [...(byPath.get(normalizedPath) ?? []), relPath]);
-    byBasename.set(basename, [...(byBasename.get(basename) ?? []), relPath]);
-  }
-
-  return (target: string) => {
-    const normalizedTarget = normalizeLookupValue(target);
-    const pathMatches = byPath.get(normalizedTarget) ?? [];
-    if (pathMatches.length === 1) {
-      return `/attachments/${pathMatches[0]}`;
-    }
-
-    const basenameMatches = byBasename.get(getBasename(target)) ?? [];
-    if (basenameMatches.length === 1) {
-      return `/attachments/${basenameMatches[0]}`;
-    }
-
-    return null;
-  };
+  return createRelativePathResolver(
+    relativeCandidates,
+    (relativePath) => `/attachments/${relativePath}`,
+  );
 }
 
 function createExcalidrawResolver(contentRoot = CONTENT_ROOT): (target: string) => string | null {
   const candidates = collectContentAssets(contentRoot)
     .filter((file) => file.endsWith(EXCALIDRAW_SVG_SUFFIX))
     .map((file) => file.slice(contentRoot.length + 1).replaceAll("\\", "/"));
-  const byPath = new Map<string, string[]>();
-  const byBasename = new Map<string, string[]>();
 
-  for (const relPath of candidates) {
-    const normalizedPath = normalizeLookupValue(relPath.replace(/\.svg$/i, ""));
-    const basename = getBasename(relPath.replace(/\.svg$/i, ""));
-
-    byPath.set(normalizedPath, [...(byPath.get(normalizedPath) ?? []), relPath]);
-    byBasename.set(basename, [...(byBasename.get(basename) ?? []), relPath]);
-  }
-
-  return (target: string) => {
-    const normalizedTarget = normalizeLookupValue(target);
-    const pathMatches = byPath.get(normalizedTarget) ?? [];
-    if (pathMatches.length === 1) {
-      return `/${EXCALIDRAW_PUBLIC_DIR}/${pathMatches[0]}`;
-    }
-
-    const basenameMatches = byBasename.get(getBasename(target)) ?? [];
-    if (basenameMatches.length === 1) {
-      return `/${EXCALIDRAW_PUBLIC_DIR}/${basenameMatches[0]}`;
-    }
-
-    return null;
-  };
+  return createRelativePathResolver(
+    candidates,
+    (relativePath) => `/${EXCALIDRAW_PUBLIC_DIR}/${relativePath}`,
+    (relativePath) => relativePath.replace(/\.svg$/i, ""),
+  );
 }
 
 function createAssetResolver(options?: {
@@ -215,7 +148,7 @@ function createAssetResolver(options?: {
   };
 }
 
-export function getCachedAssetResolver(): Pick<
+function getCachedAssetResolver(): Pick<
   ContentResolver,
   "resolveAttachment" | "resolveExcalidraw"
 > {

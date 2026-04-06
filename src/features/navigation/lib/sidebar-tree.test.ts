@@ -3,14 +3,21 @@ import {
   buildSidebarTree,
   getSidebarDefaultOpenKeys,
 } from "@/features/navigation/lib/sidebar-tree";
-import { createNoteFixture } from "../../../../test/helpers/note-fixtures";
+import {
+  draftNote,
+  hiddenNote,
+  notesFromDefinitions,
+  publishedNote,
+} from "../../../../test/helpers/note-fixtures";
 
 describe("buildSidebarTree", () => {
   it("wraps root-level notes under a notes folder", () => {
-    const tree = buildSidebarTree([
-      createNoteFixture("my-note", { data: { title: "My Note" } }),
-      createNoteFixture("another-note", { data: { title: "Another Note" } }),
-    ]);
+    const tree = buildSidebarTree(
+      notesFromDefinitions([
+        { id: "my-note", title: "My Note" },
+        { id: "another-note", title: "Another Note" },
+      ]),
+    );
 
     expect(tree).toMatchObject([
       {
@@ -26,10 +33,10 @@ describe("buildSidebarTree", () => {
 
   it("filters unpublished and hidden notes while keeping folders sorted before files", () => {
     const tree = buildSidebarTree([
-      createNoteFixture("guides/testing/alpha", { data: { title: "Alpha" } }),
-      createNoteFixture("guides/beta", { data: { title: "Beta" } }),
-      createNoteFixture("guides/hidden", { data: { nav_hidden: true, title: "Hidden" } }),
-      createNoteFixture("guides/draft", { data: { publish: false, title: "Draft" } }),
+      publishedNote("guides/testing/alpha", { title: "Alpha" }),
+      publishedNote("guides/beta", { title: "Beta" }),
+      hiddenNote("guides/hidden", { title: "Hidden" }),
+      draftNote("guides/draft", { title: "Draft" }),
     ]);
 
     expect(tree).toMatchObject([
@@ -60,8 +67,8 @@ describe("buildSidebarTree", () => {
 describe("getSidebarDefaultOpenKeys", () => {
   it("returns ancestor keys for the active note", () => {
     const tree = buildSidebarTree([
-      createNoteFixture("guides/testing/alpha"),
-      createNoteFixture("guides/beta"),
+      publishedNote("guides/testing/alpha"),
+      publishedNote("guides/beta"),
     ]);
 
     expect(getSidebarDefaultOpenKeys(tree, "guides/testing/alpha")).toEqual([
