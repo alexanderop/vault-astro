@@ -30,3 +30,4 @@ src/content/notes/.obsidian/
 test-results/
 playwright-report/
 blob-report/
+.worktrees

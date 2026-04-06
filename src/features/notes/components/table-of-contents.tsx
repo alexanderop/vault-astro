@@ -55,12 +55,12 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav className="px-1">
-      <h2 className="mb-2 flex items-center gap-1.5 text-ui-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+    <nav className="rail-panel" data-shortcut-list>
+      <h2 className="rail-panel-title">
         <List className="size-3" />
         On This Page
       </h2>
-      <ul className="max-h-80 space-y-0.5 overflow-y-auto pr-1 text-ui">
+      <ul className="shell-list max-h-80 overflow-y-auto pr-1">
         {items.map((heading) => {
           const isActive = heading.slug === activeSlug;
 
@@ -71,12 +71,13 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                   linkRefs.current[heading.slug] = element;
                 }}
                 href={`#${heading.slug}`}
+                data-shortcut-item
                 aria-current={isActive ? "location" : undefined}
                 className={cn(
-                  "block py-0.5 transition-colors",
-                  heading.depth === 3 ? "pl-3" : "",
-                  isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/70",
-                  heading.depth === 3 && !isActive ? "text-foreground/30" : "",
+                  "shell-list-row block rounded-sm py-0.5",
+                  heading.depth === 3 ? "pl-5" : "pl-2",
+                  isActive ? "shell-list-row--active" : "bg-transparent",
+                  heading.depth === 3 && !isActive ? "text-muted-foreground" : "",
                 )}
               >
                 {heading.text}

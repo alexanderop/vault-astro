@@ -15,6 +15,9 @@ import { remarkEmbeds } from "./src/features/embeds/lib/remark-embeds.ts";
 import { remarkBlockRefs } from "./src/features/embeds/lib/remark-block-refs.ts";
 import { remarkMermaid } from "./src/features/mermaid/lib/remark-mermaid.ts";
 import { remarkDataview } from "./src/features/dataview/lib/remark-dataview.ts";
+import { syncExcalidrawAssets } from "./src/lib/sync-excalidraw-assets.ts";
+
+syncExcalidrawAssets();
 
 // https://astro.build/config
 export default defineConfig({

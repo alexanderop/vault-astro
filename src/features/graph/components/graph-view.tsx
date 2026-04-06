@@ -23,20 +23,23 @@ export function GraphView({ data, currentSlug, title = "Linked Notes" }: GraphVi
   const visible = expanded ? linkedNotes : linkedNotes.slice(0, COLLAPSED_COUNT);
 
   return (
-    <div className="px-1">
-      <h3 className="mb-2 flex items-center gap-1.5 text-ui-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+    <div className="rail-panel" data-shortcut-list>
+      <h3 className="rail-panel-title">
         <GitFork className="size-3" />
         {title}
-        <span className="ml-auto font-normal tabular-nums">{linkedNotes.length}</span>
+        <span className="ml-auto font-normal tabular-nums text-muted-foreground">
+          {linkedNotes.length}
+        </span>
       </h3>
-      <ul className="space-y-px">
+      <ul className="shell-list">
         {visible.map((node) => (
           <li key={node.id}>
             <a
               href={`/${node.id}`}
-              className="flex items-center gap-1.5 rounded-sm px-1.5 py-1 text-ui text-foreground/55 transition-colors hover:bg-surface-hover hover:text-foreground/80"
+              data-shortcut-item
+              className="shell-list-row shell-list-row--compact"
             >
-              <FileText className="size-3 shrink-0 text-foreground/25" />
+              <FileText className="size-3 shrink-0 text-foreground/50" />
               <span className="min-w-0 truncate">{node.title}</span>
             </a>
           </li>
@@ -46,9 +49,7 @@ export function GraphView({ data, currentSlug, title = "Linked Notes" }: GraphVi
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className={cn(
-            "mt-1 flex w-full items-center gap-1 rounded-sm px-1.5 py-1 text-ui-sm text-muted-foreground/40 transition-colors hover:text-muted-foreground/60",
-          )}
+          className={cn("shell-list-row shell-list-row--compact mt-1 w-full text-xs")}
         >
           {expanded ? (
             <>

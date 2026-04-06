@@ -3,6 +3,7 @@ import DocumentShell from "@/components/document-shell.astro";
 import { SITE } from "@/config";
 import type { CollectionEntry } from "astro:content";
 import Sidebar from "@/features/navigation/components/sidebar.astro";
+import { MobileNav } from "@/features/navigation/components/mobile-nav";
 import { ThemeToggle } from "@/features/theme/components/theme-toggle";
 import { SearchDialog } from "@/features/search/components/search-dialog";
 import { ShortcutsProvider } from "@/features/shortcuts/components/shortcuts-provider";
@@ -17,6 +18,7 @@ interface Props {
   wide?: boolean;
   notes: CollectionEntry<"notes">[];
   searchIndex: SearchEntry[];
+  sourceUrl?: string;
 }
 
 const {
@@ -28,6 +30,7 @@ const {
   wide = false,
   notes,
   searchIndex,
+  sourceUrl,
 } = Astro.props;
 
 const hasAside = Astro.slots.has("aside");
@@ -41,35 +44,48 @@ const hasAside = Astro.slots.has("aside");
   includeMath={SITE.enableMath}
   includeMermaid={SITE.enableMermaid}
 >
-  <div class="flex min-h-screen">
-    <aside class="sticky top-0 h-screen shrink-0 border-r border-border">
+  <div class="shell-layout lg:flex" data-shortcut-target="top" data-source-url={sourceUrl}>
+    <aside class="shell-desktop-sidebar">
       <Sidebar notes={notes} currentSlug={currentSlug} />
     </aside>
-    <div class="flex flex-1 flex-col">
-      <header class="sticky top-0 z-header flex items-center justify-end gap-2 bg-background/80 px-6 py-2 backdrop-blur-sm">
-        {SITE.showSearch && <SearchDialog entries={searchIndex} client:load />}
-        {SITE.lightAndDarkMode && <ThemeToggle client:load />}
-        <ShortcutsProvider client:load />
+    <div class="shell-main">
+      <header class="shell-header">
+        <div class="shell-header-actions">
+          <MobileNav notes={notes} currentSlug={currentSlug} client:load />
+          <a href="/" class="text-sm font-semibold tracking-tight text-foreground/90 lg:hidden">Vault</a>
+        </div>
+        <div class="shell-header-actions justify-end">
+          {SITE.showSearch && (
+            <SearchDialog entries={searchIndex} sourceUrl={sourceUrl} client:load />
+          )}
+          {SITE.lightAndDarkMode && <ThemeToggle client:load />}
+        </div>
+        <ShortcutsProvider sourceUrl={sourceUrl} client:load />
       </header>
       <div
         class:list={[
-          "flex-1 px-6 py-6",
-          hasAside && "grid xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-10",
+          "shell-body",
+          hasAside && "shell-body--with-rail",
         ]}
       >
-        <main class:list={["mx-auto min-w-0 w-full", wide ? "max-w-screen-2xl" : "max-w-3xl"]}>
+        <main
+          class:list={[
+            "shell-content",
+            wide ? "shell-content--wide" : "shell-content--default",
+          ]}
+        >
           <slot />
         </main>
         {hasAside && (
-          <aside class="hidden self-start xl:block">
-            <div class="sticky top-14 space-y-6">
+          <aside class="shell-rail" data-shortcut-target="right-rail" tabindex="-1">
+            <div class="shell-rail-sticky">
               <slot name="aside" />
             </div>
           </aside>
         )}
       </div>
       {SITE.footer && (
-        <footer class="px-6 py-4 text-center text-sm text-muted-foreground/60">
+        <footer class="shell-footer">
           {SITE.footer}
         </footer>
       )}

@@ -1,7 +1,11 @@
 import { ShortcutsDialog } from "@/features/shortcuts/components/shortcuts-dialog";
 import { useKeyboardShortcuts } from "@/features/shortcuts/hooks/use-keyboard-shortcuts";
 
-export function ShortcutsProvider() {
+interface ShortcutsProviderProps {
+  sourceUrl?: string;
+}
+
+export function ShortcutsProvider({ sourceUrl }: ShortcutsProviderProps) {
   useKeyboardShortcuts();
-  return <ShortcutsDialog />;
+  return <ShortcutsDialog sourceUrl={sourceUrl} />;
 }

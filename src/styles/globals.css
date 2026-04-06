@@ -14,6 +14,12 @@
   /* Theme-adaptive surface overlays */
   --surface-hover: oklch(0 0 0 / 0.04);
   --surface-active: oklch(0 0 0 / 0.07);
+
+  /* Shell layout */
+  --shell-sidebar-width: 16rem;
+  --shell-rail-width: 18rem;
+  --shell-header-height: 3.5rem;
+  --shell-gutter: 1rem;
 }
 
 .dark {
@@ -89,17 +95,14 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  body {
+    @apply bg-background text-foreground;
     scrollbar-color: var(--color-border) transparent;
     scrollbar-width: thin;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 4rem;
+    scroll-padding-top: calc(var(--shell-header-height) + 1rem);
   }
 
   /* Respect reduced-motion preferences */
@@ -116,6 +119,231 @@
 }
 
 @layer components {
+  .shell-layout {
+    @apply min-h-screen bg-background;
+  }
+
+  .shell-desktop-sidebar {
+    @apply sticky top-0 hidden h-screen shrink-0 border-r border-border bg-sidebar lg:block;
+    width: var(--shell-sidebar-width);
+  }
+
+  .shell-sidebar {
+    @apply flex h-full flex-col bg-sidebar text-sidebar-foreground;
+  }
+
+  .shell-sidebar-header {
+    @apply flex items-center gap-2 border-b border-border px-4 py-3;
+  }
+
+  .shell-sidebar-scroll {
+    @apply flex-1 overflow-y-auto px-2 py-2;
+  }
+
+  .shell-main {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .shell-header {
+    min-height: var(--shell-header-height);
+    @apply sticky top-0 z-header flex items-center justify-between gap-3 border-b border-border bg-background/92 px-4 backdrop-blur-sm;
+  }
+
+  .shell-header-actions {
+    @apply flex min-w-0 items-center gap-2;
+  }
+
+  .shell-body {
+    @apply flex-1 px-4 py-6;
+  }
+
+  .shell-body--with-rail {
+    @apply xl:grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 80rem) {
+    .shell-body--with-rail {
+      grid-template-columns: minmax(0, 1fr) var(--shell-rail-width);
+      gap: 2.5rem;
+    }
+  }
+
+  .shell-content {
+    @apply mx-auto min-w-0 w-full;
+  }
+
+  .shell-content--default {
+    @apply max-w-3xl;
+  }
+
+  .shell-content--wide {
+    @apply max-w-screen-2xl;
+  }
+
+  .shell-rail {
+    @apply hidden self-start xl:block;
+  }
+
+  .shell-rail-sticky {
+    top: calc(var(--shell-header-height) + 1rem);
+    @apply sticky space-y-6;
+  }
+
+  .shell-footer {
+    @apply px-4 py-4 text-center text-sm text-muted-foreground;
+  }
+
+  .rail-panel {
+    @apply px-1;
+  }
+
+  .rail-panel-title {
+    letter-spacing: 0.14em;
+    font-size: var(--font-size-ui-xs);
+    line-height: var(--font-size-ui-xs--line-height);
+    @apply mb-2 flex items-center gap-1.5 font-medium uppercase text-muted-foreground;
+  }
+
+  .shell-list {
+    @apply space-y-px;
+  }
+
+  .shell-list-row {
+    font-size: var(--font-size-ui);
+    line-height: var(--font-size-ui--line-height);
+    @apply flex items-center gap-1.5 rounded-sm px-2 py-1 text-muted-foreground transition-colors;
+  }
+
+  .shell-list-row:hover,
+  .shell-list-row:focus-visible {
+    @apply bg-surface-hover text-foreground outline-none;
+  }
+
+  .shell-list-row--active {
+    @apply bg-surface-active font-medium text-foreground;
+  }
+
+  .shell-list-row--compact {
+    @apply px-1.5;
+  }
+
+  .shell-kbd {
+    font-size: var(--font-size-ui-2xs);
+    line-height: var(--font-size-ui-2xs--line-height);
+    @apply inline-flex min-w-5 items-center justify-center rounded bg-surface-hover px-1.5 py-0.5 font-medium text-muted-foreground;
+  }
+
+  .shell-meta {
+    @apply text-muted-foreground;
+  }
+
+  .shell-meta-subtle {
+    @apply text-muted-foreground/80;
+  }
+
+  .mobile-nav-dialog {
+    width: min(20rem, 100vw);
+    @apply h-svh max-w-none gap-0 rounded-none border-r border-border bg-sidebar p-0 shadow-2xl;
+    top: 0;
+    left: 0;
+    transform: none;
+  }
+
+  .mobile-nav-dialog[data-state="open"] {
+    animation: mobile-nav-enter 180ms ease-out;
+  }
+
+  .mobile-nav-dialog[data-state="closed"] {
+    animation: mobile-nav-exit 140ms ease-in;
+  }
+
+  .mobile-nav-overlay {
+    backdrop-filter: blur(2px);
+    @apply bg-background/70;
+  }
+
+  .note-prose {
+    font-size: 0.98rem;
+    @apply prose max-w-none leading-7;
+    --tw-prose-body: var(--color-foreground);
+    --tw-prose-headings: var(--color-foreground);
+    --tw-prose-lead: var(--color-muted-foreground);
+    --tw-prose-links: var(--color-primary);
+    --tw-prose-bold: var(--color-foreground);
+    --tw-prose-counters: var(--color-muted-foreground);
+    --tw-prose-bullets: var(--color-border);
+    --tw-prose-hr: var(--color-border);
+    --tw-prose-quotes: var(--color-foreground);
+    --tw-prose-quote-borders: var(--color-border);
+    --tw-prose-captions: var(--color-muted-foreground);
+    --tw-prose-kbd: var(--color-foreground);
+    --tw-prose-kbd-shadows: 0 0 0;
+    --tw-prose-code: var(--color-foreground);
+    --tw-prose-pre-code: var(--color-foreground);
+    --tw-prose-pre-bg: color-mix(in oklab, var(--palette-surface) 92%, var(--palette-base));
+    --tw-prose-th-borders: var(--color-border);
+    --tw-prose-td-borders: color-mix(in oklab, var(--palette-text) 10%, var(--palette-base));
+  }
+
+  .note-prose :where(h1, h2, h3, h4) {
+    @apply scroll-mt-24 tracking-tight;
+  }
+
+  .note-prose :where(h2, h3, h4) {
+    @apply mt-10;
+  }
+
+  .note-prose :where(a) {
+    @apply transition-colors;
+  }
+
+  .note-prose :where(blockquote) {
+    @apply border-l-border text-muted-foreground;
+  }
+
+  .note-prose :where(code):not(:where(pre code)) {
+    @apply rounded bg-muted px-1.5 py-0.5 text-[0.9em] font-medium;
+  }
+
+  .note-prose :where(pre) {
+    @apply rounded-xl border border-border;
+  }
+
+  .note-prose :where(table) {
+    @apply text-sm;
+  }
+
+  .content-compact {
+    @apply prose-p:my-3;
+  }
+
+  .content-compact :where(li) {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .content-relaxed {
+    @apply prose-p:my-5;
+  }
+
+  .content-relaxed :where(li) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .content-serif {
+    @apply font-serif;
+  }
+
+  .content-sans {
+    @apply font-sans;
+  }
+
+  .content-callouts-soft .callout {
+    @apply border-transparent bg-card/70;
+  }
+
   /* Obsidian-style callouts */
   .callout {
     border-color: var(--callout-border, var(--color-border));
@@ -218,6 +446,21 @@
     @apply my-4 rounded-lg;
   }
 
+  .obsidian-excalidraw-embed {
+    @apply my-6 space-y-3;
+  }
+  .obsidian-excalidraw-embed__image {
+    @apply w-full rounded-xl border border-border bg-card p-3;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+  .dark .obsidian-excalidraw-embed__image {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  .obsidian-excalidraw-embed figcaption {
+    @apply text-center text-sm text-muted-foreground;
+  }
+
   /* Note embeds */
   .obsidian-embed {
     @apply my-4 rounded-lg border border-border bg-muted/30 px-6 py-2;
@@ -255,5 +498,41 @@
   /* Mermaid diagrams */
   .mermaid {
     @apply my-4 flex justify-center;
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --shell-gutter: 1.5rem;
+  }
+
+  @layer components {
+    .shell-header,
+    .shell-body,
+    .shell-footer {
+      @apply px-6;
+    }
+  }
+}
+
+@keyframes mobile-nav-enter {
+  from {
+    transform: translateX(-1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mobile-nav-exit {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-0.75rem);
+    opacity: 0;
   }
 }

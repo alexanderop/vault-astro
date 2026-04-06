@@ -9,13 +9,10 @@ import {
 import { Search } from "lucide-react";
 import { getShortcutGroups } from "@/features/shortcuts/lib/shortcuts";
 import type { ShortcutGroup } from "@/features/shortcuts/lib/shortcuts";
+import { getShortcutContext } from "@/features/shortcuts/lib/shortcut-targets";
 
 function Kbd({ children }: { children: string }) {
-  return (
-    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded bg-surface-hover px-1.5 text-[11px] font-medium text-muted-foreground">
-      {children}
-    </kbd>
-  );
+  return <kbd className="shell-kbd h-5">{children}</kbd>;
 }
 
 function ShortcutKeys({ keys }: { keys: string[][] }) {
@@ -48,11 +45,15 @@ function filterGroups(groups: ShortcutGroup[], query: string): ShortcutGroup[] {
     .filter((group) => group.shortcuts.length > 0);
 }
 
-export function ShortcutsDialog() {
+interface ShortcutsDialogProps {
+  sourceUrl?: string;
+}
+
+export function ShortcutsDialog({ sourceUrl }: ShortcutsDialogProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const allGroups = useMemo(() => getShortcutGroups(), []);
+  const allGroups = useMemo(() => getShortcutGroups(getShortcutContext(sourceUrl)), [open, sourceUrl]);
   const filteredGroups = useMemo(() => filterGroups(allGroups, query), [allGroups, query]);
 
   useEffect(() => {

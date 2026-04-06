@@ -1,6 +1,6 @@
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SearchDialog } from "@/features/search/components/search-dialog";
 import type { SearchEntry } from "@/features/search/lib/search-index";
 
@@ -35,6 +35,10 @@ const entries: SearchEntry[] = [
 ];
 
 describe("SearchDialog", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("renders search trigger button", async () => {
     const screen = await render(<SearchDialog entries={entries} />);
     await expect.element(screen.getByRole("button", { name: /search/i })).toBeVisible();
@@ -59,5 +63,18 @@ describe("SearchDialog", () => {
     await screen.getByRole("button", { name: /search/i }).click();
     await page.getByPlaceholder("Type a command or search...").fill("nonexistent");
     await expect.element(page.getByText("No results found.")).toBeVisible();
+  });
+
+  it("shows the open source action when a source URL is provided", async () => {
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+    const screen = await render(
+      <SearchDialog entries={entries} sourceUrl="https://example.com/source.md" />,
+    );
+
+    await screen.getByRole("button", { name: /search/i }).click();
+    await expect.element(page.getByText("Open source")).toBeVisible();
+    await page.getByText("Open source").click();
+
+    expect(openSpy).toHaveBeenCalledWith("https://example.com/source.md", "_blank");
   });
 });

@@ -11,17 +11,25 @@ import {
 } from "@/components/ui/command";
 import { useSearch } from "@/features/search/hooks/use-search";
 import type { SearchEntry } from "@/features/search/lib/search-index";
-import { FileText, Home, Moon, Search, Sun, Keyboard } from "lucide-react";
+import { ExternalLink, FileText, Home, Moon, Search, Sun, Keyboard } from "lucide-react";
 import { useTheme } from "@/features/theme/hooks/use-theme";
+import {
+  SHORTCUT_EVENTS,
+  SHORTCUT_TARGETS,
+  getShortcutContext,
+  jumpToShortcutTarget,
+} from "@/features/shortcuts/lib/shortcut-targets";
 
 interface SearchDialogProps {
   entries: SearchEntry[];
+  sourceUrl?: string;
 }
 
-export function SearchDialog({ entries }: SearchDialogProps) {
+export function SearchDialog({ entries, sourceUrl }: SearchDialogProps) {
   const [open, setOpen] = useState(false);
   const { query, setQuery, results } = useSearch(entries);
   const { theme, toggleTheme } = useTheme();
+  const shortcutContext = getShortcutContext(sourceUrl);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -49,6 +57,15 @@ export function SearchDialog({ entries }: SearchDialogProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    function handleOpenSearch() {
+      setOpen(true);
+    }
+
+    document.addEventListener(SHORTCUT_EVENTS.openSearch, handleOpenSearch);
+    return () => document.removeEventListener(SHORTCUT_EVENTS.openSearch, handleOpenSearch);
+  }, []);
+
   const handleSelect = useCallback(
     (href: string) => {
       setOpen(false);
@@ -70,13 +87,12 @@ export function SearchDialog({ entries }: SearchDialogProps) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-sm bg-surface-hover px-2.5 py-1 text-ui text-muted-foreground/60 transition-colors hover:bg-surface-active hover:text-muted-foreground"
+        data-shortcut-target="search-trigger"
+        className="inline-flex items-center gap-2 rounded-sm bg-surface-hover px-2.5 py-1 text-sm text-muted-foreground transition-colors hover:bg-surface-active hover:text-foreground"
       >
         <Search className="size-3.5" />
         Search
-        <kbd className="pointer-events-none ml-1 hidden rounded bg-surface-hover px-1.5 py-0.5 text-ui-2xs font-medium text-muted-foreground/40 sm:inline-block">
-          ⌘K
-        </kbd>
+        <kbd className="shell-kbd pointer-events-none ml-1 hidden sm:inline-flex">⌘K</kbd>
       </button>
 
       <CommandDialog
@@ -125,7 +141,68 @@ export function SearchDialog({ entries }: SearchDialogProps) {
                   <span>Go home</span>
                   <CommandShortcut>G H</CommandShortcut>
                 </CommandItem>
+                <CommandItem value="go-notes" onSelect={() => handleSelect("/")}>
+                  <FileText />
+                  <span>Go to notes</span>
+                  <CommandShortcut>G N</CommandShortcut>
+                </CommandItem>
+                <CommandItem
+                  value="go-top"
+                  onSelect={() => {
+                    jumpToShortcutTarget(SHORTCUT_TARGETS.top);
+                    setOpen(false);
+                  }}
+                >
+                  <Home />
+                  <span>Go to top</span>
+                  <CommandShortcut>G T</CommandShortcut>
+                </CommandItem>
+                {shortcutContext.hasBacklinks && (
+                  <CommandItem
+                    value="go-backlinks"
+                    onSelect={() => {
+                      jumpToShortcutTarget(SHORTCUT_TARGETS.backlinks);
+                      setOpen(false);
+                    }}
+                  >
+                    <FileText />
+                    <span>Go to backlinks</span>
+                    <CommandShortcut>G B</CommandShortcut>
+                  </CommandItem>
+                )}
+                {shortcutContext.hasRightRail && (
+                  <CommandItem
+                    value="go-right-rail"
+                    onSelect={() => {
+                      jumpToShortcutTarget(SHORTCUT_TARGETS.rightRail);
+                      setOpen(false);
+                    }}
+                  >
+                    <FileText />
+                    <span>Go to right rail</span>
+                    <CommandShortcut>G R</CommandShortcut>
+                  </CommandItem>
+                )}
               </CommandGroup>
+
+              {shortcutContext.hasSource && (
+                <>
+                  <CommandSeparator />
+                  <CommandGroup heading="Notes">
+                    <CommandItem
+                      value="open-source"
+                      onSelect={() => {
+                        window.open(sourceUrl, "_blank");
+                        setOpen(false);
+                      }}
+                    >
+                      <ExternalLink />
+                      <span>Open source</span>
+                      <CommandShortcut>O</CommandShortcut>
+                    </CommandItem>
+                  </CommandGroup>
+                </>
+              )}
 
               <CommandSeparator />
 
@@ -152,10 +229,7 @@ export function SearchDialog({ entries }: SearchDialogProps) {
                     setOpen(false);
                     setTimeout(() => {
                       document.dispatchEvent(
-                        new KeyboardEvent("keydown", {
-                          key: "?",
-                          bubbles: true,
-                        }),
+                        new KeyboardEvent("keydown", { key: "?", bubbles: true }),
                       );
                     }, 100);
                   }}

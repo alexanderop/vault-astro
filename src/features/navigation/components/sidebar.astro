@@ -16,12 +16,12 @@ const tree = buildSidebarTree(notes);
 const defaultOpenKeys = getSidebarDefaultOpenKeys(tree, currentSlug);
 ---
 
-<nav class="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
-  <div class="flex items-center gap-2 px-4 py-3">
+<nav class="shell-sidebar" data-shortcut-list>
+  <div class="shell-sidebar-header">
     <svg class="size-4 text-primary/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     <a href="/" class="text-sm font-semibold tracking-tight text-foreground/90">Vault</a>
   </div>
-  <div class="flex-1 overflow-y-auto px-1.5 py-1">
+  <div class="shell-sidebar-scroll">
     <SidebarTreeView tree={tree} currentSlug={currentSlug} defaultOpenKeys={defaultOpenKeys} client:load />
   </div>
 </nav>

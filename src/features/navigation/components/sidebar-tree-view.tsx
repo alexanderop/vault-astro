@@ -9,6 +9,7 @@ interface SidebarTreeViewProps {
   tree: SidebarTreeNode[];
   currentSlug?: string;
   defaultOpenKeys: string[];
+  onNavigate?: () => void;
 }
 
 function SidebarNode({
@@ -16,11 +17,13 @@ function SidebarNode({
   currentSlug,
   openKeys,
   toggleFolder,
+  onNavigate,
 }: {
   node: SidebarTreeNode;
   currentSlug?: string;
   openKeys: Set<string>;
   toggleFolder: (key: string) => void;
+  onNavigate?: () => void;
 }) {
   const isFolder = node.children.length > 0;
   const isOpen = openKeys.has(node.key);
@@ -32,15 +35,12 @@ function SidebarNode({
       <li>
         <a
           href={`/${node.slug}`}
-          className={cn(
-            "flex items-center gap-1.5 rounded-sm px-2 py-1 text-ui transition-colors",
-            isCurrent
-              ? "bg-surface-active font-medium text-foreground"
-              : "text-foreground/55 hover:bg-surface-hover hover:text-foreground/80",
-          )}
+          data-shortcut-item
+          className={cn("shell-list-row", isCurrent ? "shell-list-row--active" : null)}
+          onClick={onNavigate}
           style={{ paddingLeft: `${depth * 0.75 + 0.75}rem` }}
         >
-          <FileText className="size-3.5 shrink-0 text-foreground/30" />
+          <FileText className="size-3.5 shrink-0 text-foreground/50" />
           <span className="min-w-0 truncate">{node.title ?? node.name}</span>
         </a>
       </li>
@@ -53,16 +53,16 @@ function SidebarNode({
         type="button"
         onClick={() => toggleFolder(node.key)}
         aria-expanded={isOpen}
-        className="flex w-full items-center gap-1.5 rounded-sm px-2 py-1 text-left text-ui text-foreground/55 transition-colors hover:bg-surface-hover hover:text-foreground/80"
+        className="shell-list-row w-full text-left"
         style={{ paddingLeft: `${depth * 0.75 + 0.75}rem` }}
       >
         <ChevronRight
           className={cn(
-            "size-3 shrink-0 text-foreground/30 transition-transform",
+            "size-3 shrink-0 text-foreground/50 transition-transform",
             isOpen && "rotate-90",
           )}
         />
-        <Folder className="size-3.5 shrink-0 text-foreground/30" />
+        <Folder className="size-3.5 shrink-0 text-foreground/50" />
         <span className="min-w-0 truncate">{node.name}</span>
       </button>
 
@@ -75,6 +75,7 @@ function SidebarNode({
               currentSlug={currentSlug}
               openKeys={openKeys}
               toggleFolder={toggleFolder}
+              onNavigate={onNavigate}
             />
           ))}
         </ul>
@@ -83,7 +84,12 @@ function SidebarNode({
   );
 }
 
-export function SidebarTreeView({ tree, currentSlug, defaultOpenKeys }: SidebarTreeViewProps) {
+export function SidebarTreeView({
+  tree,
+  currentSlug,
+  defaultOpenKeys,
+  onNavigate,
+}: SidebarTreeViewProps) {
   const [openKeys, setOpenKeys] = useState(() => new Set(defaultOpenKeys));
 
   useEffect(() => {
@@ -122,7 +128,7 @@ export function SidebarTreeView({ tree, currentSlug, defaultOpenKeys }: SidebarT
   }
 
   return (
-    <ul className="space-y-px">
+    <ul className="shell-list" data-shortcut-list>
       {tree.map((node) => (
         <SidebarNode
           key={node.key}
@@ -130,6 +136,7 @@ export function SidebarTreeView({ tree, currentSlug, defaultOpenKeys }: SidebarT
           currentSlug={currentSlug}
           openKeys={openKeys}
           toggleFolder={toggleFolder}
+          onNavigate={onNavigate}
         />
       ))}
     </ul>

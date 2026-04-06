@@ -7,7 +7,9 @@ import {
   getEntryHref,
   getPublishedNotes,
   getEntryType,
+  isExcalidrawTarget,
   isImageTarget,
+  isPublishedNote,
   parseWikilink,
   slugifyWikilinkFragment,
   targetToHref,
@@ -67,6 +69,13 @@ describe("content resolver helpers", () => {
     expect(isImageTarget("diagram.SVG")).toBe(true);
     expect(isImageTarget("note.md")).toBe(false);
   });
+
+  it("identifies excalidraw targets and publication status", () => {
+    expect(isExcalidrawTarget("system-design.excalidraw")).toBe(true);
+    expect(isExcalidrawTarget("diagram.png")).toBe(false);
+    expect(isPublishedNote("notes/alpha", true)).toBe(true);
+    expect(isPublishedNote("Excalidraw/system-design.excalidraw", true)).toBe(false);
+  });
 });
 
 describe("createCollectionContentResolver", () => {
@@ -88,6 +97,11 @@ describe("createCollectionContentResolver", () => {
       data: {
         title: "Draft Note",
         publish: false,
+      },
+    }),
+    createNoteFixture("Excalidraw/system-design.excalidraw", {
+      data: {
+        title: "System Design Diagram",
       },
     }),
   ];
@@ -155,5 +169,8 @@ describe("createFilesystemContentResolver", () => {
       "/attachments/assets/diagram.png",
     );
     expect(resolver.resolveAttachment("diagram.png")).toBe("/attachments/assets/diagram.png");
+    expect(resolver.resolveExcalidraw("system-design.excalidraw")).toBe(
+      "/excalidraw/Excalidraw/system-design.excalidraw.svg",
+    );
   });
 });

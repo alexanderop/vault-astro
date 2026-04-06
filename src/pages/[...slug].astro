@@ -59,6 +59,7 @@ const ogImage = typeof note.data.cover === "string"
   wide
   notes={notes}
   searchIndex={searchIndex}
+  sourceUrl={note.data.url ?? note.data.website}
 >
   <NoteHeader note={note} notes={notes} />
   <NoteContent Content={Content} cssclasses={note.data.cssclasses} />

@@ -77,4 +77,20 @@ describe("remarkWikilinks", () => {
       ],
     });
   });
+
+  it("renders Excalidraw embeds from exported svg assets", () => {
+    const tree = processTree("![[system-design.excalidraw|System Overview]]");
+    const paragraph = tree.children[0];
+
+    expect(paragraph).toMatchObject({
+      type: "paragraph",
+      children: [
+        {
+          type: "html",
+          value:
+            '<figure class="obsidian-excalidraw-embed"><img src="/excalidraw/Excalidraw/system-design.excalidraw.svg" alt="System Overview" class="obsidian-excalidraw-embed__image" loading="lazy" /><figcaption>System Overview</figcaption></figure>',
+        },
+      ],
+    });
+  });
 });

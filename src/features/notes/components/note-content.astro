@@ -1,6 +1,7 @@
 ---
 import type { RenderResult } from "astro:content";
 import { cn } from "@/lib/utils";
+import { resolveContentClasses } from "@/features/notes/lib/content-classes";
 
 interface Props {
   Content: RenderResult["Content"];
@@ -8,8 +9,9 @@ interface Props {
 }
 
 const { Content, cssclasses = [] } = Astro.props;
+const contentClasses = resolveContentClasses(cssclasses);
 ---
 
-<article class={cn("prose prose-zinc dark:prose-invert max-w-none", ...cssclasses)}>
+<article class={cn("note-prose", ...contentClasses)}>
   <Content />
 </article>

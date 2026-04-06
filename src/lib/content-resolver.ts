@@ -61,12 +61,16 @@ export interface ContentResolver {
   entries: ResolvedContentEntry[];
   resolve: (target: string) => ResolveResult;
   resolveAttachment: (target: string) => string | null;
+  resolveExcalidraw: (target: string) => string | null;
 }
 
 const CONTENT_ROOT = resolve("./src/content/notes");
 const ATTACHMENTS_ROOT = resolve("./public/attachments");
 const WIKILINK_REGEX = /!?\[\[([^\]]+)\]\]/g;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico"]);
+const EXCALIDRAW_SOURCE_EXTENSION = ".excalidraw";
+const EXCALIDRAW_SVG_SUFFIX = ".excalidraw.svg";
+const EXCALIDRAW_PUBLIC_DIR = "excalidraw";
 
 let cachedFilesystemResolver: ContentResolver | null = null;
 
@@ -134,7 +138,7 @@ function toResolvedEntry(entry: CollectionEntry<"notes">): ResolvedContentEntry 
     publicPath: permalink ?? entry.id,
     title: toTitle(entry),
     type: typeof entry.data.type === "string" ? entry.data.type : inferEntryType(entry.id),
-    publish: entry.data.publish !== false,
+    publish: isPublishedNote(entry.id, entry.data.publish),
     slug,
     permalink,
     aliases,
@@ -247,6 +251,26 @@ function collectAttachmentCandidates(root: string): string[] {
   return files;
 }
 
+function collectContentAssets(root: string): string[] {
+  if (!existsSync(root)) return [];
+
+  const files: string[] = [];
+
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    const fullPath = `${root}/${entry.name}`;
+    if (entry.isDirectory()) {
+      files.push(...collectContentAssets(fullPath));
+      continue;
+    }
+
+    if (entry.isFile()) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
 function createAttachmentResolver(
   attachmentsRoot = ATTACHMENTS_ROOT,
 ): (target: string) => string | null {
@@ -273,6 +297,37 @@ function createAttachmentResolver(
     const basenameMatches = byBasename.get(getBasename(target)) ?? [];
     if (basenameMatches.length === 1) {
       return `/attachments/${basenameMatches[0]}`;
+    }
+
+    return null;
+  };
+}
+
+function createExcalidrawResolver(contentRoot = CONTENT_ROOT): (target: string) => string | null {
+  const candidates = collectContentAssets(contentRoot)
+    .filter((file) => file.endsWith(EXCALIDRAW_SVG_SUFFIX))
+    .map((file) => file.slice(contentRoot.length + 1).replaceAll("\\", "/"));
+  const byPath = new Map<string, string[]>();
+  const byBasename = new Map<string, string[]>();
+
+  for (const relPath of candidates) {
+    const normalizedPath = normalizeLookupValue(relPath.replace(/\.svg$/i, ""));
+    const basename = getBasename(relPath.replace(/\.svg$/i, ""));
+
+    byPath.set(normalizedPath, [...(byPath.get(normalizedPath) ?? []), relPath]);
+    byBasename.set(basename, [...(byBasename.get(basename) ?? []), relPath]);
+  }
+
+  return (target: string) => {
+    const normalizedTarget = normalizeLookupValue(target);
+    const pathMatches = byPath.get(normalizedTarget) ?? [];
+    if (pathMatches.length === 1) {
+      return `/${EXCALIDRAW_PUBLIC_DIR}/${pathMatches[0]}`;
+    }
+
+    const basenameMatches = byBasename.get(getBasename(target)) ?? [];
+    if (basenameMatches.length === 1) {
+      return `/${EXCALIDRAW_PUBLIC_DIR}/${basenameMatches[0]}`;
     }
 
     return null;
@@ -314,6 +369,7 @@ function createResolver(entries: ResolvedContentEntry[]): ContentResolver {
   }
 
   const resolveAttachment = createAttachmentResolver();
+  const resolveExcalidraw = createExcalidrawResolver();
 
   return {
     entries: publishedEntries,
@@ -335,11 +391,12 @@ function createResolver(entries: ResolvedContentEntry[]): ContentResolver {
       );
     },
     resolveAttachment,
+    resolveExcalidraw,
   };
 }
 
 export function getPublishedNotes(notes: CollectionEntry<"notes">[]): CollectionEntry<"notes">[] {
-  return notes.filter((note) => note.data.publish !== false);
+  return notes.filter((note) => isPublishedNote(note.id, note.data.publish));
 }
 
 export function createCollectionContentResolver(
@@ -376,7 +433,7 @@ export function createFilesystemContentResolver(options?: {
       publicPath: permalink ?? id,
       title: title ?? id.split("/").at(-1) ?? id,
       type: parseScalar(frontmatter, "type") ?? inferEntryType(id),
-      publish,
+      publish: isPublishedNote(id, publish),
       slug,
       permalink,
       aliases,
@@ -390,6 +447,7 @@ export function createFilesystemContentResolver(options?: {
   return {
     ...resolver,
     resolveAttachment: createAttachmentResolver(attachmentsRoot),
+    resolveExcalidraw: createExcalidrawResolver(contentRoot),
   };
 }
 
@@ -405,6 +463,14 @@ export function getFilesystemContentResolver(): ContentResolver {
 export function isImageTarget(target: string): boolean {
   const extension = target.split(".").pop()?.toLowerCase() ?? "";
   return IMAGE_EXTENSIONS.has(extension);
+}
+
+export function isExcalidrawTarget(target: string): boolean {
+  return normalizeLookupValue(target).endsWith(EXCALIDRAW_SOURCE_EXTENSION);
+}
+
+export function isPublishedNote(id: string, publish: boolean | undefined): boolean {
+  return publish !== false && !isExcalidrawTarget(id);
 }
 
 export function slugifyWikilinkFragment(fragment: string): string {

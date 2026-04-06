@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
 import { SITE } from "@/config";
+import {
+  SHORTCUT_TARGETS,
+  jumpToShortcutTarget,
+  moveFocusInShortcutList,
+  openSearchShortcut,
+} from "@/features/shortcuts/lib/shortcut-targets";
 
 function isInputTarget(e: KeyboardEvent): boolean {
   const target = e.target as HTMLElement;
@@ -9,6 +15,11 @@ function isInputTarget(e: KeyboardEvent): boolean {
     target.isContentEditable ||
     target.closest("[role='dialog']") !== null
   );
+}
+
+function openSource() {
+  const url = document.querySelector("[data-source-url]")?.getAttribute("data-source-url");
+  if (url) window.open(url, "_blank");
 }
 
 function toggleTheme() {
@@ -33,6 +44,30 @@ export function useKeyboardShortcuts() {
     }
 
     function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        clearPending();
+        return;
+      }
+
+      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
+        switch (e.key.toLowerCase()) {
+          case "j":
+            if (moveFocusInShortcutList(1)) {
+              e.preventDefault();
+              clearPending();
+              return;
+            }
+            break;
+          case "k":
+            if (moveFocusInShortcutList(-1)) {
+              e.preventDefault();
+              clearPending();
+              return;
+            }
+            break;
+        }
+      }
+
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isInputTarget(e)) return;
 
@@ -41,8 +76,27 @@ export function useKeyboardShortcuts() {
         clearPending();
         switch (e.key.toLowerCase()) {
           case "h":
+          case "n":
             e.preventDefault();
             window.location.href = "/";
+            return;
+          case "s":
+            e.preventDefault();
+            openSearchShortcut();
+            return;
+          case "t":
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+          case "b":
+            if (jumpToShortcutTarget(SHORTCUT_TARGETS.backlinks)) {
+              e.preventDefault();
+            }
+            return;
+          case "r":
+            if (jumpToShortcutTarget(SHORTCUT_TARGETS.rightRail)) {
+              e.preventDefault();
+            }
             return;
         }
         return;
@@ -61,6 +115,10 @@ export function useKeyboardShortcuts() {
         case "t":
           e.preventDefault();
           toggleTheme();
+          return;
+        case "o":
+          e.preventDefault();
+          openSource();
           return;
       }
     }

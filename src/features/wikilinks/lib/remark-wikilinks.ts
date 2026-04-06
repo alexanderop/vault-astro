@@ -2,6 +2,7 @@ import type { Root, Text, Link, Html } from "mdast";
 import { visit } from "unist-util-visit";
 import {
   getFilesystemContentResolver,
+  isExcalidrawTarget,
   isImageTarget,
   parseWikilink,
   targetToHref,
@@ -37,7 +38,22 @@ export function remarkWikilinks(options?: { resolver?: ContentResolver }) {
 
         const parsed = parseWikilink(match[0]);
 
-        if (parsed.isEmbed && isImageTarget(parsed.target)) {
+        if (parsed.isEmbed && isExcalidrawTarget(parsed.target)) {
+          const src = resolver.resolveExcalidraw(parsed.target);
+          const alt = parsed.alias ?? parsed.target;
+          if (src) {
+            const caption = parsed.alias ? `<figcaption>${parsed.alias}</figcaption>` : "";
+            children.push({
+              type: "html",
+              value: `<figure class="obsidian-excalidraw-embed"><img src="${src}" alt="${alt}" class="obsidian-excalidraw-embed__image" loading="lazy" />${caption}</figure>`,
+            });
+          } else {
+            children.push({
+              type: "html",
+              value: `<span class="obsidian-missing-link">${alt}</span>`,
+            });
+          }
+        } else if (parsed.isEmbed && isImageTarget(parsed.target)) {
           // Image embed: ![[image.png]] → <img>
           const src = resolver.resolveAttachment(parsed.target);
           const alt = parsed.alias ?? parsed.target;

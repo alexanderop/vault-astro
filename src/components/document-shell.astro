@@ -55,8 +55,7 @@ const resolvedOgImage = ogImage ?? SITE.ogImage;
   <body class="min-h-screen bg-background text-foreground antialiased">
     {SITE.lightAndDarkMode && (
       <script is:inline define:vars={{ storageKey: SITE.themeStorageKey }}>
-        const theme = localStorage.getItem(storageKey) ??
-          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const theme = localStorage.getItem(storageKey) ?? "dark";
         if (theme === "dark") document.documentElement.classList.add("dark");
       </script>
     )}
