@@ -34,6 +34,16 @@ Detect type from URL, then load the appropriate reference file.
 | Manual: `evergreen`                                        | evergreen                                             | `references/content-types/evergreen.md`                            |
 | Manual: `map`                                              | map                                                   | `references/content-types/map.md`                                  |
 
+### Source-Required Types
+
+All URL-bearing content types **must** produce an immutable source record in `src/content/notes/sources/`. This is non-negotiable — the source layer is the audit trail.
+
+| Must create source                                                                                                | May skip source                                                  |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| article, book, youtube, podcast, reddit, github, course, newsletter, talk, movie, manga, quote (when URL-sourced) | note, evergreen, map (user-generated synthesis, no external URL) |
+
+If a source-required type reaches Phase 7 without a source file written, **halt and prompt the user** before proceeding.
+
 ### YouTube Classification
 
 YouTube URLs require sub-classification before processing:
@@ -292,6 +302,19 @@ Confirm source save:
   - Capture: full resource content
 ```
 
+### Source Validation Gate
+
+Before proceeding to Phase 7, verify source enforcement:
+
+1. Check: is this a source-required type? (See "Source-Required Types" table above)
+2. If yes: confirm `src/content/notes/sources/{slug}.md` was written in Phase 6
+3. If the source file is missing, **halt** and use AskUserQuestion:
+   - **Create source now** — go back to Phase 6
+   - **Skip with reason** — log the reason and proceed (exceptional cases only)
+   - **Cancel** — abort the ingest
+
+Never silently skip source creation for URL-bearing types.
+
 ### Phase 7: Update Wiki
 
 Create or update the summary/synthesis note at `src/content/notes/notes/{slug}.md`. This note is the maintained wiki entry derived from the source, not the raw capture.
@@ -336,18 +359,65 @@ If errors are found, fix them before completing the task.
 
 ---
 
+## Batch Ingest Mode
+
+When the user provides 3+ URLs at once, offer batch mode as an alternative to one-by-one ingest.
+
+### Tradeoffs
+
+| Aspect               | Full ingest (default)    | Batch mode                     |
+| -------------------- | ------------------------ | ------------------------------ |
+| Diagram evaluation   | Interactive              | Skipped                        |
+| Connection discovery | Interactive prompts      | Auto-only (no AskUserQuestion) |
+| Author creation      | Interactive confirmation | Auto-create if no match        |
+| Source records       | Always                   | Always (non-negotiable)        |
+| Quality              | Highest                  | Good — review after            |
+
+### Batch Workflow
+
+1. **Shared Phase 0:** Load SOUL.md once
+2. **Parallel processing:** Spawn one Agent subagent per URL, each running Phases 1-7 independently. Max 10 items per batch.
+3. **Combined Phase 8:** Single index + log update covering all ingested items
+4. **Combined Phase 9:** Single `vp run check` pass
+
+### Guardrails
+
+- **Source records are always created** — batch mode does not skip Phase 6
+- **Max 10 items** per batch. For more, split into multiple batches
+- **Failures don't block** — if one item fails, log the error and continue with the rest
+- **Post-batch review** — recommend the user run `/reviewing-notes` after a batch to catch quality issues
+
+### Post-Batch Summary
+
+```text
+## Batch Ingest Complete
+
+| # | Title | Type | Source | Wiki | Status |
+|---|-------|------|--------|------|--------|
+| 1 | ... | article | ✓ sources/slug.md | ✓ notes/slug.md | Success |
+| 2 | ... | youtube | ✓ sources/slug.md | ✓ notes/slug.md | Success |
+| 3 | ... | podcast | ✗ failed | ✗ skipped | Error: transcript unavailable |
+
+Index updated: +N entries
+Log updated: +N entries
+Recommendation: run /reviewing-notes to audit batch quality
+```
+
+---
+
 ## Error Handling
 
-| Error                                 | Recovery                                        |
-| ------------------------------------- | ----------------------------------------------- |
-| Metadata agent fails                  | Prompt for manual entry or WebFetch fallback    |
-| Transcript unavailable                | Note "No transcript available" in body          |
-| Transcript too large (>10K tokens)    | Use Phase 2.5 subagent or chunked extraction    |
-| PDF extraction fails (no `pdftotext`) | Install with `brew install poppler`, then retry |
-| Author not found online               | Create minimal profile (name only)              |
-| Reddit 429                            | Wait 60s and retry                              |
-| Semantic analysis timeout             | Proceed without wiki-link suggestions           |
-| Validation crash                      | Warn user, recommend manual check               |
+| Error                                 | Recovery                                             |
+| ------------------------------------- | ---------------------------------------------------- |
+| Metadata agent fails                  | Prompt for manual entry or WebFetch fallback         |
+| Transcript unavailable                | Note "No transcript available" in body               |
+| Transcript too large (>10K tokens)    | Use Phase 2.5 subagent or chunked extraction         |
+| PDF extraction fails (no `pdftotext`) | Install with `brew install poppler`, then retry      |
+| Author not found online               | Create minimal profile (name only)                   |
+| Reddit 429                            | Wait 60s and retry                                   |
+| Semantic analysis timeout             | Proceed without wiki-link suggestions                |
+| Validation crash                      | Warn user, recommend manual check                    |
+| Source not created for URL type       | Halt before Phase 7, prompt user via AskUserQuestion |
 
 ---
 

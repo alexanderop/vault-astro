@@ -1,7 +1,7 @@
 ---
 name: weekly-review
 description: Summarize the past week's daily journal entries. Use when asked to "weekly review", "review the week", "summarize this week", or "week summary".
-allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent, AskUserQuestion
 ---
 
 # Weekly Review
@@ -113,9 +113,57 @@ private: true
 
 - [[note-1]] - {brief context}
 - [[note-2]] - {brief context}
+
+## Wiki Health
+
+- **Total pages:** {N} wiki, {N} sources
+- **Added this week:** {N} notes, {N} sources
+- **Issues found:** {summary or "none"}
+- **MOC suggestions:** {top 3 or "none"}
 ```
 
-### 3.3 Review with User
+### 3.3 Wiki Health Check
+
+Run a quick lint pass on the wiki as part of the weekly cadence. This catches issues early before they compound.
+
+**3.3.1 Quick Lint Scan**
+
+Use Grep and Glob to check for:
+
+- **Broken wiki-links** created this week (grep for `[[` in recently modified files, verify targets exist)
+- **Notes with <2 tags** among files modified this week
+- **Orphan notes** — notes created this week with 0 incoming links
+- **Total counts** — wiki page count, source count, notes added this week
+
+**3.3.2 MOC Gap Check (optional)**
+
+If the moc-curator cluster script is available, run:
+
+```bash
+python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=moc-gaps
+```
+
+Summarize top 3 MOC suggestions (if any).
+
+**3.3.3 Format Results**
+
+Add a `## Wiki Health` section to the weekly note:
+
+```markdown
+## Wiki Health
+
+- **Total pages:** {N} wiki, {N} sources
+- **Added this week:** {N} notes, {N} sources
+- **Broken links:** {count} ({list if any})
+- **Low-tag notes:** {count}
+- **Orphans this week:** {count}
+- **MOC suggestions:** {top 3 or "none"}
+- **Recommendation:** {e.g., "run /reviewing-notes for full audit" or "wiki is healthy"}
+```
+
+If no daily notes exist for the week, still offer to run just the wiki health check.
+
+### 3.4 Review with User
 
 Present the generated weekly review:
 
@@ -195,6 +243,7 @@ Before saving:
 - [ ] `dailies` array lists all daily notes included
 - [ ] Summary synthesizes themes, not just lists
 - [ ] Wiki-links use correct `[[slug]]` format
+- [ ] Wiki health check was run (or skipped with reason)
 
 ---
 

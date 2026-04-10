@@ -131,7 +131,7 @@ When adding a new resource:
 3. Refresh `[[index]]` if a notable public page was added or changed.
 4. Append a dated entry to `[[log]]`.
 
-Ingest should prefer guided one-by-one work over batch dumping.
+Ingest should prefer guided one-by-one work over batch dumping. The adding-notes skill documents a lighter-touch batch mode for 3-10 items when the user explicitly requests it.
 
 ### Query
 
@@ -141,6 +141,17 @@ When answering questions:
 2. Use sources only when the wiki layer is missing needed detail.
 3. Cite relevant wiki pages inline with `[[wikilinks]]`.
 4. Offer to save durable answers back as wiki pages.
+
+### Search Scaling
+
+Below ~500 wiki pages, the index file + grep is sufficient for query. Above that threshold, adopt a dedicated search tool:
+
+- **Recommended:** [qmd](https://github.com/tobi/qmd) — local hybrid BM25/vector search for markdown files with LLM re-ranking
+- **Install:** `brew install tobi/tap/qmd` (or build from source)
+- **Index:** `qmd index src/content/notes/notes/`
+- **Search:** `qmd search "query terms"`
+
+Grep remains useful for frontmatter/tag queries regardless of scale.
 
 ### Lint
 
