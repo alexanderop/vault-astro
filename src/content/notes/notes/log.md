@@ -11,6 +11,12 @@ tags:
   - operations
 ---
 
+## [2026-04-10] ingest | Vulnerability Research Is Cooked
+
+- Added immutable source record: `sources/vulnerability-research-is-cooked.md` from sockpuppet.org.
+- Added public note: [[vulnerability-research-is-cooked]] — Thomas Ptacek argues AI agents already generate validated zero-days with trivial bash scripts; the Bitter Lesson just hit security.
+- Created author profile: thomas-ptacek.
+
 ## [2026-04-10] ingest | TanStack AI Code Mode
 
 - Added immutable source record: `sources/tanstack-ai-code-mode.md` from TanStack blog.
