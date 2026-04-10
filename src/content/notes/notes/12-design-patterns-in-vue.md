@@ -19,10 +19,6 @@ date: 2026-01-02
 
 A practical guide to 12 design patterns specifically for Vue development, addressing problems that basically every app has.
 
-## Hey there!
-
-![[12-design-patterns-in-vue 2026-01-05 10.00.50.excalidraw]]
-
 ## The 12 Patterns
 
 ### 1. Data Store Pattern

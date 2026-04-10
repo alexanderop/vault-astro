@@ -67,6 +67,7 @@ export interface ContentResolver {
 export type NoteResolver = Pick<ContentResolver, "entries" | "resolve">;
 
 const WIKILINK_REGEX = /!?\[\[([^\]]+)\]\]/g;
+const CODE_BLOCK_REGEX = /```[\s\S]*?```|`[^`\n]+`/g;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico"]);
 const EXCALIDRAW_SOURCE_EXTENSION = ".excalidraw";
 
@@ -255,11 +256,12 @@ export function parseWikilink(raw: string): ParsedWikilink {
 }
 
 export function extractWikilinks(markdown: string): ParsedWikilink[] {
+  const stripped = markdown.replace(CODE_BLOCK_REGEX, "");
   const matches: ParsedWikilink[] = [];
   const regex = new RegExp(WIKILINK_REGEX.source, "g");
   let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(markdown)) !== null) {
+  while ((match = regex.exec(stripped)) !== null) {
     matches.push(parseWikilink(match[0]));
   }
 

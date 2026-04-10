@@ -1,4 +1,5 @@
-import { getFilesystemContentResolver, extractWikilinks } from "../src/lib/content-resolver.ts";
+import { getFilesystemContentResolver } from "../src/lib/content-resolver.server.ts";
+import { extractWikilinks } from "../src/lib/content-resolver.ts";
 
 const resolver = getFilesystemContentResolver();
 
@@ -56,4 +57,8 @@ if (orphanedEntries.length > 0) {
   for (const entry of orphanedEntries.slice(0, 100)) {
     console.log(`- ${entry}`);
   }
+}
+
+if (summary.brokenLinks > 0 || summary.ambiguousLinks > 0) {
+  process.exit(1);
 }

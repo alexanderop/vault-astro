@@ -47,6 +47,7 @@ tags:
 
 - [[llm-wiki]] - Working synthesis of the LLM Wiki pattern and how it applies inside this vault.
 - [[ai-assistance-reduces-persistence-and-hurts-independent-performance]] - Useful counterweight to AI boosterism: direct-answer usage can hurt persistence and independent reasoning after only brief exposure.
+- [[biggest-problems-of-ai]] - Synthesis of AI's biggest problems: deskilling, cognitive debt, existential risk, job displacement, quality degradation, security threats, and geopolitical traps.
 
 ## Operational Pages
 

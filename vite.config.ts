@@ -33,7 +33,8 @@ export default defineConfig({
         input: cacheableInput,
       },
       "audit:content": {
-        command: "node --experimental-strip-types scripts/audit-content.mjs",
+        command:
+          "node --experimental-strip-types --import ./scripts/register-loader.mjs scripts/audit-content.mjs",
         env: ["NODE_ENV"],
         input: cacheableInput,
       },

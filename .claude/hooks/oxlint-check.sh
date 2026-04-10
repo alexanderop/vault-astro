@@ -8,14 +8,18 @@ if [ -z "$file_path" ]; then
   exit 0
 fi
 
-# Only check JS/TS/Astro files
-if ! [[ "$file_path" =~ \.(js|ts|jsx|tsx|astro)$ ]]; then
-  exit 0
+# JS/TS/Astro files: run oxlint
+if [[ "$file_path" =~ \.(js|ts|jsx|tsx|astro)$ ]]; then
+  if ! vp lint -- "$file_path" 2>&1; then
+    exit 2
+  fi
 fi
 
-# Run oxlint - exit 2 blocks Claude until fixed
-if ! oxlint -c .oxlintrc.json "$file_path" 2>&1; then
-  exit 2
+# Markdown files in notes: run content audit
+if [[ "$file_path" =~ src/content/notes/.*\.md$ ]]; then
+  if ! node --experimental-strip-types --import ./scripts/register-loader.mjs scripts/audit-content.mjs 2>&1; then
+    exit 2
+  fi
 fi
 
 exit 0

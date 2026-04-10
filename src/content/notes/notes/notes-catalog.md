@@ -138,7 +138,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[hands-on-with-context-graphs-and-neo4j]]
 - [[hardening-github-actions]]
 - [[harness-engineering-leveraging-codex-in-an-agent-first-world]]
-- [[heres-how-i-use-llms]]
+- [[heres-how-i-use-llms-to-help-me-write-code]]
 - [[how-ai-is-transforming-work-at-anthropic]]
 - [[how-browsers-work]]
 - [[how-i-use-obsidian]]

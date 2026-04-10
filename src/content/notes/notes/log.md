@@ -11,6 +11,11 @@ tags:
   - operations
 ---
 
+## [2026-04-10] synthesis | Biggest Problems of AI
+
+- Created synthesis page: [[biggest-problems-of-ai]] — maps AI's biggest problems across 10+ wiki sources: deskilling, cognitive debt, existential risk, job displacement, quality degradation, security threats, and geopolitical traps.
+- Updated [[index]] with new synthesis entry.
+
 ## [2026-04-10] ingest | Vulnerability Research Is Cooked
 
 - Added immutable source record: `sources/vulnerability-research-is-cooked.md` from sockpuppet.org.
