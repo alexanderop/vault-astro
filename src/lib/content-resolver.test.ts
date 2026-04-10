@@ -153,7 +153,7 @@ describe("createCollectionContentResolver", () => {
       "/custom/alpha#^block-id",
     );
     expect(getEntryType(resolved.entry)).toBe("note");
-    expect(getEntryType(notes[1]!)).toBe("author");
+    expect(getEntryType(notes[1])).toBe("author");
   });
 
   it("returns only published notes", () => {

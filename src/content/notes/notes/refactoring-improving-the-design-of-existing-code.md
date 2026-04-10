@@ -13,7 +13,7 @@ authors:
   - martin-fowler
 summary: "The definitive guide to improving code structure without changing behavior. Fowler catalogs refactoring techniques with clear examples, making messy code maintainable."
 date: 2026-01-03
-status: completed
+media_status: completed
 dateCompleted: 2025
 ---
 

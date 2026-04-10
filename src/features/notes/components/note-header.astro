@@ -1,18 +1,24 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import type { NoteResolver } from "@/lib/content-resolver";
 import { createCollectionContentResolver, getEntryType } from "@/lib/content-resolver";
 import { getNoteDate, getNoteSummary, getNoteTitle } from "@/lib/notes";
+import { getRoleLabel, getSourceIds, getWikiRole, getWikiStatus } from "@/lib/wiki";
 
 interface Props {
   note: CollectionEntry<"notes">;
   notes: CollectionEntry<"notes">[];
+  resolver?: NoteResolver;
 }
 
-const { note, notes } = Astro.props;
+const { note, notes, resolver: resolverProp } = Astro.props;
 const title = getNoteTitle(note);
 const summary = getNoteSummary(note);
-const resolver = createCollectionContentResolver(notes);
+const resolver = resolverProp ?? createCollectionContentResolver(notes);
 const noteType = getEntryType(note);
+const wikiRole = getWikiRole(note);
+const wikiStatus = getWikiStatus(note);
+const sourceIds = getSourceIds(note);
 const formattedDate = getNoteDate(note)?.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
@@ -69,6 +75,33 @@ const links = [
         <span class="shell-meta">{formattedDate}</span>
       )}
     </div>
+
+    {wikiRole && (
+      <>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+          Wiki Role
+        </span>
+        <div class="flex flex-wrap items-center gap-2">
+          <a href={`/role/${wikiRole}`} class="shell-meta-subtle transition-colors hover:text-foreground">
+            {getRoleLabel(wikiRole)}
+          </a>
+          {wikiStatus && <span class="shell-meta capitalize">{wikiStatus}</span>}
+        </div>
+      </>
+    )}
+
+    {sourceIds.length > 0 && (
+      <>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10"/><path d="M5 7h14"/><path d="M6 11h12"/><path d="M8 15h8"/><path d="M10 19h4"/></svg>
+          Sources
+        </span>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="shell-meta-subtle">{sourceIds.length} linked source{sourceIds.length === 1 ? "" : "s"}</span>
+        </div>
+      </>
+    )}
 
     {/* Tags */}
     {(note.data.tags ?? []).length > 0 && (

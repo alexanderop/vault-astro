@@ -2,7 +2,7 @@ import * as fc from "fast-check";
 import { notesFromDefinitions, type NoteDefinition } from "./factories/note-factory";
 
 export const segmentArbitrary = fc
-  .array(fc.constantFrom(..."-abcdefghijklmnopqrstuvwxyz0123456789"), {
+  .array(fc.constantFrom(..."-abcdefghijklmnopqrstuvwxyz0123456789".split("")), {
     minLength: 1,
     maxLength: 10,
   })

@@ -1,6 +1,13 @@
 import { resolveDataviewFunction } from "./dataview-functions";
 import type { DataviewFunctionDefinition } from "./dataview-functions";
-import type { DataviewIndex, DataviewLink, DataviewQueryRow, Expression } from "./dataview-types";
+import type {
+  DataviewIndex,
+  DataviewLink,
+  DataviewPage,
+  DataviewQueryRow,
+  DataviewTaskRow,
+  Expression,
+} from "./dataview-types";
 
 function isDataviewLink(value: unknown): value is DataviewLink {
   return Boolean(
@@ -29,7 +36,15 @@ function compareDataviewSortValues(left: unknown, right: unknown): number {
     return left - right;
   }
 
-  return String(left ?? "").localeCompare(String(right ?? ""));
+  const leftStr =
+    typeof left === "object" && left !== null
+      ? JSON.stringify(left)
+      : String((left ?? "") as string | number | boolean);
+  const rightStr =
+    typeof right === "object" && right !== null
+      ? JSON.stringify(right)
+      : String((right ?? "") as string | number | boolean);
+  return leftStr.localeCompare(rightStr);
 }
 
 function toComparableNumber(value: unknown): number | null {
@@ -53,7 +68,7 @@ function normalizeFieldValue(value: unknown): unknown {
 export class DataviewContext {
   constructor(
     private readonly index: DataviewIndex,
-    private readonly current: Extract<DataviewQueryRow, { file: unknown }> | null,
+    private readonly current: DataviewPage | DataviewTaskRow | null,
   ) {}
 
   evaluate(expression: Expression, row: DataviewQueryRow): unknown {

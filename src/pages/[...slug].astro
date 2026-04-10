@@ -4,10 +4,12 @@ import { SITE } from "@/config";
 import NoteLayout from "@/layouts/note-layout.astro";
 import NoteContent from "@/features/notes/components/note-content.astro";
 import NoteHeader from "@/features/notes/components/note-header.astro";
+import NoteBreadcrumb from "@/features/notes/components/note-breadcrumb.astro";
 import BacklinksPanel from "@/features/backlinks/components/backlinks-panel.astro";
 import { TableOfContents } from "@/features/notes/components/table-of-contents";
 import { GraphView } from "@/features/graph/components/graph-view";
 import { LinkPreviewProvider } from "@/features/link-preview/components/link-preview-provider";
+import { StackedPagesProvider } from "@/features/stacked-pages/components/stacked-pages-provider";
 import { getNoteTitle } from "@/lib/notes";
 import { getBuildSiteData } from "@/lib/build-site-data";
 
@@ -56,12 +58,20 @@ const ogImage = typeof note.data.cover === "string"
   searchIndex={searchIndex}
   sourceUrl={note.data.url ?? note.data.website}
 >
-  <NoteHeader note={note} notes={notes} />
+  {SITE.showBreadcrumb && <NoteBreadcrumb note={note} notes={notes} resolver={resolver} />}
+  <NoteHeader note={note} notes={notes} resolver={resolver} />
   <NoteContent Content={Content} cssclasses={note.data.cssclasses} />
   <LinkPreviewProvider
     entries={searchIndex.map(({ href, title, preview }) => ({ href, title, preview }))}
     client:load
   />
+  {SITE.showStackedPages && (
+    <StackedPagesProvider
+      currentSlug={currentSlug}
+      currentTitle={title}
+      client:load
+    />
+  )}
 
   <Fragment slot="aside">
     {SITE.showGraph && (

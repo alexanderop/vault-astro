@@ -10,8 +10,8 @@ describe("LinkPreviewProvider", () => {
       "matchMedia",
       vi.fn().mockImplementation(() => ({
         matches: true,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
+        addEventListener: vi.fn<() => void>(),
+        removeEventListener: vi.fn<() => void>(),
       })),
     );
     document.body.innerHTML = `

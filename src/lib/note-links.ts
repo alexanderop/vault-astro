@@ -10,7 +10,7 @@ import {
 
 export { parseWikilink, slugifyWikilinkFragment };
 
-type NoteLinksIndex = Map<string, Set<string>>;
+export type NoteLinksIndex = Map<string, Set<string>>;
 
 export function extractWikilinkTargets(markdown: string): string[] {
   return extractWikilinks(markdown)

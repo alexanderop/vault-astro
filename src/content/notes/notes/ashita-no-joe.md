@@ -12,7 +12,7 @@ authors:
   - asao-takamori
   - tetsuya-chiba
 volumes: 20
-status: completed
+media_status: completed
 rating: 10
 date: 2026-02-12
 ---

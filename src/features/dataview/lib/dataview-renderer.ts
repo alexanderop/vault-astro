@@ -42,7 +42,8 @@ function renderValue(value: unknown): string {
     return "";
   }
 
-  return escapeHtml(String(value));
+  if (typeof value === "object") return escapeHtml(JSON.stringify(value));
+  return escapeHtml(String(value as string | number | boolean | bigint | symbol));
 }
 
 export function renderDataviewResult(result: DataviewExecutionResult): string {
@@ -51,8 +52,9 @@ export function renderDataviewResult(result: DataviewExecutionResult): string {
       return '<div class="dataview dataview-list"><p>No results</p></div>';
     }
 
+    const header = result.header;
     const items = result.rows
-      .map((row) => `<li>${renderValue(result.header.showId ? row.display : row.display)}</li>`)
+      .map((row) => `<li>${renderValue(header.showId ? row.display : row.display)}</li>`)
       .join("");
     return `<div class="dataview dataview-list"><ul>${items}</ul></div>`;
   }
@@ -62,15 +64,16 @@ export function renderDataviewResult(result: DataviewExecutionResult): string {
       return '<div class="dataview dataview-table"><p>No results</p></div>';
     }
 
+    const header = result.header;
     const headers = [
-      ...(result.header.showId ? ["<th>File</th>"] : []),
-      ...result.header.fields.map((field) => `<th>${escapeHtml(field.alias ?? field.source)}</th>`),
+      ...(header.showId ? ["<th>File</th>"] : []),
+      ...header.fields.map((field) => `<th>${escapeHtml(field.alias ?? field.source)}</th>`),
     ].join("");
 
     const body = result.rows
       .map((row) => {
         const cells = [
-          ...(result.header.showId ? [`<td>${renderValue(row.id)}</td>`] : []),
+          ...(header.showId ? [`<td>${renderValue(row.id)}</td>`] : []),
           ...row.values.map((value) => `<td>${renderValue(value)}</td>`),
         ].join("");
         return `<tr>${cells}</tr>`;

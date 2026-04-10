@@ -12,7 +12,11 @@ export function remarkTags() {
       if (!node.value.includes("#")) return;
 
       // Don't process inside headings or code
-      if (parent.type === "heading" || parent.type === "code" || parent.type === "inlineCode") {
+      if (
+        parent.type === "heading" ||
+        (parent.type as string) === "code" ||
+        (parent.type as string) === "inlineCode"
+      ) {
         return;
       }
 

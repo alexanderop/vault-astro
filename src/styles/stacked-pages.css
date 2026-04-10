@@ -1,0 +1,151 @@
+@layer components {
+  /* Horizontal scroll container when stacking is active */
+  .shell-body.stacked-mode {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    grid-template-columns: unset;
+    gap: 0;
+  }
+
+  /* Hide the right rail in stacked mode */
+  .shell-body.stacked-mode > .shell-rail {
+    display: none;
+  }
+
+  /* Constrain the base pane width in stacked mode */
+  .shell-body.stacked-mode > .shell-content {
+    flex: 0 0 auto;
+    width: clamp(28rem, 42vw, 40rem);
+    max-width: unset;
+    scroll-snap-align: start;
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.5rem;
+  }
+
+  /* Portal container should not affect layout */
+  #stacked-panes-container {
+    display: contents;
+  }
+
+  /* Dynamically added panes */
+  .stacked-pane {
+    flex: 0 0 auto;
+    width: clamp(28rem, 42vw, 40rem);
+    min-height: 100%;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-background);
+    scroll-snap-align: start;
+    position: relative;
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+
+  /* Left-edge depth shadow */
+  .stacked-pane::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -6px;
+    width: 6px;
+    background: linear-gradient(to right, transparent, oklch(0 0 0 / 0.05));
+    pointer-events: none;
+  }
+
+  .dark .stacked-pane::before {
+    background: linear-gradient(to right, transparent, oklch(0 0 0 / 0.18));
+  }
+
+  /* Focused pane highlight */
+  .stacked-pane[data-focused="true"] {
+    box-shadow: inset 0 2px 0 0 var(--color-primary);
+  }
+
+  /* Pane sticky header */
+  .stacked-pane-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .stacked-pane-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+    min-width: 0;
+  }
+
+  .stacked-pane-title:hover {
+    color: var(--color-primary);
+  }
+
+  .stacked-pane-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-muted-foreground);
+    cursor: pointer;
+    transition:
+      color 0.15s,
+      background 0.15s;
+  }
+
+  .stacked-pane-close:hover {
+    color: var(--color-foreground);
+    background: var(--surface-hover);
+  }
+
+  /* Entrance animation */
+  .stacked-pane[data-entering="true"] {
+    animation: stacked-pane-enter 200ms ease-out;
+  }
+
+  @keyframes stacked-pane-enter {
+    from {
+      opacity: 0;
+      transform: translateX(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Disable stacking on mobile */
+  @media (max-width: 767px) {
+    .shell-body.stacked-mode {
+      display: block;
+      overflow-x: visible;
+    }
+
+    .shell-body.stacked-mode > .shell-content {
+      width: auto;
+      max-width: none;
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .stacked-pane {
+      display: none;
+    }
+  }
+}

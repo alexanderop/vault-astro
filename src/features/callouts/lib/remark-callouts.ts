@@ -85,7 +85,7 @@ export function remarkCallouts() {
       const foldable = match[2] === "-" || match[2] === "+";
       const defaultOpen = match[2] !== "-";
       const title = match[3] || type.charAt(0).toUpperCase() + type.slice(1);
-      const icon = CALLOUT_ICONS[type] ?? "📝";
+      const icon = (CALLOUT_ICONS as Record<string, string | undefined>)[type] ?? "📝";
       const color = getCalloutColor(type);
 
       // Remove the callout syntax line from the text

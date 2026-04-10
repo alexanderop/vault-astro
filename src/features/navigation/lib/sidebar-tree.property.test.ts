@@ -69,6 +69,8 @@ describe("sidebar tree properties", () => {
               if (child.slug) {
                 sawFile = true;
               } else {
+                // Folders must come before files in sibling order
+                // eslint-disable-next-line jest/no-conditional-expect -- property test: assertion is inside a structural loop, not a conditional branch
                 expect(sawFile).toBe(false);
               }
             }

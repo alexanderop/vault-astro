@@ -6,11 +6,25 @@ import { getBuildSiteData } from "@/lib/build-site-data";
 import { ForceGraphView } from "@/features/graph/components/force-graph";
 import NoteCard from "@/features/notes/components/note-card.astro";
 import TagCloud from "@/features/tags/components/tag-cloud.astro";
+import type { ResolveSuccess } from "@/lib/content-resolver";
+import { getRoleLabel, getWikiRole } from "@/lib/wiki";
 
 const { notes, resolver, searchIndex, globalGraph, tagIndex } = await getBuildSiteData();
 const sortedNotes = sortNotesByDateDesc(notes);
 const recentNotes = sortedNotes.slice(0, 6);
 const totalConnections = globalGraph?.edges.length ?? 0;
+const featuredWikiEntries = ["overview", "index", "log"]
+  .map((target) => resolver.resolve(target))
+  .filter((entry): entry is ResolveSuccess => entry.status === "resolved");
+const roleCounts = new Map<string, number>();
+for (const note of notes) {
+  const role = getWikiRole(note);
+  if (role) roleCounts.set(role, (roleCounts.get(role) ?? 0) + 1);
+}
+const featuredRoleOrder = ["overview", "map", "concept", "synthesis", "entity", "author", "question"];
+const featuredRoles = featuredRoleOrder
+  .filter((role) => (roleCounts.get(role) ?? 0) > 0)
+  .map((role) => ({ role, label: getRoleLabel(role), count: roleCounts.get(role)! }));
 ---
 
 <NoteLayout title="Home" description={SITE.description} canonicalPath="/" notes={notes} searchIndex={searchIndex} wide>
@@ -21,7 +35,7 @@ const totalConnections = globalGraph?.edges.length ?? 0;
       <p class="mt-1 text-sm text-muted-foreground">{SITE.description}</p>
     )}
     <p class="mt-2 text-xs text-muted-foreground/70">
-      {notes.length} notes · {totalConnections} connections
+      {notes.length} wiki pages · {totalConnections} connections
     </p>
     <button
       id="index-search-trigger"
@@ -32,6 +46,42 @@ const totalConnections = globalGraph?.edges.length ?? 0;
       <kbd class="shell-kbd ml-auto hidden sm:inline-flex">⌘K</kbd>
     </button>
   </section>
+
+  {featuredWikiEntries.length > 0 && (
+    <section class="mb-10">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Wiki Entry Points</h2>
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {featuredWikiEntries.map(({ entry }) => (
+          <a
+            href={`/${entry.publicPath}`}
+            class="rounded-lg border border-border bg-card/40 p-4 transition-colors hover:bg-surface-hover"
+          >
+            <div class="text-sm font-medium text-foreground/90">{entry.title}</div>
+            <p class="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {typeof entry.data?.summary === "string" ? entry.data.summary : "Core wiki page"}
+            </p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {featuredRoles.length > 0 && (
+    <section class="mb-10">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Browse by Role</h2>
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {featuredRoles.map((role) => (
+          <a
+            href={`/role/${role.role}`}
+            class="rounded-lg border border-border bg-card/30 p-4 transition-colors hover:bg-surface-hover"
+          >
+            <div class="text-sm font-medium text-foreground/90">{role.label}</div>
+            <p class="mt-1 text-xs text-muted-foreground">{role.count} page{role.count === 1 ? "" : "s"}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   {/* Graph */}
   {SITE.showGraph && globalGraph && globalGraph.nodes.length > 0 && (

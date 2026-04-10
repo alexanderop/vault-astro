@@ -1,5 +1,6 @@
 export const SHORTCUT_EVENTS = {
   openSearch: "vault:open-search",
+  toggleSidebar: "vault:toggle-sidebar",
 } as const;
 
 export const SHORTCUT_TARGETS = {
@@ -90,6 +91,7 @@ export function moveFocusInShortcutList(direction: 1 | -1): boolean {
       : Math.max(0, Math.min(items.length - 1, currentIndex + direction));
   const nextItem = items[nextIndex];
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- nextItem can be undefined if items is empty
   if (!nextItem || nextItem === activeElement) {
     return false;
   }

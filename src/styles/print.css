@@ -1,0 +1,118 @@
+@media print {
+  /* ── Force light theme ── */
+  :root {
+    --palette-base: oklch(0.98 0.004 95);
+    --palette-surface: oklch(0.94 0.008 95);
+    --palette-text: oklch(0.28 0.02 95);
+    --palette-accent: oklch(0.6 0.14 235);
+    --palette-danger: oklch(0.58 0.2 28);
+    --surface-hover: oklch(0 0 0 / 0.04);
+    --surface-active: oklch(0 0 0 / 0.07);
+    color-scheme: light;
+  }
+
+  /* ── Hide non-content elements ── */
+  .shell-desktop-sidebar,
+  .shell-header,
+  .shell-rail,
+  .shell-footer,
+  .mobile-nav-dialog,
+  .mobile-nav-overlay {
+    display: none !important;
+  }
+
+  /* ── Single-column full-width layout ── */
+  .shell-layout {
+    display: block;
+    min-height: auto;
+  }
+
+  .shell-main {
+    display: block;
+  }
+
+  .shell-body {
+    display: block;
+    padding: 0;
+  }
+
+  .shell-body--with-rail {
+    display: block;
+  }
+
+  .shell-content,
+  .shell-content--default {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Serif font & print margins ── */
+  .note-prose {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  /* ── Code blocks: prevent overflow ── */
+  .note-prose :where(pre) {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: visible;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  .note-prose :where(code):not(:where(pre code)) {
+    background: #f5f5f5;
+  }
+
+  /* ── Expand foldable callouts ── */
+  details.callout:not([open]) > .callout-content {
+    display: block !important;
+  }
+
+  details.callout > summary {
+    pointer-events: none;
+  }
+
+  /* ── Callout & image page-break control ── */
+  .callout,
+  .obsidian-image-embed,
+  .obsidian-excalidraw-embed,
+  .mermaid,
+  table,
+  blockquote {
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+  }
+
+  /* ── Remove backgrounds that waste ink ── */
+  body,
+  .shell-layout {
+    background: white !important;
+  }
+
+  .callout {
+    background: #fafafa !important;
+    border-color: #ddd !important;
+    box-shadow: inset 0.25rem 0 0 0 #bbb !important;
+  }
+
+  /* ── Disable dark-mode Excalidraw inversion ── */
+  .obsidian-excalidraw-embed__image {
+    filter: none !important;
+  }
+
+  /* ── Print page setup ── */
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+}

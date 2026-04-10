@@ -1,15 +1,15 @@
 ---
 name: moc-curator
 description: |
-  Suggest MOC updates and new MOCs based on semantic clustering.
+  Curate wiki maps and clustering pages for the LLM Wiki.
   Use when asked to "curate MOCs", "update maps", "find clusters",
   "what MOCs need updating", or "organize my notes".
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
-# MOC Curator
+# Wiki Map Curator
 
-This skill uses semantic embeddings to suggest MOC (Map of Content) updates and discover new MOC opportunities.
+This skill uses semantic embeddings to suggest map-page updates, discover new map opportunities, and improve the public wiki's navigational layer.
 
 ## Capabilities
 

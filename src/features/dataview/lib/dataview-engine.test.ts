@@ -66,9 +66,10 @@ SORT rating ASC
 LIMIT 2`);
 
     expect(query.header.type).toBe("table");
-    expect(query.header.showId).toBe(false);
-    expect(query.header.fields).toHaveLength(2);
-    expect(query.header.fields[0]?.alias).toBe("Score");
+    const header = query.header as Extract<typeof query.header, { type: "table" }>;
+    expect(header.showId).toBe(false);
+    expect(header.fields).toHaveLength(2);
+    expect(header.fields[0]?.alias).toBe("Score");
     expect(query.operations.find((operation) => operation.type === "sort")).toEqual({
       direction: "asc",
       expression: parseExpression("rating"),
@@ -93,9 +94,10 @@ GROUP BY author`);
     const query = parseDataviewQuery(multilineTableQuery);
 
     expect(query.header.type).toBe("table");
-    expect(query.header.showId).toBe(false);
-    expect(query.header.fields).toHaveLength(7);
-    expect(query.header.fields.map((field) => field.alias)).toEqual([
+    const header = query.header as Extract<typeof query.header, { type: "table" }>;
+    expect(header.showId).toBe(false);
+    expect(header.fields).toHaveLength(7);
+    expect(header.fields.map((field) => field.alias)).toEqual([
       "lower",
       "upper",
       "tag count text",

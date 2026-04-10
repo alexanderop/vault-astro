@@ -1,0 +1,55 @@
+---
+import NoteLayout from "@/layouts/note-layout.astro";
+import { sortNotesByDateDesc } from "@/lib/notes";
+import { getBuildSiteData } from "@/lib/build-site-data";
+import NoteCard from "@/features/notes/components/note-card.astro";
+import { getRoleLabel, getWikiRole } from "@/lib/wiki";
+
+export async function getStaticPaths() {
+  const { notes, resolver, searchIndex } = await getBuildSiteData();
+  const roles = Array.from(
+    new Set(
+      notes
+        .map((note) => getWikiRole(note))
+        .filter((role): role is string => Boolean(role)),
+    ),
+  ).toSorted((a, b) => a.localeCompare(b));
+
+  return roles.map((role) => {
+    const roleNotes = sortNotesByDateDesc(notes.filter((note) => getWikiRole(note) === role));
+
+    return {
+      params: { role },
+      props: { role, roleNotes, notes, resolver, searchIndex },
+    };
+  });
+}
+
+const { role, roleNotes, notes, resolver, searchIndex } = Astro.props;
+const label = getRoleLabel(role);
+---
+
+<NoteLayout
+  title={label}
+  description={`Wiki pages with the ${label} role`}
+  canonicalPath={`/role/${role}`}
+  notes={notes}
+  searchIndex={searchIndex}
+  wide
+>
+  <section class="mb-10">
+    <a href="/" class="text-xs text-muted-foreground transition-colors hover:text-foreground">&larr; Back to home</a>
+    <h1 class="mt-3 text-2xl font-semibold tracking-tight">{label}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">
+      {roleNotes.length} {roleNotes.length === 1 ? "page" : "pages"}
+    </p>
+  </section>
+
+  <section>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {roleNotes.map((note) => (
+        <NoteCard note={note} resolver={resolver} />
+      ))}
+    </div>
+  </section>
+</NoteLayout>

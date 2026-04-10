@@ -37,14 +37,14 @@ describe("remarkTags", () => {
     const tree = process("hello #tag world");
     const paragraph = tree.children[0];
     expect(paragraph.type).toBe("paragraph");
-    if (paragraph.type === "paragraph") {
-      const values = paragraph.children.map((c) =>
-        c.type === "text" ? c.value : c.type === "html" ? c.value : "",
-      );
-      expect(values.join("")).toContain("hello");
-      expect(values.join("")).toContain("world");
-      expect(hasTagSpan("hello #tag world", "tag")).toBe(true);
-    }
+    expect(paragraph.type).toBe("paragraph");
+    if (paragraph.type !== "paragraph") return;
+    const values = paragraph.children.map((c: { type: string; value?: string }) =>
+      c.type === "text" ? c.value : c.type === "html" ? c.value : "",
+    );
+    expect(values.join("")).toContain("hello");
+    expect(values.join("")).toContain("world");
+    expect(hasTagSpan("hello #tag world", "tag")).toBe(true);
   });
 
   it("ignores numeric-only #123", () => {

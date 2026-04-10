@@ -59,7 +59,7 @@ function collectEdges(linksByNote: NoteLinksIndex, include: (id: string) => bool
     if (!include(source)) continue;
     for (const target of targets) {
       if (!include(target)) continue;
-      const key = [source, target].toSorted().join("→");
+      const key = [source, target].toSorted((a, b) => a.localeCompare(b)).join("→");
       if (seen.has(key)) continue;
       seen.add(key);
       edges.push({ source, target });

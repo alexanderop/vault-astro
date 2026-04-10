@@ -12,7 +12,7 @@ authors:
   - tsugumi-ohba
   - takeshi-obata
 volumes: 12
-status: completed
+media_status: completed
 summary: "A high school genius discovers a notebook that kills anyone whose name is written in it, sparking a cat-and-mouse battle of wits with the world's greatest detective."
 date: 2026-01-02
 ---

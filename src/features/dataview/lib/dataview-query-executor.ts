@@ -21,7 +21,7 @@ function resolveSourceTarget(
 ): DataviewPage | null {
   if (target.type === "current") {
     if (current && "page" in current) {
-      return current.page;
+      return (current as DataviewTaskRow).page;
     }
 
     if (current && "file" in current && !("rows" in current)) {
@@ -48,7 +48,7 @@ function getRowFile(row: DataviewQueryRow): DataviewPage["file"] | null {
 
 function getRowPage(row: DataviewQueryRow): DataviewPage | null {
   if ("page" in row) {
-    return row.page;
+    return (row as DataviewTaskRow).page;
   }
 
   if ("file" in row && !("rows" in row)) {
@@ -64,7 +64,7 @@ function getRowId(row: DataviewQueryRow): unknown {
   }
 
   if ("page" in row) {
-    return row.task.text;
+    return (row as DataviewTaskRow).task.text;
   }
 
   return row.file.link;
@@ -113,9 +113,9 @@ export function matchesSource(
         ? source.tag.toLowerCase()
         : `#${source.tag.toLowerCase()}`;
 
-      const tags = "task" in row ? row.task.tags : file.tags;
+      const tags = "task" in row ? (row as DataviewTaskRow).task.tags : file.tags;
       return tags.some(
-        (entry) => entry.toLowerCase() === tag || entry.toLowerCase().startsWith(`${tag}/`),
+        (entry: string) => entry.toLowerCase() === tag || entry.toLowerCase().startsWith(`${tag}/`),
       );
     }
     case "link":
@@ -312,20 +312,22 @@ function createExecutionRows(
   context: DataviewContext,
 ): DataviewExecutionRow[] {
   if (query.header.type === "list") {
+    const header = query.header;
     return rows.map((row) => ({
       data: row,
-      display: query.header.format ? context.evaluate(query.header.format, row) : getRowId(row),
+      display: header.format ? context.evaluate(header.format, row) : getRowId(row),
       id: getRowId(row),
       values: [],
     }));
   }
 
   if (query.header.type === "table") {
+    const header = query.header;
     return rows.map((row) => ({
       data: row,
       display: null,
       id: getRowId(row),
-      values: query.header.fields.map((field) => context.evaluate(field.expression, row)),
+      values: header.fields.map((field) => context.evaluate(field.expression, row)),
     }));
   }
 
@@ -345,7 +347,7 @@ function createExecutionRows(
 
 export function executeDataviewQuery(
   query: DataviewQuery,
-  current: DataviewQueryRow | null,
+  current: DataviewPage | DataviewTaskRow | null,
   index: DataviewIndex,
 ): DataviewExecutionResult {
   if (query.header.type === "calendar") {

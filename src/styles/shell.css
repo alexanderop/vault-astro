@@ -6,6 +6,13 @@
   .shell-desktop-sidebar {
     @apply sticky top-0 hidden h-screen shrink-0 border-r border-border bg-sidebar lg:block;
     width: var(--shell-sidebar-width);
+    transition:
+      width 200ms ease,
+      opacity 200ms ease;
+  }
+
+  .shell-desktop-sidebar.sidebar-hidden {
+    @apply lg:!hidden;
   }
 
   .shell-sidebar {

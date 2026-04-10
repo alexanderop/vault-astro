@@ -16,7 +16,9 @@ function extractSection(nodes: RootContent[], heading: string): RootContent[] {
     if (node.type === "heading") {
       if (capturing && node.depth <= captureDepth) break;
 
-      const headingText = node.children.map((c) => ("value" in c ? c.value : "")).join("");
+      const headingText = node.children
+        .map((c) => ("value" in c ? (c as { value: string }).value : ""))
+        .join("");
 
       if (!capturing && headingText.toLowerCase() === heading.toLowerCase()) {
         capturing = true;

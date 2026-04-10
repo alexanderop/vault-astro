@@ -9,10 +9,15 @@ import {
 import { PROPERTY_TEST_SETTINGS } from "../../test/helpers/property-test";
 
 const tokenArbitrary = fc
-  .array(fc.constantFrom(..."-_ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), {
-    minLength: 1,
-    maxLength: 16,
-  })
+  .array(
+    fc.constantFrom(
+      ..."-_ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(""),
+    ),
+    {
+      minLength: 1,
+      maxLength: 16,
+    },
+  )
   .map((chars) => chars.join("").trim())
   .filter((value) => value.length > 0);
 

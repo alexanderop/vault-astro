@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { SITE } from "@/config";
 import {
+  SHORTCUT_EVENTS,
   SHORTCUT_TARGETS,
   jumpToShortcutTarget,
   moveFocusInShortcutList,
@@ -124,6 +125,10 @@ export function useKeyboardShortcuts() {
         case "o":
           e.preventDefault();
           openSource();
+          return;
+        case "[":
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent(SHORTCUT_EVENTS.toggleSidebar));
           return;
       }
     }

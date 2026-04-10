@@ -10,9 +10,9 @@
  *   --week YYYY-Www   Specify week (default: previous week for Monday publishing)
  */
 
-import { execSync } from "child_process";
-import { readFileSync, existsSync } from "fs";
-import { basename } from "path";
+import { execSync } from "node:child_process";
+import { readFileSync, existsSync } from "node:fs";
+import { basename } from "node:path";
 
 // Parse arguments
 const args = process.argv.slice(2);

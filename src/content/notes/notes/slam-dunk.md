@@ -11,7 +11,7 @@ tags:
 authors:
   - takehiko-inoue
 volumes: 31
-status: completed
+media_status: completed
 summary: "Classic shonen basketball manga following Hanamichi Sakuragi and Shohoku High School's journey through tournaments, emphasizing that winning isn't everything in basketball."
 date: 2026-01-02
 ---

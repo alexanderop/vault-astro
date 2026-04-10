@@ -40,6 +40,7 @@ export default defineConfig({
   },
 
   vite: {
+    // @ts-expect-error tailwindcss uses vite 8 types, astro bundles vite 7
     plugins: [tailwindcss()],
   },
 });

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { noteWithLinks, publishedNote } from "../../test/helpers/note-fixtures";
 
-const getCollectionMock = vi.fn();
+const getCollectionMock = vi.fn<() => unknown>();
 
 vi.mock("astro:content", () => ({
   getCollection: getCollectionMock,

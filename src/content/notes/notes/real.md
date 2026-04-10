@@ -12,7 +12,7 @@ tags:
 authors:
   - takehiko-inoue
 volumes: 16
-status: completed
+media_status: completed
 summary: "A deeply personal sports drama following three men whose lives intersect through wheelchair basketball, exploring themes of adversity, resilience, and finding purpose after life-altering events."
 date: 2026-01-02
 ---

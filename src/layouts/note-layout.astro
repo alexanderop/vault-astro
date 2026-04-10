@@ -91,4 +91,9 @@ const hasAside = Astro.slots.has("aside");
       )}
     </div>
   </div>
+  <script>
+    document.addEventListener("vault:toggle-sidebar", () => {
+      document.querySelector(".shell-desktop-sidebar")?.classList.toggle("sidebar-hidden");
+    });
+  </script>
 </DocumentShell>

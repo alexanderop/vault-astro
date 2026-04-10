@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import { normalizeLookupValue, toStringList } from "./content-utils";
+import { isPublishedWikiEntry } from "./wiki";
 
 interface ParsedWikilink {
   isEmbed: boolean;
@@ -69,11 +70,6 @@ const WIKILINK_REGEX = /!?\[\[([^\]]+)\]\]/g;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico"]);
 const EXCALIDRAW_SOURCE_EXTENSION = ".excalidraw";
 
-function normalizePublicPath(value: string): string {
-  const normalized = normalizeLookupValue(value);
-  return normalized.replace(/^notes\//, "");
-}
-
 function getBasename(value: string): string {
   return normalizeLookupValue(value).split("/").at(-1) ?? normalizeLookupValue(value);
 }
@@ -127,6 +123,7 @@ export function inferEntryType(id: string): string {
   if (folder === "newsletters") return "newsletter";
   if (folder === "tweets") return "tweet";
   if (folder === "notes") return "note";
+  if (folder === "sources") return "source";
 
   return folder;
 }
@@ -188,7 +185,9 @@ export function createEntriesContentResolver(entries: ResolvedContentEntry[]): N
 }
 
 export function getPublishedNotes(notes: CollectionEntry<"notes">[]): CollectionEntry<"notes">[] {
-  return notes.filter((note) => isPublishedNote(note.id, note.data.publish));
+  return notes.filter(
+    (note) => isPublishedNote(note.id, note.data.publish) && isPublishedWikiEntry(note),
+  );
 }
 
 export function createCollectionNoteResolver(notes: CollectionEntry<"notes">[]): NoteResolver {

@@ -8,7 +8,8 @@ export interface DataviewFunctionDefinition {
 function coerceToString(value: unknown): string {
   if (value === null || value === undefined) return "";
   if (value instanceof Date) return value.toISOString();
-  return String(value);
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value as string | number | boolean | bigint | symbol);
 }
 
 function replaceValue(value: string, search: string, replacement: string): string {

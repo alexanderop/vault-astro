@@ -10,7 +10,7 @@ tags:
 authors:
   - kent-beck
 summary: "A compact guide to code tidying—small, behavior-preserving changes that make code easier to understand and modify before making structural changes."
-status: completed
+media_status: completed
 dateCompleted: 2024
 date: 2026-01-03
 ---

@@ -1,5 +1,4 @@
 import { render } from "vitest-browser-react";
-import { page } from "vitest/browser";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -19,20 +18,16 @@ describe("ThemeToggle", () => {
     const screen = await render(<ThemeToggle />);
     const button = screen.getByRole("button", { name: /switch to/i });
 
-    const initialLabel = await button.element().getAttribute("aria-label");
+    const initialLabel = button.element().getAttribute("aria-label");
     await button.click();
 
-    if (initialLabel?.includes("light")) {
-      await expect
-        .element(screen.getByRole("button", { name: /switch to dark mode/i }))
-        .toBeVisible();
-      expect(document.documentElement.classList.contains("dark")).toBe(false);
-    } else {
-      await expect
-        .element(screen.getByRole("button", { name: /switch to light mode/i }))
-        .toBeVisible();
-      expect(document.documentElement.classList.contains("dark")).toBe(true);
-    }
+    // After clicking, the label should have changed to the opposite mode
+    const isInitiallyLight = initialLabel?.includes("light");
+    const expectedName = isInitiallyLight ? /switch to dark mode/i : /switch to light mode/i;
+    const expectedDark = !isInitiallyLight;
+
+    await expect.element(screen.getByRole("button", { name: expectedName })).toBeVisible();
+    expect(document.documentElement.classList.contains("dark")).toBe(expectedDark);
   });
 
   it("persists theme to localStorage", async () => {

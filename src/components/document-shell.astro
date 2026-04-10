@@ -22,8 +22,9 @@ const {
 
 const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
 const pageDescription = description ?? SITE.description;
-const canonicalUrl = SITE.website && canonicalPath
-  ? new URL(canonicalPath.replace(/^\//, ""), `${SITE.website.replace(/\/$/, "")}/`).toString()
+const siteWebsite = SITE.website as string;
+const canonicalUrl = siteWebsite && canonicalPath
+  ? new URL(canonicalPath.replace(/^\//, ""), `${siteWebsite.replace(/\/$/, "")}/`).toString()
   : undefined;
 const resolvedOgImage = ogImage ?? SITE.ogImage;
 ---

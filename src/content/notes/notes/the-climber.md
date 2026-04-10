@@ -10,7 +10,7 @@ tags:
 authors:
   - shinichi-sakamoto
 volumes: 17
-status: completed
+media_status: completed
 summary: "A psychological seinen manga following a socially isolated climber who finds meaning through mountaineering, exploring obsession, solitude, and the pursuit of self-mastery."
 date: 2026-01-02
 ---

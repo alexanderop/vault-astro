@@ -1,5 +1,4 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { SITE } from "@/config";
 import { buildBacklinksMap, type Backlink } from "@/features/backlinks/lib/backlink-resolver";
 import {
   buildGlobalGraphData,
@@ -69,22 +68,16 @@ async function buildSiteData(): Promise<BuildSiteData> {
     buildNoteLinksIndex(notes, resolver),
   );
   const backlinksMap = await withPerfLog("backlinks build", () =>
-    SITE.showBacklinks
-      ? buildBacklinksMap(notes, linksByNote, resolver)
-      : new Map<string, Backlink[]>(),
+    buildBacklinksMap(notes, linksByNote, resolver),
   );
   const searchIndex = await withPerfLog("search index build", () =>
-    SITE.showSearch ? buildSearchIndex(notes, resolver) : [],
+    buildSearchIndex(notes, resolver),
   );
-  const graphContext = SITE.showGraph ? createGraphBuildContext(notes, linksByNote) : undefined;
+  const graphContext = createGraphBuildContext(notes, linksByNote);
   const [graphByNote, globalGraph, tagIndex, typeIndex] = await Promise.all([
-    withPerfLog("graph precompute", () =>
-      graphContext ? precomputeGraphData(graphContext) : undefined,
-    ),
-    withPerfLog("global graph build", () =>
-      graphContext ? buildGlobalGraphData(graphContext) : undefined,
-    ),
-    withPerfLog("tag index build", () => (SITE.showTags ? buildTagIndex(notes) : [])),
+    withPerfLog("graph precompute", () => precomputeGraphData(graphContext)),
+    withPerfLog("global graph build", () => buildGlobalGraphData(graphContext)),
+    withPerfLog("tag index build", () => buildTagIndex(notes)),
     withPerfLog("type index build", () => buildTypeIndex(notes)),
   ]);
 

@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { formatNoteDate, getNoteDate, getNoteHref, getNoteSummary, getNoteTitle } from "@/lib/notes";
 import type { NoteResolver } from "@/lib/content-resolver";
+import { getRoleLabel, getSourceIds, getWikiRole, getWikiStatus } from "@/lib/wiki";
 
 interface Props {
   note: CollectionEntry<"notes">;
@@ -15,6 +16,9 @@ const href = getNoteHref(note, undefined, resolver);
 const date = getNoteDate(note);
 const formattedDate = date ? formatNoteDate(date) : undefined;
 const tags = (note.data.tags ?? []).slice(0, 3);
+const wikiRole = getWikiRole(note);
+const wikiStatus = getWikiStatus(note);
+const sourceCount = getSourceIds(note).length;
 ---
 
 <div class="group relative rounded-lg border border-border bg-card/50 p-4 transition-colors hover:bg-surface-hover">
@@ -22,6 +26,17 @@ const tags = (note.data.tags ?? []).slice(0, 3);
   <span class="text-sm font-medium text-foreground/90 group-hover:text-foreground">{title}</span>
   {summary && (
     <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{summary}</p>
+  )}
+  {(wikiRole || wikiStatus || sourceCount > 0) && (
+    <div class="mt-3 flex flex-wrap items-center gap-2 text-[length:var(--font-size-ui-2xs)] text-muted-foreground">
+      {wikiRole && (
+        <a href={`/role/${wikiRole}`} class="relative z-10 shell-meta transition-colors hover:text-foreground">
+          {getRoleLabel(wikiRole)}
+        </a>
+      )}
+      {wikiStatus && <span class="shell-meta-subtle capitalize">{wikiStatus}</span>}
+      {sourceCount > 0 && <span class="shell-meta-subtle">{sourceCount} source{sourceCount === 1 ? "" : "s"}</span>}
+    </div>
   )}
   <div class="mt-3 flex items-center gap-2">
     {formattedDate && (

@@ -1,7 +1,7 @@
 export const SITE = {
   // Site metadata
   title: "Vault",
-  description: "A self-hosted Obsidian Publish alternative",
+  description: "An LLM-maintained wiki built from persistent notes and immutable sources",
   author: "",
   website: "",
   lang: "en",
@@ -15,10 +15,12 @@ export const SITE = {
   showBacklinks: true,
   showSearch: true,
   showTableOfContents: true,
+  showBreadcrumb: true,
   showDate: true,
   showTags: true,
   enableMermaid: true,
   enableMath: true,
+  showStackedPages: true,
 
   // Display
   themeStorageKey: "vault-theme",

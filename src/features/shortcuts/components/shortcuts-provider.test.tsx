@@ -49,7 +49,7 @@ describe("ShortcutsProvider keyboard shortcuts", () => {
   });
 
   it("opens search on G then S", async () => {
-    const listener = vi.fn();
+    const listener = vi.fn<() => void>();
     document.addEventListener(SHORTCUT_EVENTS.openSearch, listener);
 
     await render(<Harness />);
@@ -71,7 +71,7 @@ describe("ShortcutsProvider keyboard shortcuts", () => {
   });
 
   it("clears pending sequences on Escape", async () => {
-    const listener = vi.fn();
+    const listener = vi.fn<() => void>();
     document.addEventListener(SHORTCUT_EVENTS.openSearch, listener);
 
     await render(<Harness />);
@@ -85,12 +85,12 @@ describe("ShortcutsProvider keyboard shortcuts", () => {
   });
 
   it("does not fire shortcuts while typing in an input", async () => {
-    const listener = vi.fn();
+    const listener = vi.fn<() => void>();
     const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
     document.addEventListener(SHORTCUT_EVENTS.openSearch, listener);
 
     const screen = await render(<Harness />);
-    const input = await screen.getByRole("textbox", { name: "Shortcut input" }).element();
+    const input = screen.getByRole("textbox", { name: "Shortcut input" }).element();
 
     input.focus();
     dispatchKey("g", input);
@@ -107,8 +107,8 @@ describe("ShortcutsProvider keyboard shortcuts", () => {
     const screen = await render(<Harness />);
     const first = screen.getByRole("button", { name: "First" });
     const second = screen.getByRole("button", { name: "Second" });
-    const firstElement = await first.element();
-    const secondElement = await second.element();
+    const firstElement = first.element();
+    const secondElement = second.element();
 
     await first.click();
     dispatchKey("j", firstElement);
@@ -119,7 +119,7 @@ describe("ShortcutsProvider keyboard shortcuts", () => {
   });
 
   it("scrolls to backlinks on G then B", async () => {
-    const scrollSpy = vi.fn();
+    const scrollSpy = vi.fn<() => void>();
 
     await render(<Harness />);
     const backlinks = document.querySelector<HTMLElement>(SHORTCUT_TARGETS.backlinks);

@@ -10,7 +10,13 @@ Web articles, blog posts, and written content.
 ## Metadata Collection
 
 **Agent A - Content:**
-Use WebFetch to extract: title, author, description, key points
+Use `get-article-markdown.sh` to extract the page as clean markdown (no AI rewriting):
+
+```bash
+.claude/skills/adding-notes/scripts/get-article-markdown.sh URL /tmp/{slug}-raw.md
+```
+
+Read the output file for title, author, and content. The raw markdown output becomes the source body verbatim. Use WebFetch only as a fallback if the script returns empty or fails.
 
 **Agent B - Author Check** (if author known):
 

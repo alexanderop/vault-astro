@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SITE } from "@/config";
 import {
   Dialog,
   DialogContent,
@@ -63,7 +64,7 @@ export function MobileNav({ notes, currentSlug }: MobileNavProps) {
         <div className="shell-sidebar">
           <div className="shell-sidebar-header">
             <a href="/" className="text-sm font-semibold tracking-tight text-foreground/90">
-              Vault
+              {SITE.title}
             </a>
             <Button
               variant="ghost"

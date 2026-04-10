@@ -46,7 +46,7 @@ export function SearchDialog({ entries, sourceUrl }: SearchDialogProps) {
         !e.altKey &&
         !(e.target instanceof HTMLInputElement) &&
         !(e.target instanceof HTMLTextAreaElement) &&
-        !(e.target as HTMLElement)?.isContentEditable
+        !(e.target as HTMLElement).isContentEditable
       ) {
         e.preventDefault();
         setOpen(true);

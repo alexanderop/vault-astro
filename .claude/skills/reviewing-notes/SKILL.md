@@ -1,12 +1,12 @@
 ---
 name: reviewing-notes
-description: Audit notes for quality issues. Use when asked to "review notes", "check content quality", "audit my knowledge base", or "find broken links".
+description: Audit the maintained wiki for quality and maintenance issues. Use when asked to "review notes", "check content quality", "audit my knowledge base", or "find broken links".
 allowed-tools: Read, Glob, Grep
 ---
 
-# Reviewing Notes for Quality
+# Linting the LLM Wiki
 
-This skill audits the knowledge base for quality issues and produces an actionable report.
+This skill audits the knowledge base for quality issues and maintenance debt, not just markdown hygiene.
 
 ## Workflow
 
@@ -49,6 +49,13 @@ ls src/content/notes/notes/target-slug.md
 - No outgoing wiki-links (doesn't reference other notes)
 - No incoming wiki-links (not referenced by other notes)
 - Both = fully isolated
+
+#### Wiki Maintenance Debt
+
+- Concept mentioned repeatedly but missing its own page
+- Synthesis page appears stale compared with newer notes
+- Contradictions between related pages are not called out
+- Page makes claims without clear source linkage
 
 #### Short Content
 

@@ -25,7 +25,6 @@ interface FGLink {
 function getThemeColors() {
   const style = getComputedStyle(document.documentElement);
   const accent = style.getPropertyValue("--palette-accent").trim();
-  const text = style.getPropertyValue("--palette-text").trim();
   const base = style.getPropertyValue("--palette-base").trim();
   const isDark = document.documentElement.classList.contains("dark");
 
@@ -52,7 +51,7 @@ function nodeRadius(degree: number): number {
 }
 
 export function ForceGraphView({ graphData }: ForceGraphViewProps) {
-  const ref = useRef<ForceGraphMethods<FGNode, FGLink>>();
+  const ref = useRef<ForceGraphMethods<FGNode, FGLink>>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 600, height: 300 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
@@ -84,6 +83,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ResizeObserver entries can be empty
       if (entry) {
         setDimensions({
           width: entry.contentRect.width,
@@ -107,12 +107,14 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
     if (ref.current) {
       ref.current.zoomToFit(400, 60);
     }
   }, [dimensions]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
     if (!ref.current) return;
     ref.current.d3Force("charge")?.strength(-60);
     ref.current.d3Force("link")?.distance(45).strength(0.2);
@@ -120,6 +122,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
   }, []);
 
   const handleEngineStop = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
     ref.current?.zoomToFit(400, 60);
   }, []);
 
@@ -232,6 +235,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
   }, []);
 
   const handleZoom = useCallback((delta: number) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
     if (!ref.current) return;
     const currentZoom = ref.current.zoom();
     ref.current.zoom(currentZoom * delta, 300);
@@ -250,13 +254,14 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
   const handleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
     if (document.fullscreenElement) {
-      document.exitFullscreen();
+      void document.exitFullscreen();
     } else {
-      containerRef.current.requestFullscreen();
+      void containerRef.current.requestFullscreen();
     }
   }, []);
 
   const handleZoomToFit = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
     ref.current?.zoomToFit(400, 60);
   }, []);
 

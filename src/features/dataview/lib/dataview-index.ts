@@ -119,7 +119,7 @@ function extractTasks(body: string, page: DataviewPage): DataviewTaskRow[] {
     }
 
     const status = taskMatch[2];
-    const text = taskMatch[3]?.trim() ?? "";
+    const text = taskMatch[3].trim();
     const completed = status.toLowerCase() === "x";
 
     const task: DataviewTask = {

@@ -11,7 +11,7 @@ tags:
 authors:
   - takehiko-inoue
 volumes: 37
-status: hiatus
+media_status: hiatus
 summary: "Epic manga following Miyamoto Musashi's journey from violent youth to legendary swordsman, exploring the nature of strength and the path to self-mastery."
 date: 2026-01-02
 ---

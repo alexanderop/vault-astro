@@ -5,7 +5,9 @@ import { PROPERTY_TEST_SETTINGS } from "../../test/helpers/property-test";
 
 const pathLikeArbitrary = fc
   .array(
-    fc.constantFrom(..."/\\._- abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+    fc.constantFrom(
+      ..."/\\._- abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(""),
+    ),
     {
       minLength: 0,
       maxLength: 40,
@@ -25,7 +27,9 @@ describe("normalizeLookupValue properties", () => {
         expect(normalized).toBe(normalized.trim());
 
         if (normalized.length > 0) {
+          // eslint-disable-next-line jest/no-conditional-expect -- property test: conditional only guards empty string
           expect(normalized.startsWith("/")).toBe(false);
+          // eslint-disable-next-line jest/no-conditional-expect -- property test: conditional only guards empty string
           expect(normalized.endsWith("/")).toBe(false);
         }
 

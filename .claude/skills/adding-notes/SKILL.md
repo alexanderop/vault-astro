@@ -1,15 +1,16 @@
 ---
 name: adding-notes
 description: >
-  Create a note from any resource: URL, book, podcast, article, video, GitHub repo,
-  Reddit thread, PDF, quote, or raw idea. Trigger on "add", "save", "capture",
+  Ingest a new source into the LLM Wiki. Save the full captured resource under
+  src/content/notes/sources/ first, then create or update the maintained wiki
+  summary/synthesis entry, index, and log. Trigger on "add", "save", "capture",
   "note this", "take notes on", or any request to record content in the knowledge base.
 allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep, Task, TaskOutput, WebSearch, AskUserQuestion
 ---
 
-# Adding Notes to Second Brain
+# Ingesting Sources into the LLM Wiki
 
-Add content to the knowledge base with proper frontmatter, tags, summaries, and wiki-links.
+Add content to the knowledge base by capturing the full source artifact first and then integrating a summary or synthesis into the public wiki layer.
 
 ## Content Type Routing
 
@@ -59,6 +60,7 @@ See `references/content-types/youtube.md` for full classification logic and chan
 | `.claude/skills/adding-notes/scripts/get-goodreads-metadata.sh URL`                           | Book metadata                                        |
 | `.claude/skills/adding-notes/scripts/get-manga-metadata.sh URL`                               | Manga series data                                    |
 | `.claude/skills/adding-notes/scripts/get-github-metadata.sh URL`                              | Repo stats                                           |
+| `.claude/skills/adding-notes/scripts/get-article-markdown.sh URL [output-file]`               | Fetch article and extract as clean markdown (no AI)  |
 | `.claude/skills/adding-notes/scripts/get-pdf-text.sh URL [output-file]`                       | Download PDF and extract text (requires `pdftotext`) |
 
 ### Utility Scripts
@@ -101,9 +103,10 @@ Phase 4: Content Generation → Apply writing-style + SOUL.md voice, generate bo
 Phase 4.25: Diagram Evaluation → Visual assessment with logged outcome
 Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any exist)
 Phase 5: Quality Validation → Parallel validators
-Phase 6: Save Note → Write to src/content/notes/notes/{slug}.md with link density report
-Phase 7: MOC Placement → Suggest placements + check MOC threshold
-Phase 8: Quality Check → Run vp run check
+Phase 6: Save Source → Write the full captured resource to src/content/notes/sources/{slug}.md
+Phase 7: Update Wiki → Create or update the summary/synthesis note under src/content/notes/notes/
+Phase 8: Index + Log → Refresh [[index]] and append to [[log]]
+Phase 9: Quality Check → Run vp run check
 ```
 
 ### Phase 0: Load Soul
@@ -130,6 +133,8 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 - Required scripts to run
 - Agent configuration
 - Special handling notes
+
+**For articles (non-PDF):** Use `.claude/skills/adding-notes/scripts/get-article-markdown.sh URL` to extract the page as clean markdown. This uses reader-mode extraction with no AI rewriting — the output is the author's exact words. Use WebFetch only as a fallback if the script returns empty or fails.
 
 **If URL ends in `.pdf`:** WebFetch cannot parse PDFs. Use `.claude/skills/adding-notes/scripts/get-pdf-text.sh URL` to download and extract text, then read the output file. For large PDFs (>50KB extracted text), use a subagent per Phase 2.5 pattern.
 
@@ -260,12 +265,38 @@ Spawn parallel validators:
 **If issues found:** Use AskUserQuestion to offer: Fix issues / Save anyway / Cancel.
 **If no issues:** Log "✓ Validation passed" and proceed.
 
-### Phase 6: Save Note
+### Phase 6: Save Source
 
 Generate slug inline: lowercase title, replace spaces with hyphens, remove special characters.
 Example: `"Superhuman Is Built for Speed"` → `superhuman-is-built-for-speed`
 
-Save to `src/content/notes/notes/{slug}.md`. Confirm with link density status:
+Save the full captured resource to `src/content/notes/sources/{slug}.md`.
+
+The source page should contain the full resource content available at ingest time, such as:
+
+- transcript or full text
+- extracted PDF text
+- copied thread or post text
+- metadata gathered during ingest
+
+**For articles:** Paste the output of `get-article-markdown.sh` verbatim as the source body. Do not rewrite, restructure, or summarize it. The script already produces clean markdown from the original page. Only add the frontmatter header — the body is the author's exact text.
+
+Do not collapse the source page into a short summary. The summary belongs in the wiki layer.
+
+Confirm source save:
+
+```text
+✓ Source saved: src/content/notes/sources/{slug}.md
+  - Type: {type}
+  - Source ID: {source_id}
+  - Capture: full resource content
+```
+
+### Phase 7: Update Wiki
+
+Create or update the summary/synthesis note at `src/content/notes/notes/{slug}.md`. This note is the maintained wiki entry derived from the source, not the raw capture.
+
+Confirm with link density status:
 
 ```text
 ✓ Note saved: src/content/notes/notes/{slug}.md
@@ -286,14 +317,14 @@ Save to `src/content/notes/notes/{slug}.md`. Confirm with link density status:
 - `{link-count} = 1-2`: "connected"
 - `{link-count} = 0`: "standalone" (fine when no genuine connections exist)
 
-### Phase 7: MOC Placement (Non-blocking)
+### Phase 8: MOC Placement (Non-blocking)
 
 See `references/moc-placement.md` for detailed workflow:
 
 1. Suggest existing MOC placement via cluster script
 2. Check if any tag exceeds 15-note threshold for new MOC creation
 
-### Phase 8: Quality Check
+### Phase 9: Quality Check
 
 Run linter and type check to catch any issues:
 

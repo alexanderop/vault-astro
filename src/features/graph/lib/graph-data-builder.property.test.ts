@@ -20,11 +20,12 @@ describe("graph and backlink properties", () => {
         const publishedIds = new Set(
           definitions.filter((definition) => definition.publish).map((definition) => definition.id),
         );
-        const currentSlug = definitions[0]!.id;
+        const currentSlug = definitions[0].id;
         const context = createGraphBuildContext(notes, buildNoteLinksIndex(notes));
         const graph = buildLocalGraphData(context, currentSlug);
 
         if (!publishedIds.has(currentSlug)) {
+          // eslint-disable-next-line jest/no-conditional-expect -- property test: early return for unpublished slug
           expect(graph).toEqual({ nodes: [], edges: [] });
           return;
         }

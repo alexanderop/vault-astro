@@ -1,28 +1,28 @@
 ---
 name: asking-notes
-description: Query your Second Brain with keyword search. Use when asked to "ask my notes", "what do I know about", "query my knowledge", "/ask", or when the user has a question that their notes might answer.
+description: Query the maintained wiki layer first, then fall back to sources when needed. Use when asked to "ask my notes", "what do I know about", "query my knowledge", "/ask", or when the user has a question that the wiki might answer.
 allowed-tools: Read, Bash, Glob, Grep
 ---
 
-# Ask Your Second Brain
+# Query the LLM Wiki
 
-This skill answers questions by searching your notes with keyword matching, reading the most relevant ones, and synthesizing an answer — all locally, no external API calls.
+This skill answers questions by searching wiki pages first, reading the most relevant ones, and synthesizing an answer. Raw source pages are a fallback, not the primary query surface.
 
 ## Workflow
 
 ### 1. Search — Find Relevant Notes
 
-Use Grep and Glob to find notes matching the user's question:
+Use Grep and Glob to find wiki pages matching the user's question:
 
 ```bash
 # Search by keywords in content
-Grep pattern="keyword" path="src/content/notes/" glob="*.md"
+Grep pattern="keyword" path="src/content/notes/notes/" glob="*.md"
 
 # Search by tags
-Grep pattern="tags:.*keyword" path="src/content/notes/" glob="*.md"
+Grep pattern="tags:.*keyword" path="src/content/notes/notes/" glob="*.md"
 
 # Search by title
-Grep pattern="title:.*keyword" path="src/content/notes/" glob="*.md"
+Grep pattern="title:.*keyword" path="src/content/notes/notes/" glob="*.md"
 ```
 
 Combine multiple keyword searches to find the most relevant notes.
@@ -43,7 +43,7 @@ Combine insights across the notes into a direct answer. Follow these rules stric
 
 ### 4. Extend — Identify Gaps and Follow-ups
 
-After answering, highlight what's missing from the knowledge base and suggest related questions.
+After answering, highlight what is missing from the wiki and suggest whether the answer should be saved back as a synthesis or question page.
 
 ## Output Format
 

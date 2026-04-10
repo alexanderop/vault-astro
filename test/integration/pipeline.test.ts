@@ -63,7 +63,7 @@ describe("remark pipeline integration", () => {
     // by the visited-set guard and rendered as a missing/broken embed.
     // The embed plugin splices html nodes into the paragraph's children.
     const paragraph = tree.children[0] as Parent;
-    const allHtml = paragraph.children.filter((n) => n.type === "html");
+    const allHtml = paragraph.children.filter((n: { type: string }) => n.type === "html");
 
     // The outer embed wrapper should be present
     expect(allHtml[0]).toMatchObject({
@@ -74,9 +74,9 @@ describe("remark pipeline integration", () => {
     // Inside the embedded content, the recursive ![[circular]] should
     // produce a missing-embed indicator (circular guard triggered).
     // The recursive embed is nested inside a child paragraph.
-    const nestedParagraph = paragraph.children.find((n) => n.type === "paragraph") as
-      | Parent
-      | undefined;
+    const nestedParagraph = paragraph.children.find(
+      (n: { type: string }) => n.type === "paragraph",
+    );
     expect(nestedParagraph).toBeDefined();
     expect(nestedParagraph!.children[0] as { type: string; value: string }).toMatchObject({
       type: "html",

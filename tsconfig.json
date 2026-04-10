@@ -1,7 +1,16 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "exclude": [
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "test/**",
+    "playwright.config.ts",
+    "playwright.preview.config.ts",
+    "vitest.config.ts"
+  ],
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
