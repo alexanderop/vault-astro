@@ -11,6 +11,46 @@ tags:
   - operations
 ---
 
+## [2026-04-11] ingest | Claude Code as GitHub Actions agent for automated PR fixes
+
+- Added immutable source record: `sources/claude-code-github-actions-agent-automated-pr-fixes.md` from Groundy article.
+- Added public note: [[claude-code-github-actions-agent-automated-pr-fixes]] — Production playbook for `anthropics/claude-code-action@v1`: four workflow patterns (interactive, automated review, CI auto-fix, structured output), cost controls keeping 50-PR teams under $5/month, and security guardrails including loop prevention and prompt injection filtering.
+- Created author profile: groundy.
+
+## [2026-04-11] ingest | AI code review bot with Claude and GitHub Actions
+
+- Added immutable source record: `sources/ai-code-review-bot-claude-github-actions.md` from vadimall.com article.
+- Added public note: [[ai-code-review-bot-claude-github-actions]] — Vadim Alakhverdov's walkthrough of wiring Claude Sonnet into GitHub Actions for automated PR review: diff-only analysis, file filtering for cost control, prompt exclusion lists to prevent nitpicking, and the permissions gotcha.
+- Created author profile: vadim-alakhverdov.
+
+## [2026-04-11] ingest | DHH's new way of writing code
+
+- Added immutable source record: `sources/dhhs-new-way-of-writing-code.md` from The Pragmatic Engineer podcast (YouTube).
+- Added public note: [[dhhs-new-way-of-writing-code]] — DHH's conversion from AI skeptic to agent-first developer: agent harnesses over autocomplete, the exploding pie of new work categories, senior devs winning disproportionately, and "peak programmer" arriving.
+- Guest: DHH. Host: Gergely Orosz.
+
+## [2026-04-11] ingest | orchestrating payments for the millions
+
+- Added immutable source record: `sources/orchestrating-payments-for-the-millions.md` from Devoxx talk.
+- Added public note: [[orchestrating-payments-for-the-millions]] — Faris Aziz's war story on building front-end payment orchestration at Smallpdf: multi-gateway fallback, local payment method optimization, and payments-as-code configuration.
+- Created author profile: faris-aziz.
+
+## [2026-04-11] synthesis | creative non-coding uses of Claude Code
+
+- Created synthesis page: [[creative-non-coding-uses-of-claude-code]] — taxonomy of Claude Code's non-coding uses across 8+ sources: video production, phone collaboration, life OS, diagramming, knowledge curation, and institutional knowledge distribution.
+- Updated [[index]] with new synthesis entry.
+
+## [2026-04-11] synthesis | agent-browser vs Playwright for AI agents
+
+- Created synthesis page: [[agent-browser-vs-playwright-for-ai-agents]] — three-way comparison of agent-browser, Playwright CLI, and Playwright MCP for AI-driven browser automation, with verified claims and decision framework.
+- Sources used: [[agent-browser]], [[playwright-cli-vs-mcp]], [[my-4-layer-agentic-browser-automation-stack]], [[playwright-test-agents]], [[claude-code-with-playwright]].
+
+## [2026-04-11] ingest | agent-browser
+
+- Added immutable source record: `sources/agent-browser.md` from GitHub.
+- Added public note: [[agent-browser]] — Vercel Labs' native Rust CLI that gives AI agents browser automation through accessibility-tree snapshots and element refs.
+- Created author profile: vercel-labs.
+
 ## [2026-04-10] synthesis | Biggest Problems of AI
 
 - Created synthesis page: [[biggest-problems-of-ai]] — maps AI's biggest problems across 10+ wiki sources: deskilling, cognitive debt, existential risk, job displacement, quality degradation, security threats, and geopolitical traps.

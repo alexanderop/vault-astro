@@ -81,6 +81,8 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[agents-md-open-standard-for-ai-coding-agents]]
 - [[agents-md-outperforms-skills-in-vercel-agent-evals]]
 - [[ai-assistance-reduces-persistence-and-hurts-independent-performance]]
+- [[ai-code-review-bot-claude-github-actions]]
+- [[claude-code-github-actions-agent-automated-pr-fixes]]
 - [[ai-coding-roadmap-for-beginners]]
 - [[ai-doesnt-reduce-work-it-intensifies-it]]
 - [[ai-native-obsidian-vault-setup-guide]]
@@ -239,7 +241,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[writing-a-good-claude-md]]
 - [[you-cant-design-software-you-dont-work-on]]
 
-## talk (44)
+## talk (45)
 
 - [[15-years-of-local-first]]
 - [[2026-the-year-the-ide-died]]
@@ -267,6 +269,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[local-first-software-pragmatism-vs-idealism]]
 - [[local-first-the-secret-master-plan]]
 - [[native-grade-web-apps-with-local-first-data]]
+- [[orchestrating-payments-for-the-millions]]
 - [[open-source-maintainers-are-jerks]]
 - [[powering-offline-first-forestry-in-europes-wilds]]
 - [[safe-in-the-keyhive]]
@@ -394,9 +397,11 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[vue-weekly-3]]
 - [[what-silicon-valley-gets-wrong-about-ai]]
 
-## github (27)
+## github (28)
 
 - [[advanced-context-engineering-for-coding-agents]]
+- [[agent-browser]]
+- [[agent-browser-vs-playwright-for-ai-agents]]
 - [[alkalye]]
 - [[antfu-skills]]
 - [[arscontexta]]
