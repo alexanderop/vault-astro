@@ -37,6 +37,10 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[overview]]
 - [[persistent-wiki]]
 
+## synthesis (1)
+
+- [[future-of-coding-for-software-developers]]
+
 ## evergreen (3)
 
 - [[age-of-abundance]]
@@ -62,7 +66,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[talk-outline-local-first-vue]]
 - [[the-local-first-litmus-test]]
 
-## article (174)
+## article (177)
 
 - [[12-design-patterns-in-vue]]
 - [[12-factor-agents]]
@@ -84,6 +88,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[ai-code-review-bot-claude-github-actions]]
 - [[claude-code-github-actions-agent-automated-pr-fixes]]
 - [[ai-coding-roadmap-for-beginners]]
+- [[automate-documentation-claude-code-github-actions]]
 - [[ai-doesnt-reduce-work-it-intensifies-it]]
 - [[ai-native-obsidian-vault-setup-guide]]
 - [[ai-slash-commands]]
@@ -135,6 +140,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[first-impressions-of-claude-cowork-anthropics-general-agent]]
 - [[functional-core-imperative-shell-pattern]]
 - [[gas-towns-agent-patterns]]
+- [[github-actions-ci-cd-best-practices]]
 - [[github-actions-complete-guide]]
 - [[graphql-schema-design-principles]]
 - [[hands-on-with-context-graphs-and-neo4j]]
@@ -167,6 +173,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[malleable-software]]
 - [[mastering-subagents-in-vs-code-copilot]]
 - [[mastering-vue-3-composables-style-guide]]
+- [[mcp-vs-cli-is-the-wrong-fight]]
 - [[merging-slash-commands-into-skills-claude-code]]
 - [[minions-stripes-one-shot-end-to-end-coding-agents-part-2]]
 - [[minions-stripes-one-shot-end-to-end-coding-agents]]

@@ -7,7 +7,7 @@ export function isSourceEntry(entry: WikiEntry): boolean {
 }
 
 export function isPublishedWikiEntry(entry: WikiEntry): boolean {
-  return entry.data.publish && !isSourceEntry(entry);
+  return entry.data.publish !== false && !isSourceEntry(entry);
 }
 
 export function getWikiRole(entry: WikiEntry): string | null {

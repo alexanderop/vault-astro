@@ -11,6 +11,29 @@ tags:
   - operations
 ---
 
+## [2026-04-13] ingest | MCP vs CLI Is the Wrong Fight
+
+- Source captured: `sources/mcp-vs-cli-is-the-wrong-fight.md` (Smithery Team, article)
+- Wiki note: [[mcp-vs-cli-is-the-wrong-fight]] — situational answer to MCP vs CLI debate based on 756 benchmarks
+- Connections: [[playwright-cli-vs-mcp]] (productive tension — opposite finding for local tools), [[why-model-context-protocol-does-not-work]], [[code-mode-mcp]]
+- New author: Smithery Team
+- Diagram: mermaid decision tree for where each surface wins
+
+## [2026-04-12] synthesis | The Future of Coding for Software Developers
+
+- Created synthesis page: [[future-of-coding-for-software-developers]] — synthesizes 12+ sources on how AI transforms the developer role. Key threads: coding commoditization (Karpathy, Boris Cherny), engineer-to-builder role shift, industry expansion vs. individual attrition (Booch vs. Huntley/Yegge), agent orchestration as the new skill stack, systems thinking as the durable moat, and the Amodei-vs-Booch timeline tension.
+
+## [2026-04-12] ingest | GitHub Actions CI/CD Best Practices (GitHub Copilot instruction file)
+
+- Added immutable source record: `sources/github-actions-ci-cd-best-practices.md` from the `github/awesome-copilot` repo.
+- Added public note: [[github-actions-ci-cd-best-practices]] — GitHub's own Copilot instruction file for Actions workflows. Key invariants: SHA-pin every action (tags are mutable attack surface), use OIDC instead of long-lived cloud credentials, set `contents: read` as default `GITHUB_TOKEN` scope, and pick deployment strategy by rollback reversibility. Linked to [[hardening-github-actions]], [[optimizing-github-actions-workflows-for-speed]], [[github-actions-complete-guide]].
+
+## [2026-04-11] ingest | Automating documentation with Claude Code and GitHub Actions
+
+- Added immutable source record: `sources/automate-documentation-claude-code-github-actions.md` from Medium article.
+- Added public note: [[automate-documentation-claude-code-github-actions]] — Frank Bernhardt's step-by-step guide for two GitHub Actions workflows (PR-triggered + daily scheduled) that let Claude Code keep docs current automatically, with infinite loop prevention and tool restriction guardrails.
+- Created author profile: frank-bernhardt.
+
 ## [2026-04-11] ingest | Claude Code as GitHub Actions agent for automated PR fixes
 
 - Added immutable source record: `sources/claude-code-github-actions-agent-automated-pr-fixes.md` from Groundy article.
