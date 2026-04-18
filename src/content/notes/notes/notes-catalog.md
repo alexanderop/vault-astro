@@ -66,7 +66,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[talk-outline-local-first-vue]]
 - [[the-local-first-litmus-test]]
 
-## article (177)
+## article (178)
 
 - [[12-design-patterns-in-vue]]
 - [[12-factor-agents]]
@@ -124,6 +124,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[config-driven-vue-interfaces-with-dynamic-components]]
 - [[context-efficient-backpressure]]
 - [[context-engineering-guide-vscode]]
+- [[deep-and-shallow-modules]]
 - [[deliberate-intentional-practice-with-ai]]
 - [[dont-outsource-your-thinking-claude-code]]
 - [[dont-waste-your-back-pressure]]
@@ -248,7 +249,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[writing-a-good-claude-md]]
 - [[you-cant-design-software-you-dont-work-on]]
 
-## talk (46)
+## talk (47)
 
 - [[15-years-of-local-first]]
 - [[2026-the-year-the-ide-died]]
@@ -289,6 +290,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[the-past-present-and-future-of-local-first]]
 - [[the-state-of-vitest]]
 - [[the-ux-of-local-first]]
+- [[the-wet-codebase]]
 - [[the-why-and-how-of-building-a-local-first-music-app]]
 - [[unexpected-benefits-of-going-local-first]]
 - [[vibe-coding-with-jazz]]

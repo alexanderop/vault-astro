@@ -1,6 +1,7 @@
 ---
 import "@/styles/globals.css";
 import { SITE } from "@/config";
+import { pwaInfo } from "virtual:pwa-info";
 
 interface Props {
   title?: string;
@@ -35,6 +36,10 @@ const resolvedOgImage = ogImage ?? SITE.ogImage;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <script src="/src/pwa.ts"></script>
+    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     {pageDescription && <meta name="description" content={pageDescription} />}
     {SITE.author && <meta name="author" content={SITE.author} />}
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}

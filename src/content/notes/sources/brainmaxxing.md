@@ -9,8 +9,6 @@ publish: false
 
 # Brainmaxxing
 
-![brainmaxxing](brainmaxxing.png)
-
 Stupid simple persistent memory for Claude Code. A markdown vault that your agent reads at session start and writes to when it learns something. It's also an [Obsidian](https://obsidian.md) vault, so you can browse your agent's memory yourself.
 
 Comes with 16 engineering principles as starter content and six skills. Four form a learning loop: `reflect` after sessions, `ruminate` over past conversations, `meditate` to audit and prune. Two support structured work: `plan` for breaking down tasks into phased plans, `review` for principle-grounded code and plan review. Two hooks handle the plumbing: injecting the brain index at startup and rebuilding it when files change.

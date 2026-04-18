@@ -11,6 +11,21 @@ tags:
   - operations
 ---
 
+## [2026-04-18] ingest | The Wet Codebase (Dan Abramov)
+
+- Source captured: `sources/the-wet-codebase.md` (YouTube, Deconstruct Conf 2019 talk by Dan Abramov — full transcript).
+- Wiki note: [[the-wet-codebase]] — DRY-as-dogma produces wrong abstractions that accumulate flags and indirection until nobody can touch them; duplicating a third "almost the same" case is cheaper than generalising.
+- Diagram: mermaid flowchart of the decay chain (extract → flex → flag → genericise → monster) with the inline-instead branch.
+- Connections: [[deep-and-shallow-modules]] (same cost/benefit argument, different framing), [[tidy-first]] (inline as a legitimate tidying), [[6-levels-of-reusability]] (prop-bloat is component-level flag-bloat), [[avoid-nesting-when-youre-testing]] (anti-DRY reflex applied to test setup).
+
+## [2026-04-18] ingest | Deep and Shallow Modules (Vladimír Zdražil)
+
+- Source captured: `sources/deep-and-shallow-modules.md` (article summarising Ousterhout's "Deep Modules" chapter from _A Philosophy of Software Design_, with a TypeScript shallow→deep refactor example).
+- Wiki note: [[deep-and-shallow-modules]] — cost-of-module-is-its-interface framing, and why chains of one-line selectors are the shallow-module anti-pattern.
+- Created author profile: vladimir-zdrazil.
+- Diagram: mermaid flowchart of the cost/benefit decision — deep vs shallow branching on interface size × functionality.
+- Connections: [[tidy-first]] (tidyings as the low-level moves toward deeper modules), [[functional-core-imperative-shell-pattern]] (deep-module instance + productive tension on module count), [[6-levels-of-reusability]] (same cost/benefit calculus at component level), [[graphql-schema-design-principles]] (client-centric schemas as deep modules), [[you-cant-design-software-you-dont-work-on]] (judging depth requires hands-on context).
+
 ## [2026-04-18] ingest | Explore It? Explore It! (Elisabeth Hendrickson)
 
 - Source captured: `sources/explore-it-explore-it.md` (YouTube, ~40 min talk by the author of _Explore It!_).
