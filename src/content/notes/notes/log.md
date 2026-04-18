@@ -5,11 +5,25 @@ wiki_role: log
 status: active
 summary: "Append-only operational log for wiki ingests, syntheses, and maintenance passes."
 date: 2026-04-08
-updated_at: 2026-04-08
+updated_at: 2026-04-18
 tags:
   - wiki
   - operations
 ---
+
+## [2026-04-18] ingest | Explore It? Explore It! (Elisabeth Hendrickson)
+
+- Source captured: `sources/explore-it-explore-it.md` (YouTube, ~40 min talk by the author of _Explore It!_).
+- Wiki note: [[explore-it-explore-it]] — exploratory testing as a methodical discipline (charter → variables → heuristics → mini-experiment → observe → debrief), not random clicking. Centerpiece: the "Bug Hall of Fame" (payment flow, RBAC privilege escalation, zombie chat sessions) and the system-monitor crash that shipped because lab state-durations didn't match production.
+- Created author profile: elisabeth-hendrickson.
+- Diagram: mermaid flowchart of the chartered exploratory loop with the "informs next experiment" feedback edge.
+- Connections: [[software-testing-with-generative-ai]] (productive tension — Winteringham more optimistic about AI-assisted exploration), [[the-testing-pyramid-is-dead]], [[autonomous-qa-testing-ai-agents-claude-code]] (model-based exploration in practice), [[write-tests-not-too-many-mostly-integration]].
+
+## [2026-04-14] ingest | brainmaxxing
+
+- Added immutable source record: [[brainmaxxing]] from GitHub (poteto/brainmaxxing).
+- Added public note: [[brainmaxxing]] on persistent markdown memory for Claude Code, the reflect/meditate/ruminate loop, and how it compares to wiki-as-knowledge-base framings.
+- Created author profile: poteto.
 
 ## [2026-04-13] ingest | MCP vs CLI Is the Wrong Fight
 

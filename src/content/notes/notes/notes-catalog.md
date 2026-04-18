@@ -5,7 +5,7 @@ wiki_role: index
 status: active
 summary: "Published note catalog grouped by source and content type."
 date: 2026-04-08
-updated_at: 2026-04-08
+updated_at: 2026-04-18
 tags:
   - wiki
   - notes
@@ -248,7 +248,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[writing-a-good-claude-md]]
 - [[you-cant-design-software-you-dont-work-on]]
 
-## talk (45)
+## talk (46)
 
 - [[15-years-of-local-first]]
 - [[2026-the-year-the-ide-died]]
@@ -266,6 +266,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[crdts-solved-conflicts-not-sync]]
 - [[crdts-the-hard-parts]]
 - [[everything-we-got-wrong-about-research-plan-implement]]
+- [[explore-it-explore-it]]
 - [[fitness-function-driven-architecture-and-agentic-ai]]
 - [[general-purpose-sync-with-ivm]]
 - [[graphql-performance-issues-at-netflix-scale]]
@@ -404,7 +405,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[vue-weekly-3]]
 - [[what-silicon-valley-gets-wrong-about-ai]]
 
-## github (28)
+## github (29)
 
 - [[advanced-context-engineering-for-coding-agents]]
 - [[agent-browser]]
@@ -412,6 +413,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[alkalye]]
 - [[antfu-skills]]
 - [[arscontexta]]
+- [[brainmaxxing]]
 - [[awesome-copilot]]
 - [[beads]]
 - [[call-me]]
