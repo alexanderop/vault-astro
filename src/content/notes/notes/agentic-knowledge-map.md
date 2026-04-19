@@ -30,3 +30,9 @@ tags:
 - [[obsidian-claude-code-workflows]] - Examples of using Claude to synthesize, relink, and maintain a vault.
 - [[building-a-second-brain]] - Older framing for organized personal knowledge work.
 - [[llm-wiki]] - The new synthesis layer that sits above those workflows.
+
+## Connectivity & Protocols
+
+- [[the-future-of-mcp]] - MCP co-creator's 2026 roadmap: Skills + MCP + CLI/computer-use as one connectivity stack; progressive discovery and programmatic tool calling as harness defaults.
+- [[mcp-vs-cli-is-the-wrong-fight]] - Benchmark evidence for the same "situational, not tribal" answer.
+- [[code-mode-mcp]] - Programmatic tool calling via `search()` + `execute()` in a sandbox.

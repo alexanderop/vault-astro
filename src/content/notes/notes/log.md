@@ -5,11 +5,19 @@ wiki_role: log
 status: active
 summary: "Append-only operational log for wiki ingests, syntheses, and maintenance passes."
 date: 2026-04-08
-updated_at: 2026-04-18
+updated_at: 2026-04-19
 tags:
   - wiki
   - operations
 ---
+
+## [2026-04-19] ingest | The Future of MCP — David Soria Parra, Anthropic (AI Engineer Keynote)
+
+- Source captured: `sources/the-future-of-mcp-david-soria-parra.md` (YouTube, AI Engineer keynote by MCP co-creator David Soria Parra — full auto-generated transcript, lightly cleaned).
+- Wiki note: [[the-future-of-mcp]] — 2026 connectivity stack framing: Skills + MCP + CLI/computer-use used together, chosen situationally. Client harnesses must adopt progressive discovery (tool search) and programmatic tool calling (code mode). Servers must stop 1:1 REST→MCP translation and use rich semantics (apps, tasks, elicitations, skills-over-MCP). Protocol ships stateless HTTP transport, async tasks, cross-app access, server discovery, TS/Py SDK v2, and skills-over-MCP in June 2026. Numbers: 110M monthly downloads, 2× React's adoption pace.
+- Created author profile: david-soria-parra.
+- Diagram: mermaid flowchart of the connectivity stack (task → Skills / CLI / MCP, chosen by capability type) plus a decision table mapping lanes to 2025 vs 2026 use.
+- Connections: [[mcp-vs-cli-is-the-wrong-fight]] (same "it depends, use all three" conclusion from benchmarks; keynote goes further on server-side anti-patterns), [[code-mode-mcp]] (code-mode promoted from Cloudflare experiment to default harness pattern; structured output is the missing piece), [[tanstack-ai-code-mode]] (programmatic tool calling from the tooling side), [[progressive-disclosure]] (the UX pattern tool-search borrows from), [[playwright-cli-vs-mcp]] (local-tool lane endorsed, not contradicted), [[why-model-context-protocol-does-not-work]] (context-bloat critique conceded; fix is in the harness, not "ditch the protocol"), [[deep-and-shallow-modules]] (REST-to-MCP dumping is a maximally shallow module pretending to be useful).
 
 ## [2026-04-18] ingest | The Philosophy of Software Design — with John Ousterhout (The Pragmatic Engineer)
 
