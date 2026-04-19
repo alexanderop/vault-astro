@@ -11,6 +11,29 @@ tags:
   - operations
 ---
 
+## [2026-04-18] ingest | The Philosophy of Software Design — with John Ousterhout (The Pragmatic Engineer)
+
+- Source captured: `sources/the-philosophy-of-software-design-with-john-ousterhout.md` (YouTube, Pragmatic Engineer Podcast — full transcript of Gergely Orosz's solo interview with John Ousterhout).
+- Wiki note: [[the-philosophy-of-software-design-with-john-ousterhout]] — The AI-era framing: as LLMs automate low-level coding, design becomes a larger share of the job, but universities teach almost none of it. Sharper versions of his contrarian positions than the book: TDD's units are too small for design, combining often beats splitting for module depth, and AI compensates for missing comments without replacing them (a one-way ratchet worth naming).
+- Diagram: mermaid flowchart of "design it twice" — first design → forced alternative → compare → pick, annotated with the 1–2% time cost.
+- Connections: [[ousterhout-martin-software-philosophies]] (solo framework vs. debate-constrained replies), [[deep-and-shallow-modules]] (this episode adds _combining_ as a depth-increasing move), [[how-ai-will-change-software-engineering]] (Fowler and Ousterhout reach "design matters more" from opposite directions), [[the-wet-codebase]] (anti-small-methods-as-dogma rhymes with anti-DRY-as-dogma), [[senior-engineers-guide-to-ai-coding]] (the daily-practice layer of the same shift).
+
+## [2026-04-18] ingest | Ousterhout vs. Martin — Clean Code vs. Philosophy of Software Design (Book Overflow)
+
+- Source captured: `sources/ousterhout-martin-software-philosophies.md` (YouTube, Book Overflow podcast — full transcript of the joint follow-up episode with John Ousterhout and Robert "Uncle Bob" Martin).
+- Wiki note: [[ousterhout-martin-software-philosophies]] — After months of written debate, the two moved roughly an inch on each axis (method length, comments, TDD). Most concrete update: Martin added Ousterhout's TDD variant to _Clean Code_ 2nd edition. Core unresolved split traces back to whether readers share context (Martin) or not (Ousterhout).
+- Created podcast profile: book-overflow.
+- Created author profiles: john-ousterhout, robert-martin.
+- Diagram: mermaid flowchart of the three axes, each showing before/after positions and the inch-of-convergence on two of them.
+- Connections: [[deep-and-shallow-modules]] (Ousterhout's long-form defense of the method-length position), [[the-wet-codebase]] (Abramov's anti-DRY-as-dogma argument rhymes with Ousterhout's anti-small-methods-as-dogma), [[tidy-first]] (Beck adds the missing _when_ axis), [[refactoring-improving-the-design-of-existing-code]] (Extract Method vs Inline are the debate in miniature), [[refactoring-not-on-the-backlog]] (the operational layer both philosophies assume).
+
+## [2026-04-18] ingest | Typesafe state in your URL (Eduardo San Martin Morote)
+
+- Source captured: `sources/typesafe-state-in-your-url.md` (YouTube, Vuejs Amsterdam talk by Eduardo San Martin Morote — full transcript).
+- Wiki note: [[typesafe-state-in-your-url]] — Vue Router 5's experimental param parsers push URL validation out of pages and into the router, so `route.params.productId` arrives typed. Path params strict, query params resilient. 30% minified-router size cut via build-time static resolver. Framed explicitly as an LLM-ergonomics win (fewer tokens in the page).
+- Diagram: mermaid flowchart comparing before/after — validation boilerplate in the page vs parsers inside the router.
+- Connections: [[pinia-colada]] (same author, same "declarative typed primitives kill boilerplate" thesis), [[deep-and-shallow-modules]] (router-as-deep-module: tiny interface, large hidden complexity), [[vue3-development-guide]] (architecture-level decision about where validation lives).
+
 ## [2026-04-18] ingest | The Wet Codebase (Dan Abramov)
 
 - Source captured: `sources/the-wet-codebase.md` (YouTube, Deconstruct Conf 2019 talk by Dan Abramov — full transcript).

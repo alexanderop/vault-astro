@@ -131,8 +131,8 @@
   }
 
   .mobile-nav-dialog {
-    width: min(85vw, 24rem);
-    @apply h-svh max-w-none gap-0 rounded-none border-r border-border bg-sidebar p-0 shadow-2xl;
+    width: min(88vw, 22rem);
+    @apply h-svh max-w-none gap-0 rounded-none border-0 border-r border-border bg-sidebar p-0 shadow-2xl;
     top: 0;
     left: 0;
     transform: none;
@@ -147,8 +147,8 @@
   }
 
   .mobile-nav-overlay {
-    backdrop-filter: blur(2px);
-    @apply bg-background/70;
+    backdrop-filter: blur(4px);
+    @apply bg-background/95;
   }
 }
 
@@ -168,7 +168,7 @@
 
 @keyframes mobile-nav-enter {
   from {
-    transform: translateX(-1rem);
+    transform: translateX(-1.5rem);
     opacity: 0;
   }
   to {
@@ -183,7 +183,7 @@
     opacity: 1;
   }
   to {
-    transform: translateX(-0.75rem);
+    transform: translateX(-1.25rem);
     opacity: 0;
   }
 }

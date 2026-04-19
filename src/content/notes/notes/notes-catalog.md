@@ -249,7 +249,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[writing-a-good-claude-md]]
 - [[you-cant-design-software-you-dont-work-on]]
 
-## talk (47)
+## talk (48)
 
 - [[15-years-of-local-first]]
 - [[2026-the-year-the-ide-died]]
@@ -292,6 +292,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[the-ux-of-local-first]]
 - [[the-wet-codebase]]
 - [[the-why-and-how-of-building-a-local-first-music-app]]
+- [[typesafe-state-in-your-url]]
 - [[unexpected-benefits-of-going-local-first]]
 - [[vibe-coding-with-jazz]]
 - [[vitest-browser-mode-viteconf-2023]]
@@ -373,7 +374,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[why-prompting-breaks-down-and-bmad-doesnt]]
 - [[your-startup-idea-is-their-weekend-holiday]]
 
-## podcast (21)
+## podcast (23)
 
 - [[ai-engineering-with-chip-huyen]]
 - [[ai-expert-we-have-2-years-before-everything-changes-tristan-harris]]
@@ -388,11 +389,13 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[lanz-precht-226-florence-gaub-zukunft-pessimismus]]
 - [[naval-ravikant-on-wealth-and-happiness]]
 - [[openclaw-the-viral-ai-agent-that-broke-the-internet]]
+- [[ousterhout-martin-software-philosophies]]
 - [[python-go-rust-typescript-and-ai-with-armin-ronacher]]
 - [[replit-parloa-funding-aleph-alpha-deepseek]]
 - [[sync-protocols-and-the-truth-behind-local-first]]
 - [[the-creator-of-claudbot-i-ship-code-i-dont-read]]
 - [[the-end-of-coding-andrej-karpathy-on-agents-autoresearch-and-the-loopy-era-of-ai]]
+- [[the-philosophy-of-software-design-with-john-ousterhout]]
 - [[the-third-golden-age-of-software-engineering-thanks-to-ai-with-grady-booch]]
 - [[top-insulin-expert-strips-fat-faster]]
 - [[vite-rust-and-the-future-of-javascript-tooling]]
