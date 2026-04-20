@@ -5,7 +5,7 @@ wiki_role: index
 status: active
 summary: "Published note catalog grouped by source and content type."
 date: 2026-04-08
-updated_at: 2026-04-18
+updated_at: 2026-04-19
 tags:
   - wiki
   - notes
@@ -66,13 +66,14 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[talk-outline-local-first-vue]]
 - [[the-local-first-litmus-test]]
 
-## article (178)
+## article (181)
 
 - [[12-design-patterns-in-vue]]
 - [[12-factor-agents]]
 - [[13-vue-composables-tips]]
 - [[2025-databases-retrospective]]
 - [[2025-the-year-in-llms]]
+- [[3-ux-details-astro-blog]]
 - [[6-levels-of-reusability]]
 - [[a-brief-history-of-ralph]]
 - [[a-gentle-introduction-to-crdts]]
@@ -112,6 +113,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[building-docfind-fast-client-side-search-with-rust-and-webassembly]]
 - [[building-effective-agents]]
 - [[building-type-safe-compound-components]]
+- [[cal-com-goes-closed-source-why]]
 - [[claude-code-2-1-skills-universal-extension]]
 - [[claude-code-is-a-platform-not-an-app]]
 - [[claude-code-notification-hooks]]
@@ -150,6 +152,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[heres-how-i-use-llms-to-help-me-write-code]]
 - [[how-ai-is-transforming-work-at-anthropic]]
 - [[how-browsers-work]]
+- [[how-i-run-10k-mrr-companies-on-20-month-stack]]
 - [[how-i-use-obsidian]]
 - [[how-markdown-took-over-the-world]]
 - [[how-to-build-a-coding-agent]]

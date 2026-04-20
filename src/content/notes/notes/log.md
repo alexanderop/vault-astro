@@ -11,6 +11,38 @@ tags:
   - operations
 ---
 
+## [2026-04-19] ingest | Cal.com is going closed source. Here's why. (Cal.com)
+
+- Source captured: `sources/cal-com-goes-closed-source-why.md` (article from cal.com/blog, full body verbatim).
+- Wiki note: [[cal-com-goes-closed-source-why]] — Cal.com is closing its repo and releasing a frozen MIT fork as Cal.diy, citing AI-driven vulnerability scanning as the reason. First notable OSS-core SaaS to publicly cite AI vuln research as the business-model forcing function. The post quietly retires the "security through obscurity isn't security" dogma: that held when attacker attention was scarce, and attention is now cheap. The Cal.diy fork is a fig leaf — production has "significantly diverged" including auth/data-handling rewrites, so patches won't flow. Buried signal: "wave of AI security startups productizing this" means defenders can no longer reach a "pass" state against the new scanner pile.
+- No author profile (company announcement, no byline).
+- Diagram: mermaid flowchart of the before/after threat model — attention-scarce era vs. AI-scanner era — plus the forced choice and the Cal.diy fork path.
+- Connections: [[vulnerability-research-is-cooked]] (Ptacek predicted this exact reasoning six weeks earlier; Cal.com's "blueprints to the vault" framing maps to his universal-jigsaw-solver thesis), [[open-source-maintainers-are-jerks]] (different sustainability crisis, same conclusion: the 20-year-old OSS social contract doesn't match 2026 reality), [[biggest-problems-of-ai]] (first concrete business-model consequence on the security-threats branch of that synthesis).
+
+## [2026-04-19] ingest | How I Run Multiple $10K MRR Companies on a $20/Month Tech Stack (Steve Hanov)
+
+- Source captured: `sources/how-i-run-10k-mrr-companies-on-20-month-stack.md` (article from stevehanov.ca, full body verbatim).
+- Wiki note: [[how-i-run-10k-mrr-companies-on-20-month-stack]] — Extreme-bootstrapper playbook: $5-10 VPS, Go static binary via `scp`, SQLite + WAL instead of Postgres, local RTX 3090 + VLLM for batch AI, OpenRouter for low-latency user-facing LLM, and the non-obvious arbitrage that GitHub Copilot prices per _request_ (not per token) — so agentic 30-minute refactors cost ~$0.04. Steve's counter to VC "what do you need funding for?" is that near-zero burn is the same runway minus the board.
+- Created author profile: steve-hanov.
+- Diagram: mermaid flowchart mapping the stack — deploy path (laptop → VPS → SQLite) vs AI path (batch → local GPU, real-time → OpenRouter, coding → Copilot).
+- Connections: [[your-startup-idea-is-their-weekend-holiday]] (cost discipline as the new SaaS moat when code is free), [[dhh-on-programming-rails-ai-and-productivity]] (same anti-enterprise-default philosophy, different targets), [[sqlite-persistence-on-the-web]] (shared "SQLite is production-ready" conviction, different deployment context), [[deep-and-shallow-modules]] (statically-linked Go binary over scp as the deep-module alternative to Kubernetes).
+
+## [2026-04-19] ingest | Astro SEO: the definitive guide (Joost de Valk)
+
+- Source captured: `sources/astro-seo-the-definitive-guide.md` (article from joost.blog, full body verbatim).
+- Wiki note: [[astro-seo-the-definitive-guide]] — Yoast's founder rewrites his 2008 "WordPress SEO: the definitive guide" for Astro in 2026. Core update: search is vectorized, so keyword placement is yesterday's problem. What matters now is machine-legibility — self-contained paragraphs (the extraction unit), linked JSON-LD `@graph` instead of flat snippets, and an agent discovery layer (`llms.txt`, `/schemamap.xml`, markdown alternates). Build-time validation via `seoSchema` + `<Seo>` component replaces the 130-line `BaseHead.astro` with a single tag. Static HTML on a CDN is a better SEO primitive than any CMS.
+- Created author profile: joost-de-valk.
+- Diagram: mermaid flowchart of the full stack — content collection → Zod validation → `<Seo>` component → head/graph/OG routes, plus sitemap/schema/markdown paths to AI agents and search engines.
+- Connections: [[semantic-related-posts-astro-transformersjs]] (same Astro + vectorized-search frame from the other side: my post ships embeddings client-side, Joost ships graph structure). One connection — the vault doesn't have prior SEO or structured-data material, and orphaning is better than forcing weak links.
+
+## [2026-04-19] ingest | 3 UX Details That Make a Difference on an Astro Blog (Valentin Besse)
+
+- Source captured: `sources/3-ux-details-astro-blog.md` (article from vbesse.com, full body verbatim).
+- Wiki note: [[3-ux-details-astro-blog]] — Three micro-features (root-only locale redirect with localStorage memory, click-away mobile menu with `ClientRouter`-aware listener hygiene, themeable icons via CSS variable + `currentColor`). Reframed as a pattern: each is a refusal of a naive first answer that would have disrespected some user. Useful for the vault's own Astro stack.
+- Created author profile: valentin-besse.
+- Diagram: mermaid flowchart of the language-redirect decision tree (only fires at `/`, only when no saved preference).
+- Connections: [[semantic-related-posts-astro-transformersjs]] (same Astro ecosystem, same small-surgical-feature mindset). One connection — the topic sits outside the vault's current AI/agents cluster, and forcing more links would be hoarding.
+
 ## [2026-04-19] ingest | The Future of MCP — David Soria Parra, Anthropic (AI Engineer Keynote)
 
 - Source captured: `sources/the-future-of-mcp-david-soria-parra.md` (YouTube, AI Engineer keynote by MCP co-creator David Soria Parra — full auto-generated transcript, lightly cleaned).
