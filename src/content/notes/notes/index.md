@@ -5,7 +5,7 @@ wiki_role: index
 status: active
 summary: "Content-oriented catalog of the LLM wiki, organized by role so the agent can find overview, map, concept, synthesis, and author pages quickly."
 date: 2026-04-08
-updated_at: 2026-04-08
+updated_at: 2026-04-20
 tags:
   - knowledge-management
   - wiki
@@ -49,6 +49,7 @@ tags:
 - [[ai-assistance-reduces-persistence-and-hurts-independent-performance]] - Useful counterweight to AI boosterism: direct-answer usage can hurt persistence and independent reasoning after only brief exposure.
 - [[biggest-problems-of-ai]] - Synthesis of AI's biggest problems: deskilling, cognitive debt, existential risk, job displacement, quality degradation, security threats, and geopolitical traps.
 - [[creative-non-coding-uses-of-claude-code]] - Taxonomy of Claude Code's non-coding uses: video production, life management, diagramming, phone collaboration, knowledge curation.
+- [[using-claude-code-skills-well]] - How to actually use Claude Code skills, given that the auto-activation pitch is unreliable and the description field carries all the weight.
 
 ## Operational Pages
 

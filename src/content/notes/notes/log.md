@@ -5,11 +5,18 @@ wiki_role: log
 status: active
 summary: "Append-only operational log for wiki ingests, syntheses, and maintenance passes."
 date: 2026-04-08
-updated_at: 2026-04-19
+updated_at: 2026-04-20
 tags:
   - wiki
   - operations
 ---
+
+## [2026-04-20] synthesis | Using Claude Code Skills Well
+
+- Wiki note: [[using-claude-code-skills-well]] — Synthesis of 8 skill-related notes. The pitched auto-activation is unreliable (Scott Spence: 40–50%; Vercel evals: 44% trigger rate vs. 100% for `AGENTS.md`), so design skills assuming manual invocation. The description field carries almost all decision weight — write it with trigger phrases users actually say. Keep `SKILL.md` under 500 lines, push depth into `references/` and determinism into `scripts/`. In 2.1, the four-way extension decision (skill/slash-command/subagent/hook) collapses into "just make it a skill" with `context: fork`, `agent:`, `model:`, and scoped `hooks:` in frontmatter.
+- Contradiction flagged: [[how-we-built-a-company-wide-knowledge-layer-with-claude-skills]] treats auto-invocation as the core value prop, while [[claude-code-skills-dont-auto-activate]] and [[agents-md-outperforms-skills-in-vercel-agent-evals]] show it fails in practice. Synthesis's take: treat auto-invocation as a bonus, not a foundation.
+- No source capture (synthesis derived from existing wiki notes).
+- Connections: [[claude-code-skills]], [[the-complete-guide-to-building-skills-for-claude]], [[claude-code-2-1-skills-universal-extension]], [[claude-code-skills-dont-auto-activate]], [[agents-md-outperforms-skills-in-vercel-agent-evals]], [[how-to-make-claude-code-better-every-time-you-use-it]], [[self-improving-skills-in-claude-code]], [[how-we-built-a-company-wide-knowledge-layer-with-claude-skills]].
 
 ## [2026-04-19] ingest | Cal.com is going closed source. Here's why. (Cal.com)
 
