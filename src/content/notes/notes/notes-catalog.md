@@ -5,7 +5,7 @@ wiki_role: index
 status: active
 summary: "Published note catalog grouped by source and content type."
 date: 2026-04-08
-updated_at: 2026-04-19
+updated_at: 2026-04-20
 tags:
   - wiki
   - notes
@@ -252,9 +252,10 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[writing-a-good-claude-md]]
 - [[you-cant-design-software-you-dont-work-on]]
 
-## talk (48)
+## talk (50)
 
 - [[15-years-of-local-first]]
+- [[a-philosophy-of-software-design-talks-at-google]]
 - [[2026-the-year-the-ide-died]]
 - [[a-tale-of-two-sync-engines]]
 - [[ai-coding-agents-and-how-to-code-them]]
@@ -272,6 +273,7 @@ This catalog covers the published note pages under `src/content/notes/notes/`.
 - [[everything-we-got-wrong-about-research-plan-implement]]
 - [[explore-it-explore-it]]
 - [[fitness-function-driven-architecture-and-agentic-ai]]
+- [[friction-is-your-judgment]]
 - [[general-purpose-sync-with-ivm]]
 - [[graphql-performance-issues-at-netflix-scale]]
 - [[home-cooked-software-and-barefoot-programmers]]
