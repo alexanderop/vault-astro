@@ -2,6 +2,7 @@ import * as fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
   buildLocalGraphData,
+  CLUSTER_OTHER,
   createGraphBuildContext,
 } from "@/features/graph/lib/graph-data-builder";
 import { buildBacklinksMap } from "@/features/backlinks/lib/backlink-resolver";
@@ -26,12 +27,16 @@ describe("graph and backlink properties", () => {
 
         if (!publishedIds.has(currentSlug)) {
           // eslint-disable-next-line jest/no-conditional-expect -- property test: early return for unpublished slug
-          expect(graph).toEqual({ nodes: [], edges: [] });
+          expect(graph.nodes).toEqual([]);
+          // eslint-disable-next-line jest/no-conditional-expect -- property test: early return for unpublished slug
+          expect(graph.edges).toEqual([]);
           return;
         }
 
+        const topTagSet = new Set(graph.topTags);
         for (const node of graph.nodes) {
           expect(publishedIds.has(node.id)).toBe(true);
+          expect(node.cluster === CLUSTER_OTHER || topTagSet.has(node.cluster)).toBe(true);
         }
 
         const undirectedKeys = graph.edges.map((edge) =>

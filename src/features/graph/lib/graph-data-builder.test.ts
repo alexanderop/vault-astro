@@ -20,14 +20,15 @@ describe("buildLocalGraphData", () => {
 
     expect(buildLocalGraphData(context, "alpha")).toEqual({
       nodes: [
-        { id: "alpha", title: "Alpha Note" },
-        { id: "beta", title: "Beta Note" },
-        { id: "gamma", title: "Gamma Note" },
+        { id: "alpha", title: "Alpha Note", cluster: "other", kind: "content" },
+        { id: "beta", title: "Beta Note", cluster: "other", kind: "content" },
+        { id: "gamma", title: "Gamma Note", cluster: "other", kind: "content" },
       ],
       edges: [
         { source: "alpha", target: "beta" },
         { source: "gamma", target: "alpha" },
       ],
+      topTags: [],
     });
   });
 
@@ -37,6 +38,24 @@ describe("buildLocalGraphData", () => {
     expect(buildLocalGraphData(createGraphBuildContext(notes), "draft")).toEqual({
       nodes: [],
       edges: [],
+      topTags: [],
     });
+  });
+
+  it("assigns each node a primary cluster from the global top tags", () => {
+    const notes = [
+      noteWithLinks("alpha", ["beta"], { data: { tags: ["ai", "tools"] } }),
+      noteWithLinks("beta", ["alpha"], { data: { tags: ["ai"] } }),
+      noteWithLinks("gamma", ["alpha"], { data: { tags: ["philosophy"] } }),
+    ];
+
+    const context = createGraphBuildContext(notes);
+    const graph = buildLocalGraphData(context, "alpha");
+    const clusters = Object.fromEntries(graph.nodes.map((n) => [n.id, n.cluster]));
+
+    expect(graph.topTags).toContain("ai");
+    expect(clusters.alpha).toBe("ai");
+    expect(clusters.beta).toBe("ai");
+    expect(clusters.gamma).toBe("philosophy");
   });
 });

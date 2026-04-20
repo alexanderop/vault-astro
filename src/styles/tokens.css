@@ -10,6 +10,19 @@
   --surface-hover: oklch(0 0 0 / 0.04);
   --surface-active: oklch(0 0 0 / 0.07);
 
+  /* Graph cluster palette — evenly spaced OKLCH hues, light-theme tuned */
+  --graph-cluster-1: oklch(0.62 0.15 20);
+  --graph-cluster-2: oklch(0.68 0.14 60);
+  --graph-cluster-3: oklch(0.68 0.14 110);
+  --graph-cluster-4: oklch(0.62 0.14 160);
+  --graph-cluster-5: oklch(0.6 0.13 200);
+  --graph-cluster-6: oklch(0.58 0.14 240);
+  --graph-cluster-7: oklch(0.56 0.16 280);
+  --graph-cluster-8: oklch(0.58 0.16 320);
+  --graph-cluster-9: oklch(0.56 0.14 350);
+  --graph-cluster-10: oklch(0.64 0.1 90);
+  --graph-cluster-other: oklch(0.62 0.04 260);
+
   /* Shell layout */
   --shell-sidebar-width: 16rem;
   --shell-rail-width: 18rem;
@@ -27,6 +40,19 @@
 
   --surface-hover: oklch(1 0 0 / 0.05);
   --surface-active: oklch(1 0 0 / 0.08);
+
+  /* Graph cluster palette — evenly spaced OKLCH hues, dark-theme tuned */
+  --graph-cluster-1: oklch(0.72 0.15 20);
+  --graph-cluster-2: oklch(0.78 0.14 60);
+  --graph-cluster-3: oklch(0.8 0.14 110);
+  --graph-cluster-4: oklch(0.74 0.14 160);
+  --graph-cluster-5: oklch(0.72 0.13 200);
+  --graph-cluster-6: oklch(0.72 0.14 240);
+  --graph-cluster-7: oklch(0.72 0.16 280);
+  --graph-cluster-8: oklch(0.72 0.16 320);
+  --graph-cluster-9: oklch(0.7 0.14 350);
+  --graph-cluster-10: oklch(0.76 0.1 90);
+  --graph-cluster-other: oklch(0.52 0.04 260);
 }
 
 @theme inline {
