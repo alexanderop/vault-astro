@@ -113,6 +113,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [legendOpen, setLegendOpen] = useState(true);
+  const userToggledLegend = useRef(false);
   const [showAuthors, setShowAuthors] = useState(false);
   const [showCatalogs, setShowCatalogs] = useState(false);
   const [activeClusters, setActiveClusters] = useState<Set<string>>(() => new Set());
@@ -217,7 +218,12 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
     if (ref.current) {
       ref.current.zoomToFit(400, 60);
     }
-  }, [dimensions]);
+  }, [dimensions, fgData.nodes.length]);
+
+  useEffect(() => {
+    if (userToggledLegend.current) return;
+    setLegendOpen(dimensions.width >= 480);
+  }, [dimensions.width]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
@@ -225,7 +231,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
     ref.current.d3Force("charge")?.strength((n: FGNode) => -70 - Math.min(80, (n.degree ?? 0) * 4));
     ref.current.d3Force("link")?.distance(50).strength(0.25);
     ref.current.d3ReheatSimulation();
-  }, []);
+  }, [showAuthors, showCatalogs]);
 
   const handleEngineStop = useCallback(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ref.current is mutable
@@ -465,7 +471,7 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search notes…"
-            className="w-48 rounded-md border border-border bg-background/85 py-1 pl-7 pr-7 text-ui-sm shadow-sm backdrop-blur placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            className="w-48 rounded-md border border-border bg-background/85 py-1 pl-7 pr-7 text-ui-sm shadow-sm backdrop-blur placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring [&::-webkit-search-cancel-button]:appearance-none"
           />
           {query && (
             <button
@@ -504,7 +510,10 @@ export function ForceGraphView({ graphData }: ForceGraphViewProps) {
         >
           <button
             type="button"
-            onClick={() => setLegendOpen((v) => !v)}
+            onClick={() => {
+              userToggledLegend.current = true;
+              setLegendOpen((v) => !v);
+            }}
             className="flex w-full items-center justify-between gap-2 px-2 py-1 font-medium text-muted-foreground hover:text-foreground"
             aria-expanded={legendOpen}
           >
